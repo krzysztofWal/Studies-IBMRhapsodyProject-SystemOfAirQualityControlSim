@@ -248,6 +248,42 @@
 #define SendAlert_UNSERIALIZE OM_NO_OP
 
 #define SendAlert_CONSTRUCTOR SendAlert()
+
+#define serwZadajPakietu_SERIALIZE OM_NO_OP
+
+#define serwZadajPakietu_UNSERIALIZE OM_NO_OP
+
+#define serwZadajPakietu_CONSTRUCTOR serwZadajPakietu()
+
+#define evWylac_SERIALIZE OM_NO_OP
+
+#define evWylac_UNSERIALIZE OM_NO_OP
+
+#define evWylac_CONSTRUCTOR evWylac()
+
+#define czytajCzujniki_SERIALIZE OM_NO_OP
+
+#define czytajCzujniki_UNSERIALIZE OM_NO_OP
+
+#define czytajCzujniki_CONSTRUCTOR czytajCzujniki()
+
+#define timerOdczy_SERIALIZE OM_NO_OP
+
+#define timerOdczy_UNSERIALIZE OM_NO_OP
+
+#define timerOdczy_CONSTRUCTOR timerOdczy()
+
+#define timer_SERIALIZE OM_NO_OP
+
+#define timer_UNSERIALIZE OM_NO_OP
+
+#define timer_CONSTRUCTOR timer()
+
+#define timerCzytajSensory_SERIALIZE OM_NO_OP
+
+#define timerCzytajSensory_UNSERIALIZE OM_NO_OP
+
+#define timerCzytajSensory_CONSTRUCTOR timerCzytajSensory()
 //#]
 
 //## package Default
@@ -733,6 +769,78 @@ bool SendAlert::isTypeOf(const short id) const {
 }
 
 IMPLEMENT_META_EVENT_P(SendAlert, Default, Default, SendAlert())
+
+//## event serwZadajPakietu()
+serwZadajPakietu::serwZadajPakietu() {
+    NOTIFY_EVENT_CONSTRUCTOR(serwZadajPakietu)
+    setId(serwZadajPakietu_Default_id);
+}
+
+bool serwZadajPakietu::isTypeOf(const short id) const {
+    return (serwZadajPakietu_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(serwZadajPakietu, Default, Default, serwZadajPakietu())
+
+//## event evWylac()
+evWylac::evWylac() {
+    NOTIFY_EVENT_CONSTRUCTOR(evWylac)
+    setId(evWylac_Default_id);
+}
+
+bool evWylac::isTypeOf(const short id) const {
+    return (evWylac_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(evWylac, Default, Default, evWylac())
+
+//## event czytajCzujniki()
+czytajCzujniki::czytajCzujniki() {
+    NOTIFY_EVENT_CONSTRUCTOR(czytajCzujniki)
+    setId(czytajCzujniki_Default_id);
+}
+
+bool czytajCzujniki::isTypeOf(const short id) const {
+    return (czytajCzujniki_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(czytajCzujniki, Default, Default, czytajCzujniki())
+
+//## event timerOdczy()
+timerOdczy::timerOdczy() {
+    NOTIFY_EVENT_CONSTRUCTOR(timerOdczy)
+    setId(timerOdczy_Default_id);
+}
+
+bool timerOdczy::isTypeOf(const short id) const {
+    return (timerOdczy_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(timerOdczy, Default, Default, timerOdczy())
+
+//## event timer()
+timer::timer() {
+    NOTIFY_EVENT_CONSTRUCTOR(timer)
+    setId(timer_Default_id);
+}
+
+bool timer::isTypeOf(const short id) const {
+    return (timer_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(timer, Default, Default, timer())
+
+//## event timerCzytajSensory()
+timerCzytajSensory::timerCzytajSensory() {
+    NOTIFY_EVENT_CONSTRUCTOR(timerCzytajSensory)
+    setId(timerCzytajSensory_Default_id);
+}
+
+bool timerCzytajSensory::isTypeOf(const short id) const {
+    return (timerCzytajSensory_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(timerCzytajSensory, Default, Default, timerCzytajSensory())
 
 /*********************************************************************
 	File Path	: DefaultComponent\DefaultConfig\Default.cpp

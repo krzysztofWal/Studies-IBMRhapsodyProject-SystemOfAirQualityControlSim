@@ -141,6 +141,18 @@ class iSendAlert;
 #define Inform_Default_id 18631
 
 #define SendAlert_Default_id 18632
+
+#define serwZadajPakietu_Default_id 18633
+
+#define evWylac_Default_id 18634
+
+#define czytajCzujniki_Default_id 18635
+
+#define timerOdczy_Default_id 18636
+
+#define timer_Default_id 18637
+
+#define timerCzytajSensory_Default_id 18638
 //#]
 
 //## package Default
@@ -149,7 +161,6 @@ class iSendAlert;
 //## type statusType
 enum statusType {
     on = 1,
-    off = 0,
     standBy = 2
 };
 
@@ -1151,6 +1162,180 @@ public :
 //#[ ignore
 class OMAnimatedSendAlert : virtual public AOMEvent {
     DECLARE_META_EVENT(SendAlert)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event serwZadajPakietu()
+class serwZadajPakietu : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedserwZadajPakietu;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    serwZadajPakietu();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedserwZadajPakietu : virtual public AOMEvent {
+    DECLARE_META_EVENT(serwZadajPakietu)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event evWylac()
+class evWylac : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedevWylac;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    evWylac();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedevWylac : virtual public AOMEvent {
+    DECLARE_META_EVENT(evWylac)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event czytajCzujniki()
+class czytajCzujniki : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedczytajCzujniki;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    czytajCzujniki();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedczytajCzujniki : virtual public AOMEvent {
+    DECLARE_META_EVENT(czytajCzujniki)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event timerOdczy()
+class timerOdczy : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedtimerOdczy;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    timerOdczy();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedtimerOdczy : virtual public AOMEvent {
+    DECLARE_META_EVENT(timerOdczy)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event timer()
+class timer : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedtimer;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    timer();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedtimer : virtual public AOMEvent {
+    DECLARE_META_EVENT(timer)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event timerCzytajSensory()
+class timerCzytajSensory : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedtimerCzytajSensory;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    timerCzytajSensory();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedtimerCzytajSensory : virtual public AOMEvent {
+    DECLARE_META_EVENT(timerCzytajSensory)
 };
 //#]
 #endif // _OMINSTRUMENT

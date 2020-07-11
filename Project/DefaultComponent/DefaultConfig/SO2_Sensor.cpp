@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: SO2_Sensor
-//!	Generated Date	: Fri, 10, Jul 2020  
+//!	Generated Date	: Sat, 11, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\SO2_Sensor.cpp
 *********************************************************************/
 
@@ -55,11 +55,7 @@ void SO2_Sensor::setItsController(Controller* p_Controller) {
 
 bool SO2_Sensor::startBehavior() {
     bool done = false;
-    done = OMReactive::startBehavior();
-    if(done)
-        {
-            startDispatching();
-        }
+    done = Sensor::startBehavior();
     return done;
 }
 
@@ -101,9 +97,9 @@ void SO2_Sensor::rootState_entDef() {
     {
         NOTIFY_STATE_ENTERED("ROOT");
         NOTIFY_TRANSITION_STARTED("0");
-        NOTIFY_STATE_ENTERED("ROOT.Oczekiwanie_SO2");
-        rootState_subState = Oczekiwanie_SO2;
-        rootState_active = Oczekiwanie_SO2;
+        NOTIFY_STATE_ENTERED("ROOT.OczekiwanieSensor");
+        rootState_subState = OczekiwanieSensor;
+        rootState_active = OczekiwanieSensor;
         NOTIFY_TRANSITION_TERMINATED("0");
     }
 }
@@ -111,13 +107,13 @@ void SO2_Sensor::rootState_entDef() {
 IOxfReactive::TakeEventStatus SO2_Sensor::rootState_processEvent() {
     IOxfReactive::TakeEventStatus res = eventNotConsumed;
     switch (rootState_active) {
-        // State Oczekiwanie_SO2
-        case Oczekiwanie_SO2:
+        // State OczekiwanieSensor
+        case OczekiwanieSensor:
         {
-            if(IS_EVENT_TYPE_OF(readSO2_Default_id))
+            if(IS_EVENT_TYPE_OF(czytajCzujniki_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("1");
-                    NOTIFY_STATE_EXITED("ROOT.Oczekiwanie_SO2");
+                    NOTIFY_STATE_EXITED("ROOT.OczekiwanieSensor");
                     //#[ transition 1 
                     odczytajDane();
                     //#]
@@ -142,9 +138,9 @@ IOxfReactive::TakeEventStatus SO2_Sensor::rootState_processEvent() {
                     NOTIFY_TRANSITION_STARTED("2");
                     popNullTransition();
                     NOTIFY_STATE_EXITED("ROOT.sendaction_7");
-                    NOTIFY_STATE_ENTERED("ROOT.Oczekiwanie_SO2");
-                    rootState_subState = Oczekiwanie_SO2;
-                    rootState_active = Oczekiwanie_SO2;
+                    NOTIFY_STATE_ENTERED("ROOT.OczekiwanieSensor");
+                    rootState_subState = OczekiwanieSensor;
+                    rootState_active = OczekiwanieSensor;
                     NOTIFY_TRANSITION_TERMINATED("2");
                     res = eventConsumed;
                 }
@@ -175,9 +171,9 @@ void OMAnimatedSO2_Sensor::serializeRelations(AOMSRelations* aomsRelations) cons
 void OMAnimatedSO2_Sensor::rootState_serializeStates(AOMSState* aomsState) const {
     aomsState->addState("ROOT");
     switch (myReal->rootState_subState) {
-        case SO2_Sensor::Oczekiwanie_SO2:
+        case SO2_Sensor::OczekiwanieSensor:
         {
-            Oczekiwanie_SO2_serializeStates(aomsState);
+            OczekiwanieSensor_serializeStates(aomsState);
         }
         break;
         case SO2_Sensor::sendaction_7:
@@ -194,8 +190,8 @@ void OMAnimatedSO2_Sensor::sendaction_7_serializeStates(AOMSState* aomsState) co
     aomsState->addState("ROOT.sendaction_7");
 }
 
-void OMAnimatedSO2_Sensor::Oczekiwanie_SO2_serializeStates(AOMSState* aomsState) const {
-    aomsState->addState("ROOT.Oczekiwanie_SO2");
+void OMAnimatedSO2_Sensor::OczekiwanieSensor_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.OczekiwanieSensor");
 }
 //#]
 

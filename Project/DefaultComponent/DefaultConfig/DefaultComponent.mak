@@ -199,7 +199,7 @@ O3_Sensor.obj : O3_Sensor.cpp O3_Sensor.h    Default.h Controller.h Sensor.h
 
 
 
-Controller.obj : Controller.cpp Controller.h    Default.h O3_Sensor.h Thermometer.h Hygrometer.h Barometer.h CO_Sensor.h SO2_Sensor.h NO2_Sensor.h PM10_Sensor.h PM2_5Sensor.h PM1_Sensor.h iInform.h iSendAlert.h StationData.h iPrint.h Sensor.h iInitialize.h iConfirmDataReceival.h iGetAlertDetails.h 
+Controller.obj : Controller.cpp Controller.h    Default.h O3_Sensor.h Thermometer.h Hygrometer.h Barometer.h CO_Sensor.h SO2_Sensor.h NO2_Sensor.h PM10_Sensor.h PM2_5Sensor.h PM1_Sensor.h StationData.h iInform.h iSendAlert.h iPrint.h Sensor.h iInitialize.h iConfirmDataReceival.h iGetAlertDetails.h 
 	$(CREATE_OBJ_DIR)
 	$(CPP) $(ConfigurationCPPCompileSwitches)  /Fo"Controller.obj" "Controller.cpp" 
 
@@ -229,7 +229,7 @@ StationData.obj : StationData.cpp StationData.h    Default.h
 
 
 
-Receiver.obj : Receiver.cpp Receiver.h    Default.h iPrint.h iInitialize.h iConfirmDataReceival.h iInform.h iSendAlert.h 
+Receiver.obj : Receiver.cpp Receiver.h    Default.h StationData.h iPrint.h iInitialize.h iConfirmDataReceival.h iInform.h iSendAlert.h 
 	$(CREATE_OBJ_DIR)
 	$(CPP) $(ConfigurationCPPCompileSwitches)  /Fo"Receiver.obj" "Receiver.cpp" 
 
@@ -271,7 +271,7 @@ PM10_Sensor.obj : PM10_Sensor.cpp PM10_Sensor.h    Default.h Controller.h Sensor
 
 
 
-iPrint.obj : iPrint.cpp iPrint.h    Default.h 
+iPrint.obj : iPrint.cpp iPrint.h    Default.h StationData.h 
 	$(CREATE_OBJ_DIR)
 	$(CPP) $(ConfigurationCPPCompileSwitches)  /Fo"iPrint.obj" "iPrint.cpp" 
 

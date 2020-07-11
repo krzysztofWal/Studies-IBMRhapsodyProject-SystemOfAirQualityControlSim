@@ -1,5 +1,7 @@
 [Op Calls]
 [Events]
+itsController->GEN(timerCzytajSensory())`Controller
+itsReceiver->GEN(serwZadajPakietu())`Receiver
 itsReceiver->GEN(evBegin())`Receiver
 itsController->GEN(potwierdzOdbior())`Controller
 itsTransmitter->GEN(evGonnaSend())`Transmitter

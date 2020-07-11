@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Barometer
-//!	Generated Date	: Fri, 10, Jul 2020  
+//!	Generated Date	: Sat, 11, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Barometer.h
 *********************************************************************/
 
@@ -43,7 +43,7 @@ public :
     ////    Constructors and destructors    ////
     
     //## auto_generated
-    Barometer();
+    Barometer(IOxfActive* theActiveContext = 0);
     
     //## auto_generated
     virtual ~Barometer();
@@ -60,9 +60,15 @@ public :
     
     //## auto_generated
     void setItsController(Controller* p_Controller);
+    
+    //## auto_generated
+    virtual bool startBehavior();
 
 protected :
 
+    //## auto_generated
+    void initStatechart();
+    
     //## auto_generated
     void cleanUpRelations();
     
@@ -82,12 +88,18 @@ public :
     
     //## auto_generated
     void _clearItsController();
+    
+    //## statechart_method
+    virtual void rootState_entDef();
+    
+    //## statechart_method
+    virtual IOxfReactive::TakeEventStatus rootState_processEvent();
 };
 
 #ifdef _OMINSTRUMENT
 //#[ ignore
 class OMAnimatedBarometer : public OMAnimatedSensor {
-    DECLARE_META(Barometer, OMAnimatedBarometer)
+    DECLARE_REACTIVE_META(Barometer, OMAnimatedBarometer)
     
     ////    Framework operations    ////
     
@@ -96,6 +108,15 @@ public :
     virtual void serializeAttributes(AOMSAttributes* aomsAttributes) const;
     
     virtual void serializeRelations(AOMSRelations* aomsRelations) const;
+    
+    //## statechart_method
+    void rootState_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void sendaction_7_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void OczekiwanieSensor_serializeStates(AOMSState* aomsState) const;
 };
 //#]
 #endif // _OMINSTRUMENT

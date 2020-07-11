@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: O3_Sensor
-//!	Generated Date	: Fri, 10, Jul 2020  
+//!	Generated Date	: Sat, 11, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\O3_Sensor.cpp
 *********************************************************************/
 
@@ -55,11 +55,7 @@ void O3_Sensor::setItsController(Controller* p_Controller) {
 
 bool O3_Sensor::startBehavior() {
     bool done = false;
-    done = OMReactive::startBehavior();
-    if(done)
-        {
-            startDispatching();
-        }
+    done = Sensor::startBehavior();
     return done;
 }
 
@@ -101,9 +97,9 @@ void O3_Sensor::rootState_entDef() {
     {
         NOTIFY_STATE_ENTERED("ROOT");
         NOTIFY_TRANSITION_STARTED("0");
-        NOTIFY_STATE_ENTERED("ROOT.Oczekiwanie_O3");
-        rootState_subState = Oczekiwanie_O3;
-        rootState_active = Oczekiwanie_O3;
+        NOTIFY_STATE_ENTERED("ROOT.OczekiwanieSensor");
+        rootState_subState = OczekiwanieSensor;
+        rootState_active = OczekiwanieSensor;
         NOTIFY_TRANSITION_TERMINATED("0");
     }
 }
@@ -111,13 +107,13 @@ void O3_Sensor::rootState_entDef() {
 IOxfReactive::TakeEventStatus O3_Sensor::rootState_processEvent() {
     IOxfReactive::TakeEventStatus res = eventNotConsumed;
     switch (rootState_active) {
-        // State Oczekiwanie_O3
-        case Oczekiwanie_O3:
+        // State OczekiwanieSensor
+        case OczekiwanieSensor:
         {
-            if(IS_EVENT_TYPE_OF(readO3_Default_id))
+            if(IS_EVENT_TYPE_OF(czytajCzujniki_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("1");
-                    NOTIFY_STATE_EXITED("ROOT.Oczekiwanie_O3");
+                    NOTIFY_STATE_EXITED("ROOT.OczekiwanieSensor");
                     //#[ transition 1 
                     odczytajDane();
                     //#]
@@ -142,9 +138,9 @@ IOxfReactive::TakeEventStatus O3_Sensor::rootState_processEvent() {
                     NOTIFY_TRANSITION_STARTED("2");
                     popNullTransition();
                     NOTIFY_STATE_EXITED("ROOT.sendaction_7");
-                    NOTIFY_STATE_ENTERED("ROOT.Oczekiwanie_O3");
-                    rootState_subState = Oczekiwanie_O3;
-                    rootState_active = Oczekiwanie_O3;
+                    NOTIFY_STATE_ENTERED("ROOT.OczekiwanieSensor");
+                    rootState_subState = OczekiwanieSensor;
+                    rootState_active = OczekiwanieSensor;
                     NOTIFY_TRANSITION_TERMINATED("2");
                     res = eventConsumed;
                 }
@@ -175,9 +171,9 @@ void OMAnimatedO3_Sensor::serializeRelations(AOMSRelations* aomsRelations) const
 void OMAnimatedO3_Sensor::rootState_serializeStates(AOMSState* aomsState) const {
     aomsState->addState("ROOT");
     switch (myReal->rootState_subState) {
-        case O3_Sensor::Oczekiwanie_O3:
+        case O3_Sensor::OczekiwanieSensor:
         {
-            Oczekiwanie_O3_serializeStates(aomsState);
+            OczekiwanieSensor_serializeStates(aomsState);
         }
         break;
         case O3_Sensor::sendaction_7:
@@ -194,8 +190,8 @@ void OMAnimatedO3_Sensor::sendaction_7_serializeStates(AOMSState* aomsState) con
     aomsState->addState("ROOT.sendaction_7");
 }
 
-void OMAnimatedO3_Sensor::Oczekiwanie_O3_serializeStates(AOMSState* aomsState) const {
-    aomsState->addState("ROOT.Oczekiwanie_O3");
+void OMAnimatedO3_Sensor::OczekiwanieSensor_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.OczekiwanieSensor");
 }
 //#]
 

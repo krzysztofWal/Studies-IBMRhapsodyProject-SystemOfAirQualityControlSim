@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: PM10_Sensor
-//!	Generated Date	: Fri, 10, Jul 2020  
+//!	Generated Date	: Sat, 11, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\PM10_Sensor.h
 *********************************************************************/
 
@@ -43,7 +43,7 @@ public :
     ////    Constructors and destructors    ////
     
     //## operation PM10_Sensor()
-    PM10_Sensor();
+    PM10_Sensor(IOxfActive* theActiveContext = 0);
     
     //## auto_generated
     virtual ~PM10_Sensor();
@@ -60,9 +60,15 @@ public :
     
     //## auto_generated
     void setItsController(Controller* p_Controller);
+    
+    //## auto_generated
+    virtual bool startBehavior();
 
 protected :
 
+    //## auto_generated
+    void initStatechart();
+    
     //## auto_generated
     void cleanUpRelations();
     
@@ -82,12 +88,18 @@ public :
     
     //## auto_generated
     void _clearItsController();
+    
+    //## statechart_method
+    virtual void rootState_entDef();
+    
+    //## statechart_method
+    virtual IOxfReactive::TakeEventStatus rootState_processEvent();
 };
 
 #ifdef _OMINSTRUMENT
 //#[ ignore
 class OMAnimatedPM10_Sensor : public OMAnimatedSensor {
-    DECLARE_META(PM10_Sensor, OMAnimatedPM10_Sensor)
+    DECLARE_REACTIVE_META(PM10_Sensor, OMAnimatedPM10_Sensor)
     
     ////    Framework operations    ////
     
@@ -96,6 +108,15 @@ public :
     virtual void serializeAttributes(AOMSAttributes* aomsAttributes) const;
     
     virtual void serializeRelations(AOMSRelations* aomsRelations) const;
+    
+    //## statechart_method
+    void rootState_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void sendaction_7_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void OczekiwanieSensor_serializeStates(AOMSState* aomsState) const;
 };
 //#]
 #endif // _OMINSTRUMENT

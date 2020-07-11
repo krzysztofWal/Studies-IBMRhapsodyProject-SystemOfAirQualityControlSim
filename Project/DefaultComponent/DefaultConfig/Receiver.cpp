@@ -263,7 +263,7 @@ IOxfReactive::TakeEventStatus Receiver::rootState_processEvent() {
         // State receiverStandby
         case receiverStandby:
         {
-            if(IS_EVENT_TYPE_OF(evBegin_Default_id))
+            if(IS_EVENT_TYPE_OF(serwZadajPakietu_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("2");
                     NOTIFY_STATE_EXITED("ROOT.receiverStandby");
@@ -289,12 +289,9 @@ IOxfReactive::TakeEventStatus Receiver::rootState_processEvent() {
                     //#[ transition 3 
                     std::cout << "rec received an alert" << std::endl;
                     //#]
-                    NOTIFY_STATE_ENTERED("ROOT.begin");
-                    rootState_subState = begin;
-                    rootState_active = begin;
-                    //#[ state begin.(Entry) 
-                    OUT_PORT(port_3)->initialize();
-                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.receiverStandby");
+                    rootState_subState = receiverStandby;
+                    rootState_active = receiverStandby;
                     NOTIFY_TRANSITION_TERMINATED("3");
                     res = eventConsumed;
                 }

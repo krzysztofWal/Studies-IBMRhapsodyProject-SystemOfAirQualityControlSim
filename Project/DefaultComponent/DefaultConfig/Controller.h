@@ -323,6 +323,9 @@ public :
     //## operation isAnyAlert()
     bool isAnyAlert();
     
+    //## operation obsluzTrybOszczedzaniaEnergii()
+    void obsluzTrybOszczedzaniaEnergii();
+    
     //## operation print()
     virtual StationData print();
     
@@ -335,15 +338,6 @@ public :
     //## operation sprawdzPoziomy()
     void sprawdzPoziomy();
     
-    //## operation wejdzTrybOszczedzaniaEnergii()
-    void wejdzTrybOszczedzaniaEnergii();
-    
-    //## operation wlaczStacje()
-    void wlaczStacje();
-    
-    //## operation wylaczStacje()
-    void wylaczStacje();
-    
     //## auto_generated
     port_33_C* getPort_33() const;
     
@@ -355,6 +349,12 @@ public :
     
     //## auto_generated
     port_35_C* get_port_35() const;
+    
+    //## auto_generated
+    bool getWhetherTimerRead() const;
+    
+    //## auto_generated
+    void setWhetherTimerRead(bool p_whetherTimerRead);
     
     //## auto_generated
     CO_Sensor* getItsCO_Sensor() const;
@@ -426,6 +426,8 @@ protected :
     
     long time;		//## attribute time
     
+    bool whetherTimerRead;		//## attribute whetherTimerRead
+    
 //#[ ignore
     port_33_C port_33;
     
@@ -453,9 +455,6 @@ public :
     inline bool rootState_IN() const;
     
     //## statechart_method
-    inline bool rootState_isCompleted();
-    
-    //## statechart_method
     virtual void rootState_entDef();
     
     //## statechart_method
@@ -465,32 +464,29 @@ public :
     //## statechart_method
     inline bool wysylanieAlertu_IN() const;
     
-    // terminationstate_6:
-    //## statechart_method
-    inline bool terminationstate_6_IN() const;
-    
     // StationStandBy:
     //## statechart_method
     inline bool StationStandBy_IN() const;
     
-    // StationOn:
+    // state_32:
     //## statechart_method
-    inline bool StationOn_IN() const;
+    inline bool state_32_IN() const;
     
+    // sendaction_30:
     //## statechart_method
-    IOxfReactive::TakeEventStatus StationOn_handleEvent();
+    inline bool sendaction_30_IN() const;
     
-    // state_0:
+    // sendaction_29:
     //## statechart_method
-    inline bool state_0_IN() const;
+    inline bool sendaction_29_IN() const;
     
-    // soonToCheckIfAlert:
+    // sendaction_28:
     //## statechart_method
-    inline bool soonToCheckIfAlert_IN() const;
+    inline bool sendaction_28_IN() const;
     
-    // simulationStartPoint:
+    // sendaction_27:
     //## statechart_method
-    inline bool simulationStartPoint_IN() const;
+    inline bool sendaction_27_IN() const;
     
     // sendaction_14:
     //## statechart_method
@@ -511,6 +507,10 @@ public :
     // packageReadyInformation:
     //## statechart_method
     inline bool packageReadyInformation_IN() const;
+    
+    // deletePackageState:
+    //## statechart_method
+    inline bool deletePackageState_IN() const;
 
 protected :
 
@@ -518,17 +518,18 @@ protected :
     enum Controller_Enum {
         OMNonState = 0,
         wysylanieAlertu = 1,
-        terminationstate_6 = 2,
-        StationStandBy = 3,
-        StationOn = 4,
-        state_0 = 5,
-        soonToCheckIfAlert = 6,
-        simulationStartPoint = 7,
+        StationStandBy = 2,
+        state_32 = 3,
+        sendaction_30 = 4,
+        sendaction_29 = 5,
+        sendaction_28 = 6,
+        sendaction_27 = 7,
         sendaction_14 = 8,
         sendaction_13 = 9,
         sendaction_12 = 10,
         sendaction_10 = 11,
-        packageReadyInformation = 12
+        packageReadyInformation = 12,
+        deletePackageState = 13
     };
     
     int rootState_subState;
@@ -563,22 +564,22 @@ public :
     void wysylanieAlertu_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
-    void terminationstate_6_serializeStates(AOMSState* aomsState) const;
-    
-    //## statechart_method
     void StationStandBy_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
-    void StationOn_serializeStates(AOMSState* aomsState) const;
+    void state_32_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
-    void state_0_serializeStates(AOMSState* aomsState) const;
+    void sendaction_30_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
-    void soonToCheckIfAlert_serializeStates(AOMSState* aomsState) const;
+    void sendaction_29_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
-    void simulationStartPoint_serializeStates(AOMSState* aomsState) const;
+    void sendaction_28_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void sendaction_27_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
     void sendaction_14_serializeStates(AOMSState* aomsState) const;
@@ -594,6 +595,9 @@ public :
     
     //## statechart_method
     void packageReadyInformation_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void deletePackageState_serializeStates(AOMSState* aomsState) const;
 };
 
 class OMAnimatedobject_0_C : virtual public AOMInstance {
@@ -606,36 +610,32 @@ inline bool Controller::rootState_IN() const {
     return true;
 }
 
-inline bool Controller::rootState_isCompleted() {
-    return ( IS_IN(terminationstate_6) );
-}
-
 inline bool Controller::wysylanieAlertu_IN() const {
     return rootState_subState == wysylanieAlertu;
-}
-
-inline bool Controller::terminationstate_6_IN() const {
-    return rootState_subState == terminationstate_6;
 }
 
 inline bool Controller::StationStandBy_IN() const {
     return rootState_subState == StationStandBy;
 }
 
-inline bool Controller::StationOn_IN() const {
-    return rootState_subState == StationOn;
+inline bool Controller::state_32_IN() const {
+    return rootState_subState == state_32;
 }
 
-inline bool Controller::state_0_IN() const {
-    return rootState_subState == state_0;
+inline bool Controller::sendaction_30_IN() const {
+    return rootState_subState == sendaction_30;
 }
 
-inline bool Controller::soonToCheckIfAlert_IN() const {
-    return rootState_subState == soonToCheckIfAlert;
+inline bool Controller::sendaction_29_IN() const {
+    return rootState_subState == sendaction_29;
 }
 
-inline bool Controller::simulationStartPoint_IN() const {
-    return rootState_subState == simulationStartPoint;
+inline bool Controller::sendaction_28_IN() const {
+    return rootState_subState == sendaction_28;
+}
+
+inline bool Controller::sendaction_27_IN() const {
+    return rootState_subState == sendaction_27;
 }
 
 inline bool Controller::sendaction_14_IN() const {
@@ -656,6 +656,10 @@ inline bool Controller::sendaction_10_IN() const {
 
 inline bool Controller::packageReadyInformation_IN() const {
     return rootState_subState == packageReadyInformation;
+}
+
+inline bool Controller::deletePackageState_IN() const {
+    return rootState_subState == deletePackageState;
 }
 
 #endif

@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: SO2_Sensor
-//!	Generated Date	: Fri, 10, Jul 2020  
+//!	Generated Date	: Sat, 11, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\SO2_Sensor.h
 *********************************************************************/
 
@@ -17,14 +17,6 @@
 #include <aom\aom.h>
 //## auto_generated
 #include "Default.h"
-//## auto_generated
-#include <oxf\omthread.h>
-//## auto_generated
-#include <oxf\omreactive.h>
-//## auto_generated
-#include <oxf\state.h>
-//## auto_generated
-#include <oxf\event.h>
 //## class SO2_Sensor
 #include "Sensor.h"
 //## auto_generated
@@ -39,7 +31,7 @@ class Controller;
 //## package Default
 
 //## class SO2_Sensor
-class SO2_Sensor : public OMReactive, public Sensor {
+class SO2_Sensor : public Sensor {
     ////    Friends    ////
     
 public :
@@ -97,39 +89,11 @@ public :
     //## auto_generated
     void _clearItsController();
     
-    // rootState:
-    //## statechart_method
-    inline bool rootState_IN() const;
-    
     //## statechart_method
     virtual void rootState_entDef();
     
     //## statechart_method
     virtual IOxfReactive::TakeEventStatus rootState_processEvent();
-    
-    // sendaction_7:
-    //## statechart_method
-    inline bool sendaction_7_IN() const;
-    
-    // Oczekiwanie_SO2:
-    //## statechart_method
-    inline bool Oczekiwanie_SO2_IN() const;
-    
-    ////    Framework    ////
-
-protected :
-
-//#[ ignore
-    enum SO2_Sensor_Enum {
-        OMNonState = 0,
-        sendaction_7 = 1,
-        Oczekiwanie_SO2 = 2
-    };
-    
-    int rootState_subState;
-    
-    int rootState_active;
-//#]
 };
 
 #ifdef _OMINSTRUMENT
@@ -152,22 +116,10 @@ public :
     void sendaction_7_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
-    void Oczekiwanie_SO2_serializeStates(AOMSState* aomsState) const;
+    void OczekiwanieSensor_serializeStates(AOMSState* aomsState) const;
 };
 //#]
 #endif // _OMINSTRUMENT
-
-inline bool SO2_Sensor::rootState_IN() const {
-    return true;
-}
-
-inline bool SO2_Sensor::sendaction_7_IN() const {
-    return rootState_subState == sendaction_7;
-}
-
-inline bool SO2_Sensor::Oczekiwanie_SO2_IN() const {
-    return rootState_subState == Oczekiwanie_SO2;
-}
 
 #endif
 /*********************************************************************

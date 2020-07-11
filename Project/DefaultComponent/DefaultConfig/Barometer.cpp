@@ -4,12 +4,14 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Barometer
-//!	Generated Date	: Fri, 10, Jul 2020  
+//!	Generated Date	: Sat, 11, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Barometer.cpp
 *********************************************************************/
 
 //#[ ignore
 #define NAMESPACE_PREFIX
+
+#define _OMSTATECHART_ANIMATED
 //#]
 
 //## auto_generated
@@ -25,9 +27,11 @@
 //## package Default
 
 //## class Barometer
-Barometer::Barometer() {
-    NOTIFY_ACTIVE_NOT_REACTIVE_CONSTRUCTOR(Barometer, Barometer(), 0, Default_Barometer_Barometer_SERIALIZE);
+Barometer::Barometer(IOxfActive* theActiveContext) {
+    NOTIFY_ACTIVE_CONSTRUCTOR(Barometer, Barometer(), 0, Default_Barometer_Barometer_SERIALIZE);
+    setActiveContext(this, true);
     itsController = NULL;
+    initStatechart();
 }
 
 Barometer::~Barometer() {
@@ -47,6 +51,17 @@ Controller* Barometer::getItsController() const {
 
 void Barometer::setItsController(Controller* p_Controller) {
     _setItsController(p_Controller);
+}
+
+bool Barometer::startBehavior() {
+    bool done = false;
+    done = Sensor::startBehavior();
+    return done;
+}
+
+void Barometer::initStatechart() {
+    rootState_subState = OMNonState;
+    rootState_active = OMNonState;
 }
 
 void Barometer::cleanUpRelations() {
@@ -78,6 +93,66 @@ void Barometer::_clearItsController() {
     itsController = NULL;
 }
 
+void Barometer::rootState_entDef() {
+    {
+        NOTIFY_STATE_ENTERED("ROOT");
+        NOTIFY_TRANSITION_STARTED("0");
+        NOTIFY_STATE_ENTERED("ROOT.OczekiwanieSensor");
+        rootState_subState = OczekiwanieSensor;
+        rootState_active = OczekiwanieSensor;
+        NOTIFY_TRANSITION_TERMINATED("0");
+    }
+}
+
+IOxfReactive::TakeEventStatus Barometer::rootState_processEvent() {
+    IOxfReactive::TakeEventStatus res = eventNotConsumed;
+    switch (rootState_active) {
+        // State OczekiwanieSensor
+        case OczekiwanieSensor:
+        {
+            if(IS_EVENT_TYPE_OF(czytajCzujniki_Default_id))
+                {
+                    NOTIFY_TRANSITION_STARTED("1");
+                    NOTIFY_STATE_EXITED("ROOT.OczekiwanieSensor");
+                    //#[ transition 1 
+                    odczytajDane();
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_7");
+                    pushNullTransition();
+                    rootState_subState = sendaction_7;
+                    rootState_active = sendaction_7;
+                    //#[ state sendaction_7.(Entry) 
+                    itsController->GEN(wyslijDane(recentValue));
+                    //#]
+                    NOTIFY_TRANSITION_TERMINATED("1");
+                    res = eventConsumed;
+                }
+            
+        }
+        break;
+        // State sendaction_7
+        case sendaction_7:
+        {
+            if(IS_EVENT_TYPE_OF(OMNullEventId))
+                {
+                    NOTIFY_TRANSITION_STARTED("2");
+                    popNullTransition();
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_7");
+                    NOTIFY_STATE_ENTERED("ROOT.OczekiwanieSensor");
+                    rootState_subState = OczekiwanieSensor;
+                    rootState_active = OczekiwanieSensor;
+                    NOTIFY_TRANSITION_TERMINATED("2");
+                    res = eventConsumed;
+                }
+            
+        }
+        break;
+        default:
+            break;
+    }
+    return res;
+}
+
 #ifdef _OMINSTRUMENT
 //#[ ignore
 void OMAnimatedBarometer::serializeAttributes(AOMSAttributes* aomsAttributes) const {
@@ -92,13 +167,39 @@ void OMAnimatedBarometer::serializeRelations(AOMSRelations* aomsRelations) const
         }
     OMAnimatedSensor::serializeRelations(aomsRelations);
 }
+
+void OMAnimatedBarometer::rootState_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT");
+    switch (myReal->rootState_subState) {
+        case Barometer::OczekiwanieSensor:
+        {
+            OczekiwanieSensor_serializeStates(aomsState);
+        }
+        break;
+        case Barometer::sendaction_7:
+        {
+            sendaction_7_serializeStates(aomsState);
+        }
+        break;
+        default:
+            break;
+    }
+}
+
+void OMAnimatedBarometer::sendaction_7_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.sendaction_7");
+}
+
+void OMAnimatedBarometer::OczekiwanieSensor_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.OczekiwanieSensor");
+}
 //#]
 
-IMPLEMENT_META_S_P(Barometer, Default, false, Sensor, OMAnimatedSensor, OMAnimatedBarometer)
+IMPLEMENT_REACTIVE_META_S_P(Barometer, Default, false, Sensor, OMAnimatedSensor, OMAnimatedBarometer)
 
 OMINIT_SUPERCLASS(Sensor, OMAnimatedSensor)
 
-OMREGISTER_CLASS
+OMREGISTER_REACTIVE_CLASS
 #endif // _OMINSTRUMENT
 
 /*********************************************************************

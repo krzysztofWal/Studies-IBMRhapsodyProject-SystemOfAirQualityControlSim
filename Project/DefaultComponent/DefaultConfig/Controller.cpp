@@ -41,17 +41,13 @@
 
 #define Default_Controller_isAnyAlert_SERIALIZE OM_NO_OP
 
+#define Default_Controller_obsluzTrybOszczedzaniaEnergii_SERIALIZE OM_NO_OP
+
 #define Default_Controller_print_SERIALIZE OM_NO_OP
 
 #define Default_Controller_printPackage_SERIALIZE OM_NO_OP
 
 #define Default_Controller_sprawdzPoziomy_SERIALIZE OM_NO_OP
-
-#define Default_Controller_wejdzTrybOszczedzaniaEnergii_SERIALIZE OM_NO_OP
-
-#define Default_Controller_wlaczStacje_SERIALIZE OM_NO_OP
-
-#define Default_Controller_wylaczStacje_SERIALIZE OM_NO_OP
 
 #define OMAnim_Default_Controller_setStationStatus_statusType_UNSERIALIZE_ARGS OP_UNSER(OMDestructiveString2X,(int&)p_stationStatus)
 
@@ -87,10 +83,16 @@ Thermometer* Controller::getItsThermometer() const {
 
 bool Controller::startBehavior() {
     bool done = true;
+    done &= itsBarometer.startBehavior();
     done &= itsCO_Sensor.startBehavior();
+    done &= itsHygrometer.startBehavior();
     done &= itsNO2_Sensor.startBehavior();
     done &= itsO3_Sensor.startBehavior();
+    done &= itsPM10_Sensor.startBehavior();
+    done &= itsPM1_Sensor.startBehavior();
+    done &= itsPM2_5Sensor.startBehavior();
     done &= itsSO2_Sensor.startBehavior();
+    done &= itsThermometer.startBehavior();
     done &= OMReactive::startBehavior();
     if(done)
         {
@@ -133,19 +135,34 @@ void Controller::initRelations() {
 }
 
 void Controller::destroy() {
+    itsBarometer.destroy();
     itsCO_Sensor.destroy();
+    itsHygrometer.destroy();
     itsNO2_Sensor.destroy();
     itsO3_Sensor.destroy();
+    itsPM10_Sensor.destroy();
+    itsPM1_Sensor.destroy();
+    itsPM2_5Sensor.destroy();
     itsSO2_Sensor.destroy();
+    itsThermometer.destroy();
     OMReactive::destroy();
 }
 
-Controller::Controller(IOxfActive* theActiveContext) : stationId(1), stationStatus(off), time(1603) {
+Controller::Controller(IOxfActive* theActiveContext) : stationId(1), stationStatus(standBy), time(1603), whetherTimerRead(false) {
     NOTIFY_ACTIVE_CONSTRUCTOR(Controller, Controller(), 0, Default_Controller_Controller_SERIALIZE);
     setActiveContext(this, true);
     {
         {
             itsO3_Sensor.setShouldDelete(false);
+        }
+        {
+            itsThermometer.setShouldDelete(false);
+        }
+        {
+            itsHygrometer.setShouldDelete(false);
+        }
+        {
+            itsBarometer.setShouldDelete(false);
         }
         {
             itsCO_Sensor.setShouldDelete(false);
@@ -155,6 +172,15 @@ Controller::Controller(IOxfActive* theActiveContext) : stationId(1), stationStat
         }
         {
             itsNO2_Sensor.setShouldDelete(false);
+        }
+        {
+            itsPM10_Sensor.setShouldDelete(false);
+        }
+        {
+            itsPM2_5Sensor.setShouldDelete(false);
+        }
+        {
+            itsPM1_Sensor.setShouldDelete(false);
         }
     }
     initRelations();
@@ -438,17 +464,28 @@ bool Controller::isAnyAlert() {
     //#]
 }
 
+void Controller::obsluzTrybOszczedzaniaEnergii() {
+    NOTIFY_OPERATION(obsluzTrybOszczedzaniaEnergii, obsluzTrybOszczedzaniaEnergii(), 0, Default_Controller_obsluzTrybOszczedzaniaEnergii_SERIALIZE);
+    //#[ operation obsluzTrybOszczedzaniaEnergii()
+    if(stationStatus != standBy)
+    	stationStatus = standBy;
+    if(stationStatus = standBy)
+    	stationStatus = on;
+    //#]
+}
+
 StationData Controller::print() {
     NOTIFY_OPERATION(print, print(), 0, Default_Controller_print_SERIALIZE);
     //#[ operation print()
     
     printPackage();
-    return StationData(	dataPackage->get(1),
-    					dataPackage->get(2),
-    					dataPackage->get(3),
-    					dataPackage->get(4),
-    					stationId,
-    					dataPackage->getTime());
+    //return StationData(	dataPackage->get(1),
+    //					dataPackage->get(2),
+    //					dataPackage->get(3),
+    //					dataPackage->get(4),
+    //					stationId,
+    //					dataPackage->getTime());  
+    return (*dataPackage);
     //#]
 }
 
@@ -472,7 +509,7 @@ void Controller::setWhenDue(int which, double limit) {
     //#[ operation setWhenDue(int,double)
     if(dataPackage->get(which)> limit)
     alert[which] = true;
-    //std::cout << "setWhenDue: " << alert[which] << std::endl;
+    std::cout << "setWhenDue: " << alert[which] << std::endl;
     //#]
 }
 
@@ -483,30 +520,6 @@ void Controller::sprawdzPoziomy() {
     setWhenDue(2,0.2);  // limit co
     setWhenDue(3,0.3);  // limit so2
     setWhenDue(4,0.5);  //limit no2
-    //#]
-}
-
-void Controller::wejdzTrybOszczedzaniaEnergii() {
-    NOTIFY_OPERATION(wejdzTrybOszczedzaniaEnergii, wejdzTrybOszczedzaniaEnergii(), 0, Default_Controller_wejdzTrybOszczedzaniaEnergii_SERIALIZE);
-    //#[ operation wejdzTrybOszczedzaniaEnergii()
-    if(stationStatus != standBy)
-    	stationStatus = standBy;
-    //#]
-}
-
-void Controller::wlaczStacje() {
-    NOTIFY_OPERATION(wlaczStacje, wlaczStacje(), 0, Default_Controller_wlaczStacje_SERIALIZE);
-    //#[ operation wlaczStacje()
-    if(stationStatus != on)
-    	stationStatus = on;
-    //#]
-}
-
-void Controller::wylaczStacje() {
-    NOTIFY_OPERATION(wylaczStacje, wylaczStacje(), 0, Default_Controller_wylaczStacje_SERIALIZE);
-    //#[ operation wylaczStacje()
-    if (stationStatus != off) 
-    	stationStatus = off;
     //#]
 }
 
@@ -524,6 +537,14 @@ Controller::port_35_C* Controller::getPort_35() const {
 
 Controller::port_35_C* Controller::get_port_35() const {
     return (Controller::port_35_C*) &port_35;
+}
+
+bool Controller::getWhetherTimerRead() const {
+    return whetherTimerRead;
+}
+
+void Controller::setWhetherTimerRead(bool p_whetherTimerRead) {
+    whetherTimerRead = p_whetherTimerRead;
 }
 
 CO_Sensor* Controller::getItsCO_Sensor() const {
@@ -609,112 +630,55 @@ void Controller::setIterator(int p_iterator) {
 void Controller::rootState_entDef() {
     {
         NOTIFY_STATE_ENTERED("ROOT");
-        NOTIFY_TRANSITION_STARTED("5");
-        NOTIFY_STATE_ENTERED("ROOT.simulationStartPoint");
-        pushNullTransition();
-        rootState_subState = simulationStartPoint;
-        rootState_active = simulationStartPoint;
-        NOTIFY_TRANSITION_TERMINATED("5");
+        NOTIFY_TRANSITION_STARTED("10");
+        NOTIFY_STATE_ENTERED("ROOT.StationStandBy");
+        rootState_subState = StationStandBy;
+        rootState_active = StationStandBy;
+        //#[ state StationStandBy.(Entry) 
+        obsluzTrybOszczedzaniaEnergii();
+        //#]
+        NOTIFY_TRANSITION_TERMINATED("10");
     }
 }
 
 IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
     IOxfReactive::TakeEventStatus res = eventNotConsumed;
     switch (rootState_active) {
-        // State state_0
-        case state_0:
-        {
-            if(IS_EVENT_TYPE_OF(OMNullEventId))
-                {
-                    NOTIFY_TRANSITION_STARTED("0");
-                    popNullTransition();
-                    NOTIFY_STATE_EXITED("ROOT.state_0");
-                    //#[ transition 0 
-                    //wyslijDane/createPackage(time);
-                    //appendToPackage(o3, params->valueBeingSent);
-                    //printPackage();
-                    //time++;
-                    //deletePackage();
-                    //#]
-                    NOTIFY_STATE_ENTERED("ROOT.state_0");
-                    pushNullTransition();
-                    rootState_subState = state_0;
-                    rootState_active = state_0;
-                    NOTIFY_TRANSITION_TERMINATED("0");
-                    res = eventConsumed;
-                }
-            
-        }
-        break;
-        // State StationOn
-        case StationOn:
-        {
-            res = StationOn_handleEvent();
-        }
-        break;
         // State StationStandBy
         case StationStandBy:
         {
-            if(IS_EVENT_TYPE_OF(evWlacz_Default_id))
+            if(IS_EVENT_TYPE_OF(Initialize_Default_id))
                 {
-                    NOTIFY_TRANSITION_STARTED("4");
+                    NOTIFY_TRANSITION_STARTED("0");
                     NOTIFY_STATE_EXITED("ROOT.StationStandBy");
-                    //#[ transition 4 
-                    wlaczStacje();
+                    //#[ transition 0 
+                    obsluzTrybOszczedzaniaEnergii();createPackage(this->time);
                     //#]
-                    NOTIFY_STATE_ENTERED("ROOT.StationOn");
-                    rootState_subState = StationOn;
-                    rootState_active = StationOn;
-                    NOTIFY_TRANSITION_TERMINATED("4");
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_10");
+                    rootState_subState = sendaction_10;
+                    rootState_active = sendaction_10;
+                    //#[ state sendaction_10.(Entry) 
+                    itsCO_Sensor.GEN(czytajCzujniki);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_10");
+                    NOTIFY_TRANSITION_TERMINATED("0");
                     res = eventConsumed;
                 }
-            else if(IS_EVENT_TYPE_OF(evWylacz_Default_id))
+            else if(IS_EVENT_TYPE_OF(timerCzytajSensory_Default_id))
                 {
-                    NOTIFY_TRANSITION_STARTED("3");
+                    NOTIFY_TRANSITION_STARTED("11");
                     NOTIFY_STATE_EXITED("ROOT.StationStandBy");
-                    //#[ transition 3 
-                    wylaczStacje();
+                    //#[ transition 11 
+                    obsluzTrybOszczedzaniaEnergii();createPackage(this->time);
                     //#]
-                    NOTIFY_STATE_ENTERED("ROOT.terminationstate_6");
-                    rootState_subState = terminationstate_6;
-                    rootState_active = terminationstate_6;
-                    NOTIFY_TRANSITION_TERMINATED("3");
-                    res = eventConsumed;
-                }
-            else if(IS_EVENT_TYPE_OF(evRestart_Default_id))
-                {
-                    NOTIFY_TRANSITION_STARTED("8");
-                    NOTIFY_STATE_EXITED("ROOT.StationStandBy");
-                    //#[ transition 8 
-                    wylaczStacje();wlaczStacje();
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_27");
+                    rootState_subState = sendaction_27;
+                    rootState_active = sendaction_27;
+                    //#[ state sendaction_27.(Entry) 
+                    itsCO_Sensor.GEN(czytajCzujniki);
                     //#]
-                    NOTIFY_STATE_ENTERED("ROOT.StationStandBy");
-                    rootState_subState = StationStandBy;
-                    rootState_active = StationStandBy;
-                    //#[ state StationStandBy.(Entry) 
-                    wejdzTrybOszczedzaniaEnergii();
-                    //#]
-                    NOTIFY_TRANSITION_TERMINATED("8");
-                    res = eventConsumed;
-                }
-            
-        }
-        break;
-        // State simulationStartPoint
-        case simulationStartPoint:
-        {
-            if(IS_EVENT_TYPE_OF(OMNullEventId))
-                {
-                    NOTIFY_TRANSITION_STARTED("6");
-                    popNullTransition();
-                    NOTIFY_STATE_EXITED("ROOT.simulationStartPoint");
-                    //#[ transition 6 
-                    wlaczStacje();
-                    //#]
-                    NOTIFY_STATE_ENTERED("ROOT.StationOn");
-                    rootState_subState = StationOn;
-                    rootState_active = StationOn;
-                    NOTIFY_TRANSITION_TERMINATED("6");
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_27");
+                    NOTIFY_TRANSITION_TERMINATED("11");
                     res = eventConsumed;
                 }
             
@@ -726,37 +690,37 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
             if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
                 {
                     OMSETPARAMS(wyslijDane);
-                    NOTIFY_TRANSITION_STARTED("10");
+                    NOTIFY_TRANSITION_STARTED("1");
                     cancel(rootState_timeout);
                     NOTIFY_STATE_EXITED("ROOT.sendaction_10");
-                    //#[ transition 10 
+                    //#[ transition 1 
                     appendToPackage(co, params->valueBeingSent);
                     //#]
                     NOTIFY_STATE_ENTERED("ROOT.sendaction_12");
                     rootState_subState = sendaction_12;
                     rootState_active = sendaction_12;
                     //#[ state sendaction_12.(Entry) 
-                    itsNO2_Sensor.GEN(readNO2);
+                    itsNO2_Sensor.GEN(czytajCzujniki);
                     //#]
-                    rootState_timeout = scheduleTimeout(15, "ROOT.sendaction_12");
-                    NOTIFY_TRANSITION_TERMINATED("10");
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_12");
+                    NOTIFY_TRANSITION_TERMINATED("1");
                     res = eventConsumed;
                 }
             else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
                 {
                     if(getCurrentEvent() == rootState_timeout)
                         {
-                            NOTIFY_TRANSITION_STARTED("15");
+                            NOTIFY_TRANSITION_STARTED("5");
                             cancel(rootState_timeout);
                             NOTIFY_STATE_EXITED("ROOT.sendaction_10");
                             NOTIFY_STATE_ENTERED("ROOT.sendaction_12");
                             rootState_subState = sendaction_12;
                             rootState_active = sendaction_12;
                             //#[ state sendaction_12.(Entry) 
-                            itsNO2_Sensor.GEN(readNO2);
+                            itsNO2_Sensor.GEN(czytajCzujniki);
                             //#]
-                            rootState_timeout = scheduleTimeout(15, "ROOT.sendaction_12");
-                            NOTIFY_TRANSITION_TERMINATED("15");
+                            rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_12");
+                            NOTIFY_TRANSITION_TERMINATED("5");
                             res = eventConsumed;
                         }
                 }
@@ -769,37 +733,37 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
             if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
                 {
                     OMSETPARAMS(wyslijDane);
-                    NOTIFY_TRANSITION_STARTED("11");
+                    NOTIFY_TRANSITION_STARTED("2");
                     cancel(rootState_timeout);
                     NOTIFY_STATE_EXITED("ROOT.sendaction_12");
-                    //#[ transition 11 
+                    //#[ transition 2 
                     appendToPackage(no2, params->valueBeingSent);
                     //#]
                     NOTIFY_STATE_ENTERED("ROOT.sendaction_13");
                     rootState_subState = sendaction_13;
                     rootState_active = sendaction_13;
                     //#[ state sendaction_13.(Entry) 
-                    itsSO2_Sensor.GEN(readSO2);
+                    itsSO2_Sensor.GEN(czytajCzujniki);
                     //#]
-                    rootState_timeout = scheduleTimeout(15, "ROOT.sendaction_13");
-                    NOTIFY_TRANSITION_TERMINATED("11");
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_13");
+                    NOTIFY_TRANSITION_TERMINATED("2");
                     res = eventConsumed;
                 }
             else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
                 {
                     if(getCurrentEvent() == rootState_timeout)
                         {
-                            NOTIFY_TRANSITION_STARTED("16");
+                            NOTIFY_TRANSITION_STARTED("6");
                             cancel(rootState_timeout);
                             NOTIFY_STATE_EXITED("ROOT.sendaction_12");
                             NOTIFY_STATE_ENTERED("ROOT.sendaction_13");
                             rootState_subState = sendaction_13;
                             rootState_active = sendaction_13;
                             //#[ state sendaction_13.(Entry) 
-                            itsSO2_Sensor.GEN(readSO2);
+                            itsSO2_Sensor.GEN(czytajCzujniki);
                             //#]
-                            rootState_timeout = scheduleTimeout(15, "ROOT.sendaction_13");
-                            NOTIFY_TRANSITION_TERMINATED("16");
+                            rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_13");
+                            NOTIFY_TRANSITION_TERMINATED("6");
                             res = eventConsumed;
                         }
                 }
@@ -812,37 +776,37 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
             if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
                 {
                     OMSETPARAMS(wyslijDane);
-                    NOTIFY_TRANSITION_STARTED("12");
+                    NOTIFY_TRANSITION_STARTED("3");
                     cancel(rootState_timeout);
                     NOTIFY_STATE_EXITED("ROOT.sendaction_13");
-                    //#[ transition 12 
+                    //#[ transition 3 
                     appendToPackage(co, params->valueBeingSent);
                     //#]
                     NOTIFY_STATE_ENTERED("ROOT.sendaction_14");
                     rootState_subState = sendaction_14;
                     rootState_active = sendaction_14;
                     //#[ state sendaction_14.(Entry) 
-                    itsO3_Sensor.GEN(readO3);
+                    itsO3_Sensor.GEN(czytajCzujniki);
                     //#]
-                    rootState_timeout = scheduleTimeout(15, "ROOT.sendaction_14");
-                    NOTIFY_TRANSITION_TERMINATED("12");
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_14");
+                    NOTIFY_TRANSITION_TERMINATED("3");
                     res = eventConsumed;
                 }
             else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
                 {
                     if(getCurrentEvent() == rootState_timeout)
                         {
-                            NOTIFY_TRANSITION_STARTED("17");
+                            NOTIFY_TRANSITION_STARTED("7");
                             cancel(rootState_timeout);
                             NOTIFY_STATE_EXITED("ROOT.sendaction_13");
                             NOTIFY_STATE_ENTERED("ROOT.sendaction_14");
                             rootState_subState = sendaction_14;
                             rootState_active = sendaction_14;
                             //#[ state sendaction_14.(Entry) 
-                            itsO3_Sensor.GEN(readO3);
+                            itsO3_Sensor.GEN(czytajCzujniki);
                             //#]
-                            rootState_timeout = scheduleTimeout(15, "ROOT.sendaction_14");
-                            NOTIFY_TRANSITION_TERMINATED("17");
+                            rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_14");
+                            NOTIFY_TRANSITION_TERMINATED("7");
                             res = eventConsumed;
                         }
                 }
@@ -855,31 +819,39 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
             if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
                 {
                     OMSETPARAMS(wyslijDane);
-                    NOTIFY_TRANSITION_STARTED("13");
+                    NOTIFY_TRANSITION_STARTED("4");
                     cancel(rootState_timeout);
                     NOTIFY_STATE_EXITED("ROOT.sendaction_14");
-                    //#[ transition 13 
+                    //#[ transition 4 
                     appendToPackage(o3, params->valueBeingSent);
                     //#]
-                    NOTIFY_STATE_ENTERED("ROOT.soonToCheckIfAlert");
-                    pushNullTransition();
-                    rootState_subState = soonToCheckIfAlert;
-                    rootState_active = soonToCheckIfAlert;
-                    NOTIFY_TRANSITION_TERMINATED("13");
+                    NOTIFY_STATE_ENTERED("ROOT.packageReadyInformation");
+                    rootState_subState = packageReadyInformation;
+                    rootState_active = packageReadyInformation;
+                    //#[ state packageReadyInformation.(Entry) 
+                    OUT_PORT(port_35)->inform();
+                    
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.packageReadyInformation");
+                    NOTIFY_TRANSITION_TERMINATED("4");
                     res = eventConsumed;
                 }
             else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
                 {
                     if(getCurrentEvent() == rootState_timeout)
                         {
-                            NOTIFY_TRANSITION_STARTED("18");
+                            NOTIFY_TRANSITION_STARTED("8");
                             cancel(rootState_timeout);
                             NOTIFY_STATE_EXITED("ROOT.sendaction_14");
-                            NOTIFY_STATE_ENTERED("ROOT.soonToCheckIfAlert");
-                            pushNullTransition();
-                            rootState_subState = soonToCheckIfAlert;
-                            rootState_active = soonToCheckIfAlert;
-                            NOTIFY_TRANSITION_TERMINATED("18");
+                            NOTIFY_STATE_ENTERED("ROOT.packageReadyInformation");
+                            rootState_subState = packageReadyInformation;
+                            rootState_active = packageReadyInformation;
+                            //#[ state packageReadyInformation.(Entry) 
+                            OUT_PORT(port_35)->inform();
+                            
+                            //#]
+                            rootState_timeout = scheduleTimeout(150, "ROOT.packageReadyInformation");
+                            NOTIFY_TRANSITION_TERMINATED("8");
                             res = eventConsumed;
                         }
                 }
@@ -891,22 +863,17 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
         {
             if(IS_EVENT_TYPE_OF(OMNullEventId))
                 {
-                    NOTIFY_TRANSITION_STARTED("21");
+                    NOTIFY_TRANSITION_STARTED("25");
                     popNullTransition();
-                    //#[ state wysylanieAlertu.(Exit) 
-                    iterator = 0;
-                    //#]
                     NOTIFY_STATE_EXITED("ROOT.wysylanieAlertu");
-                    NOTIFY_STATE_ENTERED("ROOT.packageReadyInformation");
-                    rootState_subState = packageReadyInformation;
-                    rootState_active = packageReadyInformation;
-                    //#[ state packageReadyInformation.(Entry) 
-                    OUT_PORT(port_35)->inform();
-                    //printPackage();
-                     //itsTransmitter.GEN(evSendToReceiver(dataPackage));
-                    // deletePackage();
+                    NOTIFY_STATE_ENTERED("ROOT.deletePackageState");
+                    pushNullTransition();
+                    rootState_subState = deletePackageState;
+                    rootState_active = deletePackageState;
+                    //#[ state deletePackageState.(Entry) 
+                    deletePackage();
                     //#]
-                    NOTIFY_TRANSITION_TERMINATED("21");
+                    NOTIFY_TRANSITION_TERMINATED("25");
                     res = eventConsumed;
                 }
             
@@ -915,73 +882,273 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
         // State packageReadyInformation
         case packageReadyInformation:
         {
-            if(IS_EVENT_TYPE_OF(ConfirmRecival_Default_id))
+            if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
                 {
-                    NOTIFY_TRANSITION_STARTED("19");
+                    if(getCurrentEvent() == rootState_timeout)
+                        {
+                            NOTIFY_TRANSITION_STARTED("12");
+                            cancel(rootState_timeout);
+                            NOTIFY_STATE_EXITED("ROOT.packageReadyInformation");
+                            NOTIFY_STATE_ENTERED("ROOT.deletePackageState");
+                            pushNullTransition();
+                            rootState_subState = deletePackageState;
+                            rootState_active = deletePackageState;
+                            //#[ state deletePackageState.(Entry) 
+                            deletePackage();
+                            //#]
+                            NOTIFY_TRANSITION_TERMINATED("12");
+                            res = eventConsumed;
+                        }
+                }
+            else if(IS_EVENT_TYPE_OF(ConfirmRecival_Default_id))
+                {
+                    NOTIFY_TRANSITION_STARTED("9");
+                    cancel(rootState_timeout);
                     NOTIFY_STATE_EXITED("ROOT.packageReadyInformation");
-                    //#[ transition 19 
+                    NOTIFY_STATE_ENTERED("ROOT.deletePackageState");
+                    pushNullTransition();
+                    rootState_subState = deletePackageState;
+                    rootState_active = deletePackageState;
+                    //#[ state deletePackageState.(Entry) 
                     deletePackage();
                     //#]
-                    NOTIFY_STATE_ENTERED("ROOT.StationOn");
-                    rootState_subState = StationOn;
-                    rootState_active = StationOn;
-                    NOTIFY_TRANSITION_TERMINATED("19");
+                    NOTIFY_TRANSITION_TERMINATED("9");
                     res = eventConsumed;
                 }
             
         }
         break;
-        // State soonToCheckIfAlert
-        case soonToCheckIfAlert:
+        // State deletePackageState
+        case deletePackageState:
         {
             if(IS_EVENT_TYPE_OF(OMNullEventId))
                 {
-                    //## transition 20 
-                    if( isAnyAlert())
+                    NOTIFY_TRANSITION_STARTED("13");
+                    popNullTransition();
+                    NOTIFY_STATE_EXITED("ROOT.deletePackageState");
+                    NOTIFY_STATE_ENTERED("ROOT.StationStandBy");
+                    rootState_subState = StationStandBy;
+                    rootState_active = StationStandBy;
+                    //#[ state StationStandBy.(Entry) 
+                    obsluzTrybOszczedzaniaEnergii();
+                    //#]
+                    NOTIFY_TRANSITION_TERMINATED("13");
+                    res = eventConsumed;
+                }
+            
+        }
+        break;
+        // State sendaction_29
+        case sendaction_29:
+        {
+            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
+                {
+                    OMSETPARAMS(wyslijDane);
+                    NOTIFY_TRANSITION_STARTED("18");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_29");
+                    //#[ transition 18 
+                    appendToPackage(co, params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_30");
+                    rootState_subState = sendaction_30;
+                    rootState_active = sendaction_30;
+                    //#[ state sendaction_30.(Entry) 
+                    itsO3_Sensor.GEN(czytajCzujniki);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_30");
+                    NOTIFY_TRANSITION_TERMINATED("18");
+                    res = eventConsumed;
+                }
+            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+                {
+                    if(getCurrentEvent() == rootState_timeout)
                         {
-                            NOTIFY_TRANSITION_STARTED("14");
-                            NOTIFY_TRANSITION_STARTED("20");
-                            popNullTransition();
-                            NOTIFY_STATE_EXITED("ROOT.soonToCheckIfAlert");
-                            //#[ transition 14 
+                            NOTIFY_TRANSITION_STARTED("19");
+                            cancel(rootState_timeout);
+                            NOTIFY_STATE_EXITED("ROOT.sendaction_29");
+                            NOTIFY_STATE_ENTERED("ROOT.sendaction_30");
+                            rootState_subState = sendaction_30;
+                            rootState_active = sendaction_30;
+                            //#[ state sendaction_30.(Entry) 
+                            itsO3_Sensor.GEN(czytajCzujniki);
+                            //#]
+                            rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_30");
+                            NOTIFY_TRANSITION_TERMINATED("19");
+                            res = eventConsumed;
+                        }
+                }
+            
+        }
+        break;
+        // State sendaction_30
+        case sendaction_30:
+        {
+            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
+                {
+                    OMSETPARAMS(wyslijDane);
+                    NOTIFY_TRANSITION_STARTED("20");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_30");
+                    //#[ transition 20 
+                    appendToPackage(o3, params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.state_32");
+                    pushNullTransition();
+                    rootState_subState = state_32;
+                    rootState_active = state_32;
+                    //#[ state state_32.(Entry) 
+                    sprawdzPoziomy();
+                    //#]
+                    NOTIFY_TRANSITION_TERMINATED("20");
+                    res = eventConsumed;
+                }
+            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+                {
+                    if(getCurrentEvent() == rootState_timeout)
+                        {
+                            NOTIFY_TRANSITION_STARTED("21");
+                            cancel(rootState_timeout);
+                            NOTIFY_STATE_EXITED("ROOT.sendaction_30");
+                            NOTIFY_STATE_ENTERED("ROOT.state_32");
+                            pushNullTransition();
+                            rootState_subState = state_32;
+                            rootState_active = state_32;
+                            //#[ state state_32.(Entry) 
                             sprawdzPoziomy();
                             //#]
+                            NOTIFY_TRANSITION_TERMINATED("21");
+                            res = eventConsumed;
+                        }
+                }
+            
+        }
+        break;
+        // State sendaction_28
+        case sendaction_28:
+        {
+            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
+                {
+                    OMSETPARAMS(wyslijDane);
+                    NOTIFY_TRANSITION_STARTED("16");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_28");
+                    //#[ transition 16 
+                    appendToPackage(no2, params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_29");
+                    rootState_subState = sendaction_29;
+                    rootState_active = sendaction_29;
+                    //#[ state sendaction_29.(Entry) 
+                    itsSO2_Sensor.GEN(czytajCzujniki);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_29");
+                    NOTIFY_TRANSITION_TERMINATED("16");
+                    res = eventConsumed;
+                }
+            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+                {
+                    if(getCurrentEvent() == rootState_timeout)
+                        {
+                            NOTIFY_TRANSITION_STARTED("17");
+                            cancel(rootState_timeout);
+                            NOTIFY_STATE_EXITED("ROOT.sendaction_28");
+                            NOTIFY_STATE_ENTERED("ROOT.sendaction_29");
+                            rootState_subState = sendaction_29;
+                            rootState_active = sendaction_29;
+                            //#[ state sendaction_29.(Entry) 
+                            itsSO2_Sensor.GEN(czytajCzujniki);
+                            //#]
+                            rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_29");
+                            NOTIFY_TRANSITION_TERMINATED("17");
+                            res = eventConsumed;
+                        }
+                }
+            
+        }
+        break;
+        // State sendaction_27
+        case sendaction_27:
+        {
+            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
+                {
+                    OMSETPARAMS(wyslijDane);
+                    NOTIFY_TRANSITION_STARTED("14");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_27");
+                    //#[ transition 14 
+                    appendToPackage(co, params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_28");
+                    rootState_subState = sendaction_28;
+                    rootState_active = sendaction_28;
+                    //#[ state sendaction_28.(Entry) 
+                    itsNO2_Sensor.GEN(czytajCzujniki);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_28");
+                    NOTIFY_TRANSITION_TERMINATED("14");
+                    res = eventConsumed;
+                }
+            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+                {
+                    if(getCurrentEvent() == rootState_timeout)
+                        {
+                            NOTIFY_TRANSITION_STARTED("15");
+                            cancel(rootState_timeout);
+                            NOTIFY_STATE_EXITED("ROOT.sendaction_27");
+                            NOTIFY_STATE_ENTERED("ROOT.sendaction_28");
+                            rootState_subState = sendaction_28;
+                            rootState_active = sendaction_28;
+                            //#[ state sendaction_28.(Entry) 
+                            itsNO2_Sensor.GEN(czytajCzujniki);
+                            //#]
+                            rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_28");
+                            NOTIFY_TRANSITION_TERMINATED("15");
+                            res = eventConsumed;
+                        }
+                }
+            
+        }
+        break;
+        // State state_32
+        case state_32:
+        {
+            if(IS_EVENT_TYPE_OF(OMNullEventId))
+                {
+                    //## transition 23 
+                    if(!isAnyAlert())
+                        {
+                            NOTIFY_TRANSITION_STARTED("22");
+                            NOTIFY_TRANSITION_STARTED("23");
+                            popNullTransition();
+                            NOTIFY_STATE_EXITED("ROOT.state_32");
                             NOTIFY_STATE_ENTERED("ROOT.wysylanieAlertu");
                             pushNullTransition();
                             rootState_subState = wysylanieAlertu;
                             rootState_active = wysylanieAlertu;
                             //#[ state wysylanieAlertu.(Entry) 
                             OUT_PORT(port_35)->sendAlert();
-                            //for (iterator++; iterator <=4; iterator++) {
-                            //	if (alert[iterator] == true)
-                            //		itsReceiver->GEN(evSendAlert(stationId, iterator));		 
-                            //}
                             
                             //#]
-                            NOTIFY_TRANSITION_TERMINATED("20");
-                            NOTIFY_TRANSITION_TERMINATED("14");
+                            NOTIFY_TRANSITION_TERMINATED("23");
+                            NOTIFY_TRANSITION_TERMINATED("22");
                             res = eventConsumed;
                         }
                     else
                         {
-                            NOTIFY_TRANSITION_STARTED("14");
                             NOTIFY_TRANSITION_STARTED("22");
+                            NOTIFY_TRANSITION_STARTED("24");
                             popNullTransition();
-                            NOTIFY_STATE_EXITED("ROOT.soonToCheckIfAlert");
-                            //#[ transition 14 
-                            sprawdzPoziomy();
+                            NOTIFY_STATE_EXITED("ROOT.state_32");
+                            NOTIFY_STATE_ENTERED("ROOT.deletePackageState");
+                            pushNullTransition();
+                            rootState_subState = deletePackageState;
+                            rootState_active = deletePackageState;
+                            //#[ state deletePackageState.(Entry) 
+                            deletePackage();
                             //#]
-                            NOTIFY_STATE_ENTERED("ROOT.packageReadyInformation");
-                            rootState_subState = packageReadyInformation;
-                            rootState_active = packageReadyInformation;
-                            //#[ state packageReadyInformation.(Entry) 
-                            OUT_PORT(port_35)->inform();
-                            //printPackage();
-                             //itsTransmitter.GEN(evSendToReceiver(dataPackage));
-                            // deletePackage();
-                            //#]
+                            NOTIFY_TRANSITION_TERMINATED("24");
                             NOTIFY_TRANSITION_TERMINATED("22");
-                            NOTIFY_TRANSITION_TERMINATED("14");
                             res = eventConsumed;
                         }
                 }
@@ -994,69 +1161,6 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
     return res;
 }
 
-IOxfReactive::TakeEventStatus Controller::StationOn_handleEvent() {
-    IOxfReactive::TakeEventStatus res = eventNotConsumed;
-    if(IS_EVENT_TYPE_OF(evTrybOszczedzaniaEnergii_Default_id))
-        {
-            NOTIFY_TRANSITION_STARTED("1");
-            NOTIFY_STATE_EXITED("ROOT.StationOn");
-            NOTIFY_STATE_ENTERED("ROOT.StationStandBy");
-            rootState_subState = StationStandBy;
-            rootState_active = StationStandBy;
-            //#[ state StationStandBy.(Entry) 
-            wejdzTrybOszczedzaniaEnergii();
-            //#]
-            NOTIFY_TRANSITION_TERMINATED("1");
-            res = eventConsumed;
-        }
-    else if(IS_EVENT_TYPE_OF(Initialize_Default_id))
-        {
-            NOTIFY_TRANSITION_STARTED("9");
-            NOTIFY_STATE_EXITED("ROOT.StationOn");
-            //#[ transition 9 
-            
-            createPackage(this->time);
-            //#]
-            NOTIFY_STATE_ENTERED("ROOT.sendaction_10");
-            rootState_subState = sendaction_10;
-            rootState_active = sendaction_10;
-            //#[ state sendaction_10.(Entry) 
-            itsCO_Sensor.GEN(readCO);
-            //#]
-            rootState_timeout = scheduleTimeout(15, "ROOT.sendaction_10");
-            NOTIFY_TRANSITION_TERMINATED("9");
-            res = eventConsumed;
-        }
-    else if(IS_EVENT_TYPE_OF(evWylacz_Default_id))
-        {
-            NOTIFY_TRANSITION_STARTED("2");
-            NOTIFY_STATE_EXITED("ROOT.StationOn");
-            //#[ transition 2 
-            wylaczStacje();
-            //#]
-            NOTIFY_STATE_ENTERED("ROOT.terminationstate_6");
-            rootState_subState = terminationstate_6;
-            rootState_active = terminationstate_6;
-            NOTIFY_TRANSITION_TERMINATED("2");
-            res = eventConsumed;
-        }
-    else if(IS_EVENT_TYPE_OF(evRestart_Default_id))
-        {
-            NOTIFY_TRANSITION_STARTED("7");
-            NOTIFY_STATE_EXITED("ROOT.StationOn");
-            //#[ transition 7 
-            wylaczStacje();wlaczStacje();
-            //#]
-            NOTIFY_STATE_ENTERED("ROOT.StationOn");
-            rootState_subState = StationOn;
-            rootState_active = StationOn;
-            NOTIFY_TRANSITION_TERMINATED("7");
-            res = eventConsumed;
-        }
-    
-    return res;
-}
-
 #ifdef _OMINSTRUMENT
 //#[ ignore
 void OMAnimatedController::serializeAttributes(AOMSAttributes* aomsAttributes) const {
@@ -1066,6 +1170,7 @@ void OMAnimatedController::serializeAttributes(AOMSAttributes* aomsAttributes) c
     aomsAttributes->addAttribute("stationStatus", x2String((int)myReal->stationStatus));
     aomsAttributes->addAttribute("alert", UNKNOWN2STRING(myReal->alert));
     aomsAttributes->addAttribute("iterator", x2String(myReal->iterator));
+    aomsAttributes->addAttribute("whetherTimerRead", x2String(myReal->whetherTimerRead));
     OMAnimatediPrint::serializeAttributes(aomsAttributes);
     OMAnimatediInitialize::serializeAttributes(aomsAttributes);
     OMAnimatediConfirmDataReceival::serializeAttributes(aomsAttributes);
@@ -1104,29 +1209,9 @@ void OMAnimatedController::serializeRelations(AOMSRelations* aomsRelations) cons
 void OMAnimatedController::rootState_serializeStates(AOMSState* aomsState) const {
     aomsState->addState("ROOT");
     switch (myReal->rootState_subState) {
-        case Controller::state_0:
-        {
-            state_0_serializeStates(aomsState);
-        }
-        break;
-        case Controller::StationOn:
-        {
-            StationOn_serializeStates(aomsState);
-        }
-        break;
         case Controller::StationStandBy:
         {
             StationStandBy_serializeStates(aomsState);
-        }
-        break;
-        case Controller::terminationstate_6:
-        {
-            terminationstate_6_serializeStates(aomsState);
-        }
-        break;
-        case Controller::simulationStartPoint:
-        {
-            simulationStartPoint_serializeStates(aomsState);
         }
         break;
         case Controller::sendaction_10:
@@ -1159,9 +1244,34 @@ void OMAnimatedController::rootState_serializeStates(AOMSState* aomsState) const
             packageReadyInformation_serializeStates(aomsState);
         }
         break;
-        case Controller::soonToCheckIfAlert:
+        case Controller::deletePackageState:
         {
-            soonToCheckIfAlert_serializeStates(aomsState);
+            deletePackageState_serializeStates(aomsState);
+        }
+        break;
+        case Controller::sendaction_29:
+        {
+            sendaction_29_serializeStates(aomsState);
+        }
+        break;
+        case Controller::sendaction_30:
+        {
+            sendaction_30_serializeStates(aomsState);
+        }
+        break;
+        case Controller::sendaction_28:
+        {
+            sendaction_28_serializeStates(aomsState);
+        }
+        break;
+        case Controller::sendaction_27:
+        {
+            sendaction_27_serializeStates(aomsState);
+        }
+        break;
+        case Controller::state_32:
+        {
+            state_32_serializeStates(aomsState);
         }
         break;
         default:
@@ -1173,28 +1283,28 @@ void OMAnimatedController::wysylanieAlertu_serializeStates(AOMSState* aomsState)
     aomsState->addState("ROOT.wysylanieAlertu");
 }
 
-void OMAnimatedController::terminationstate_6_serializeStates(AOMSState* aomsState) const {
-    aomsState->addState("ROOT.terminationstate_6");
-}
-
 void OMAnimatedController::StationStandBy_serializeStates(AOMSState* aomsState) const {
     aomsState->addState("ROOT.StationStandBy");
 }
 
-void OMAnimatedController::StationOn_serializeStates(AOMSState* aomsState) const {
-    aomsState->addState("ROOT.StationOn");
+void OMAnimatedController::state_32_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.state_32");
 }
 
-void OMAnimatedController::state_0_serializeStates(AOMSState* aomsState) const {
-    aomsState->addState("ROOT.state_0");
+void OMAnimatedController::sendaction_30_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.sendaction_30");
 }
 
-void OMAnimatedController::soonToCheckIfAlert_serializeStates(AOMSState* aomsState) const {
-    aomsState->addState("ROOT.soonToCheckIfAlert");
+void OMAnimatedController::sendaction_29_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.sendaction_29");
 }
 
-void OMAnimatedController::simulationStartPoint_serializeStates(AOMSState* aomsState) const {
-    aomsState->addState("ROOT.simulationStartPoint");
+void OMAnimatedController::sendaction_28_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.sendaction_28");
+}
+
+void OMAnimatedController::sendaction_27_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.sendaction_27");
 }
 
 void OMAnimatedController::sendaction_14_serializeStates(AOMSState* aomsState) const {
@@ -1215,6 +1325,10 @@ void OMAnimatedController::sendaction_10_serializeStates(AOMSState* aomsState) c
 
 void OMAnimatedController::packageReadyInformation_serializeStates(AOMSState* aomsState) const {
     aomsState->addState("ROOT.packageReadyInformation");
+}
+
+void OMAnimatedController::deletePackageState_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.deletePackageState");
 }
 //#]
 
