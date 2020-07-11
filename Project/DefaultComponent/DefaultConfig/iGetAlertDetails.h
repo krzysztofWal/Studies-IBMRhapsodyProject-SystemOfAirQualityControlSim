@@ -23,6 +23,12 @@
 #include <utility>
 //## auto_generated
 #include <vector>
+//## auto_generated
+#include <fstream>
+//## auto_generated
+#include <array>
+//## auto_generated
+#include <stdio.h>
 //## package Default
 
 //## class iGetAlertDetails
@@ -46,7 +52,7 @@ public :
     ////    Operations    ////
     
     //## operation getAlertDetails()
-    virtual void getAlertDetails() = 0;
+    virtual std::vector<std::pair<long, int>> getAlertDetails() = 0;
 };
 
 #ifdef _OMINSTRUMENT

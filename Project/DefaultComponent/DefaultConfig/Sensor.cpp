@@ -41,11 +41,9 @@ Sensor::~Sensor() {
     cleanUpRelations();
 }
 
-double Sensor::odczytajDane() {
+void Sensor::odczytajDane() {
     NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_Sensor_odczytajDane_SERIALIZE);
     //#[ operation odczytajDane()
-    recentValue += 0.5;
-    return 0.;
     //#]
 }
 

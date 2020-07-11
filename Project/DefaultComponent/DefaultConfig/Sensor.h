@@ -31,6 +31,12 @@
 #include <utility>
 //## auto_generated
 #include <vector>
+//## auto_generated
+#include <fstream>
+//## auto_generated
+#include <array>
+//## auto_generated
+#include <stdio.h>
 //## link itsController
 class Controller;
 
@@ -60,7 +66,7 @@ public :
     virtual void funcAb() = 0;
     
     //## operation odczytajDane()
-    virtual double odczytajDane();
+    virtual void odczytajDane();
     
     ////    Additional operations    ////
     

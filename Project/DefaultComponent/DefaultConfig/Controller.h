@@ -34,6 +34,8 @@
 //## link itsCO_Sensor
 #include "CO_Sensor.h"
 //## class Controller
+#include "iCalibrateRequest.h"
+//## class Controller
 #include "iConfirmDataReceival.h"
 //## class Controller
 #include "iGetAlertDetails.h"
@@ -55,12 +57,20 @@
 #include "SO2_Sensor.h"
 //## dependency StationData
 #include "StationData.h"
+//## link itsTimer
+#include "Timer.h"
 //## auto_generated
 #include <map>
 //## auto_generated
 #include <utility>
 //## auto_generated
 #include <vector>
+//## auto_generated
+#include <fstream>
+//## auto_generated
+#include <array>
+//## auto_generated
+#include <stdio.h>
 //## class port_35_C
 #include "iInform.h"
 //## class port_35_C
@@ -72,7 +82,7 @@
 //## package Default
 
 //## class Controller
-class Controller : public OMThread, public OMReactive, public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails {
+class Controller : public OMThread, public OMReactive, public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails, public iCalibrateRequest {
 public :
 
     ////    Friends    ////
@@ -165,7 +175,7 @@ public :
     
 //#[ ignore
     //## package Default
-    class port_33_C : public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails {
+    class port_33_C : public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails, public iCalibrateRequest {
         ////    Constructors and destructors    ////
         
     public :
@@ -179,13 +189,19 @@ public :
         ////    Operations    ////
         
         //## auto_generated
+        virtual void calibrateRequest();
+        
+        //## auto_generated
         virtual void confirmReceival();
         
         //## auto_generated
         void connectController(Controller* part);
         
         //## auto_generated
-        virtual void getAlertDetails();
+        virtual std::vector<std::pair<long, int>> getAlertDetails();
+        
+        //## auto_generated
+        iCalibrateRequest* getItsICalibrateRequest();
         
         //## auto_generated
         iConfirmDataReceival* getItsIConfirmDataReceival();
@@ -206,6 +222,9 @@ public :
         virtual StationData print();
         
         ////    Additional operations    ////
+        
+        //## auto_generated
+        void setItsICalibrateRequest(iCalibrateRequest* p_iCalibrateRequest);
         
         //## auto_generated
         void setItsIConfirmDataReceival(iConfirmDataReceival* p_iConfirmDataReceival);
@@ -229,6 +248,8 @@ public :
         int _p_;		//## attribute _p_
         
         ////    Relations and components    ////
+        
+        iCalibrateRequest* itsICalibrateRequest;		//## link itsICalibrateRequest
         
         iConfirmDataReceival* itsIConfirmDataReceival;		//## link itsIConfirmDataReceival
         
@@ -299,8 +320,11 @@ public :
     //## operation appendToPackage(sensorType,double)
     void appendToPackage(const sensorType& whichSensor, double value);
     
-    //## operation callibrate()
-    void callibrate();
+    //## operation calibrate()
+    void calibrate();
+    
+    //## operation calibrateRequest()
+    virtual void calibrateRequest();
     
     //## operation confirmReceival()
     virtual void confirmReceival();
@@ -312,7 +336,7 @@ public :
     void deletePackage();
     
     //## operation getAlertDetails()
-    virtual void getAlertDetails();
+    virtual std::vector<std::pair<long, int>> getAlertDetails();
     
     //## operation getDataPackage() const
     StationData* getDataPackage() const;
@@ -332,6 +356,9 @@ public :
     //## operation printPackage()
     void printPackage();
     
+    //## operation resetAlert()
+    void resetAlert();
+    
     //## operation setWhenDue(int,double)
     void setWhenDue(int which, double limit);
     
@@ -349,12 +376,6 @@ public :
     
     //## auto_generated
     port_35_C* get_port_35() const;
-    
-    //## auto_generated
-    bool getWhetherTimerRead() const;
-    
-    //## auto_generated
-    void setWhetherTimerRead(bool p_whetherTimerRead);
     
     //## auto_generated
     CO_Sensor* getItsCO_Sensor() const;
@@ -378,6 +399,9 @@ public :
     SO2_Sensor* getItsSO2_Sensor() const;
     
     //## auto_generated
+    Timer* getItsTimer() const;
+    
+    //## auto_generated
     object_0_C* getObject_0() const;
 
 protected :
@@ -396,6 +420,12 @@ protected :
     
     //## auto_generated
     void setTime(long p_time);
+    
+    //## auto_generated
+    bool getWhetherTimerRead() const;
+    
+    //## auto_generated
+    void setWhetherTimerRead(bool p_whetherTimerRead);
     
     //## auto_generated
     void initStatechart();
@@ -446,10 +476,15 @@ protected :
     
     SO2_Sensor itsSO2_Sensor;		//## link itsSO2_Sensor
     
+    Timer itsTimer;		//## link itsTimer
+    
     object_0_C object_0;		//## classInstance object_0
 
 public :
 
+    //## auto_generated
+    void setActiveContext(IOxfActive* theActiveContext, bool activeInstance);
+    
     // rootState:
     //## statechart_method
     inline bool rootState_IN() const;
@@ -468,25 +503,12 @@ public :
     //## statechart_method
     inline bool StationStandBy_IN() const;
     
-    // state_32:
     //## statechart_method
-    inline bool state_32_IN() const;
+    IOxfReactive::TakeEventStatus StationStandBy_handleEvent();
     
-    // sendaction_30:
+    // signalJoin_Timer_Server_Request:
     //## statechart_method
-    inline bool sendaction_30_IN() const;
-    
-    // sendaction_29:
-    //## statechart_method
-    inline bool sendaction_29_IN() const;
-    
-    // sendaction_28:
-    //## statechart_method
-    inline bool sendaction_28_IN() const;
-    
-    // sendaction_27:
-    //## statechart_method
-    inline bool sendaction_27_IN() const;
+    inline bool signalJoin_Timer_Server_Request_IN() const;
     
     // sendaction_14:
     //## statechart_method
@@ -511,6 +533,14 @@ public :
     // deletePackageState:
     //## statechart_method
     inline bool deletePackageState_IN() const;
+    
+    // checkLimits:
+    //## statechart_method
+    inline bool checkLimits_IN() const;
+    
+    // callibration:
+    //## statechart_method
+    inline bool callibration_IN() const;
 
 protected :
 
@@ -519,17 +549,15 @@ protected :
         OMNonState = 0,
         wysylanieAlertu = 1,
         StationStandBy = 2,
-        state_32 = 3,
-        sendaction_30 = 4,
-        sendaction_29 = 5,
-        sendaction_28 = 6,
-        sendaction_27 = 7,
-        sendaction_14 = 8,
-        sendaction_13 = 9,
-        sendaction_12 = 10,
-        sendaction_10 = 11,
-        packageReadyInformation = 12,
-        deletePackageState = 13
+        signalJoin_Timer_Server_Request = 3,
+        sendaction_14 = 4,
+        sendaction_13 = 5,
+        sendaction_12 = 6,
+        sendaction_10 = 7,
+        packageReadyInformation = 8,
+        deletePackageState = 9,
+        checkLimits = 10,
+        callibration = 11
     };
     
     int rootState_subState;
@@ -544,7 +572,7 @@ protected :
 DECLARE_OPERATION_CLASS(Default_Controller_setStationStatus_statusType)
 
 //#[ ignore
-class OMAnimatedController : public OMAnimatediPrint, public OMAnimatediInitialize, public OMAnimatediConfirmDataReceival, public OMAnimatediGetAlertDetails {
+class OMAnimatedController : public OMAnimatediPrint, public OMAnimatediInitialize, public OMAnimatediConfirmDataReceival, public OMAnimatediGetAlertDetails, public OMAnimatediCalibrateRequest {
     DECLARE_REACTIVE_META(Controller, OMAnimatedController)
     
     DECLARE_META_OP(Default_Controller_setStationStatus_statusType)
@@ -567,19 +595,7 @@ public :
     void StationStandBy_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
-    void state_32_serializeStates(AOMSState* aomsState) const;
-    
-    //## statechart_method
-    void sendaction_30_serializeStates(AOMSState* aomsState) const;
-    
-    //## statechart_method
-    void sendaction_29_serializeStates(AOMSState* aomsState) const;
-    
-    //## statechart_method
-    void sendaction_28_serializeStates(AOMSState* aomsState) const;
-    
-    //## statechart_method
-    void sendaction_27_serializeStates(AOMSState* aomsState) const;
+    void signalJoin_Timer_Server_Request_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
     void sendaction_14_serializeStates(AOMSState* aomsState) const;
@@ -598,6 +614,12 @@ public :
     
     //## statechart_method
     void deletePackageState_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void checkLimits_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void callibration_serializeStates(AOMSState* aomsState) const;
 };
 
 class OMAnimatedobject_0_C : virtual public AOMInstance {
@@ -618,24 +640,8 @@ inline bool Controller::StationStandBy_IN() const {
     return rootState_subState == StationStandBy;
 }
 
-inline bool Controller::state_32_IN() const {
-    return rootState_subState == state_32;
-}
-
-inline bool Controller::sendaction_30_IN() const {
-    return rootState_subState == sendaction_30;
-}
-
-inline bool Controller::sendaction_29_IN() const {
-    return rootState_subState == sendaction_29;
-}
-
-inline bool Controller::sendaction_28_IN() const {
-    return rootState_subState == sendaction_28;
-}
-
-inline bool Controller::sendaction_27_IN() const {
-    return rootState_subState == sendaction_27;
+inline bool Controller::signalJoin_Timer_Server_Request_IN() const {
+    return rootState_subState == signalJoin_Timer_Server_Request;
 }
 
 inline bool Controller::sendaction_14_IN() const {
@@ -660,6 +666,14 @@ inline bool Controller::packageReadyInformation_IN() const {
 
 inline bool Controller::deletePackageState_IN() const {
     return rootState_subState == deletePackageState;
+}
+
+inline bool Controller::checkLimits_IN() const {
+    return rootState_subState == checkLimits;
+}
+
+inline bool Controller::callibration_IN() const {
+    return rootState_subState == callibration;
 }
 
 #endif

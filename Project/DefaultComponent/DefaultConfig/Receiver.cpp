@@ -29,13 +29,23 @@
 //## class Receiver
 //#[ ignore
 Receiver::port_3_C::port_3_C() : _p_(0) {
+    itsICalibrateRequest = NULL;
     itsIConfirmDataReceival = NULL;
+    itsIGetAlertDetails = NULL;
     itsIInitialize = NULL;
     itsIPrint = NULL;
 }
 
 Receiver::port_3_C::~port_3_C() {
     cleanUpRelations();
+}
+
+void Receiver::port_3_C::calibrateRequest() {
+    
+    if (itsICalibrateRequest != NULL) {
+        itsICalibrateRequest->calibrateRequest();
+    }
+    
 }
 
 void Receiver::port_3_C::confirmReceival() {
@@ -46,7 +56,23 @@ void Receiver::port_3_C::confirmReceival() {
     
 }
 
+std::vector<std::pair<long, int>> Receiver::port_3_C::getAlertDetails() {
+    std::vector<std::pair<long, int>> res;
+    if (itsIGetAlertDetails != NULL) {
+        res = itsIGetAlertDetails->getAlertDetails();
+    }
+    return res;
+}
+
+iCalibrateRequest* Receiver::port_3_C::getItsICalibrateRequest() {
+    return this;
+}
+
 iConfirmDataReceival* Receiver::port_3_C::getItsIConfirmDataReceival() {
+    return this;
+}
+
+iGetAlertDetails* Receiver::port_3_C::getItsIGetAlertDetails() {
     return this;
 }
 
@@ -78,8 +104,16 @@ StationData Receiver::port_3_C::print() {
     return res;
 }
 
+void Receiver::port_3_C::setItsICalibrateRequest(iCalibrateRequest* p_iCalibrateRequest) {
+    itsICalibrateRequest = p_iCalibrateRequest;
+}
+
 void Receiver::port_3_C::setItsIConfirmDataReceival(iConfirmDataReceival* p_iConfirmDataReceival) {
     itsIConfirmDataReceival = p_iConfirmDataReceival;
+}
+
+void Receiver::port_3_C::setItsIGetAlertDetails(iGetAlertDetails* p_iGetAlertDetails) {
+    itsIGetAlertDetails = p_iGetAlertDetails;
 }
 
 void Receiver::port_3_C::setItsIInitialize(iInitialize* p_iInitialize) {
@@ -91,9 +125,17 @@ void Receiver::port_3_C::setItsIPrint(iPrint* p_iPrint) {
 }
 
 void Receiver::port_3_C::cleanUpRelations() {
+    if(itsICalibrateRequest != NULL)
+        {
+            itsICalibrateRequest = NULL;
+        }
     if(itsIConfirmDataReceival != NULL)
         {
             itsIConfirmDataReceival = NULL;
+        }
+    if(itsIGetAlertDetails != NULL)
+        {
+            itsIGetAlertDetails = NULL;
         }
     if(itsIInitialize != NULL)
         {
@@ -209,14 +251,6 @@ Receiver::port_5_C* Receiver::get_port_5() const {
     return (Receiver::port_5_C*) &port_5;
 }
 
-std::vector<std::pair<int, int>> Receiver::getAlert_TimeAndWhichParticulate() const {
-    return Alert_TimeAndWhichParticulate;
-}
-
-void Receiver::setAlert_TimeAndWhichParticulate(std::vector<std::pair<int, int>> p_Alert_TimeAndWhichParticulate) {
-    Alert_TimeAndWhichParticulate = p_Alert_TimeAndWhichParticulate;
-}
-
 bool Receiver::startBehavior() {
     bool done = false;
     done = OMReactive::startBehavior();
@@ -225,6 +259,14 @@ bool Receiver::startBehavior() {
             startDispatching();
         }
     return done;
+}
+
+std::vector<std::pair<int, int>> Receiver::getAlert_TimeAndWhichParticulate() const {
+    return Alert_TimeAndWhichParticulate;
+}
+
+void Receiver::setAlert_TimeAndWhichParticulate(std::vector<std::pair<int, int>> p_Alert_TimeAndWhichParticulate) {
+    Alert_TimeAndWhichParticulate = p_Alert_TimeAndWhichParticulate;
 }
 
 std::vector<StationData> Receiver::getDataReceived() const {
@@ -263,7 +305,36 @@ IOxfReactive::TakeEventStatus Receiver::rootState_processEvent() {
         // State receiverStandby
         case receiverStandby:
         {
-            if(IS_EVENT_TYPE_OF(serwZadajPakietu_Default_id))
+            if(IS_EVENT_TYPE_OF(serwSkalibruj_Default_id))
+                {
+                    NOTIFY_TRANSITION_STARTED("5");
+                    NOTIFY_STATE_EXITED("ROOT.receiverStandby");
+                    NOTIFY_STATE_ENTERED("ROOT.sendCallibrationRequest");
+                    pushNullTransition();
+                    rootState_subState = sendCallibrationRequest;
+                    rootState_active = sendCallibrationRequest;
+                    //#[ state sendCallibrationRequest.(Entry) 
+                    OUT_PORT(port_3)->calibrateRequest();
+                    //#]
+                    NOTIFY_TRANSITION_TERMINATED("5");
+                    res = eventConsumed;
+                }
+            else if(IS_EVENT_TYPE_OF(SendAlert_Default_id))
+                {
+                    NOTIFY_TRANSITION_STARTED("3");
+                    NOTIFY_STATE_EXITED("ROOT.receiverStandby");
+                    NOTIFY_STATE_ENTERED("ROOT.alertReceival");
+                    pushNullTransition();
+                    rootState_subState = alertReceival;
+                    rootState_active = alertReceival;
+                    //#[ state alertReceival.(Entry) 
+                    std::cout << "alertReceival_st: rec received an alert" << std::endl;
+                    OUT_PORT(port_3)->getAlertDetails();
+                    //#]
+                    NOTIFY_TRANSITION_TERMINATED("3");
+                    res = eventConsumed;
+                }
+            else if(IS_EVENT_TYPE_OF(serwZadajPakietu_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("2");
                     NOTIFY_STATE_EXITED("ROOT.receiverStandby");
@@ -282,20 +353,7 @@ IOxfReactive::TakeEventStatus Receiver::rootState_processEvent() {
         // State begin
         case begin:
         {
-            if(IS_EVENT_TYPE_OF(SendAlert_Default_id))
-                {
-                    NOTIFY_TRANSITION_STARTED("3");
-                    NOTIFY_STATE_EXITED("ROOT.begin");
-                    //#[ transition 3 
-                    std::cout << "rec received an alert" << std::endl;
-                    //#]
-                    NOTIFY_STATE_ENTERED("ROOT.receiverStandby");
-                    rootState_subState = receiverStandby;
-                    rootState_active = receiverStandby;
-                    NOTIFY_TRANSITION_TERMINATED("3");
-                    res = eventConsumed;
-                }
-            else if(IS_EVENT_TYPE_OF(Inform_Default_id))
+            if(IS_EVENT_TYPE_OF(Inform_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("1");
                     NOTIFY_STATE_EXITED("ROOT.begin");
@@ -307,6 +365,40 @@ IOxfReactive::TakeEventStatus Receiver::rootState_processEvent() {
                     rootState_subState = receiverStandby;
                     rootState_active = receiverStandby;
                     NOTIFY_TRANSITION_TERMINATED("1");
+                    res = eventConsumed;
+                }
+            
+        }
+        break;
+        // State alertReceival
+        case alertReceival:
+        {
+            if(IS_EVENT_TYPE_OF(OMNullEventId))
+                {
+                    NOTIFY_TRANSITION_STARTED("4");
+                    popNullTransition();
+                    NOTIFY_STATE_EXITED("ROOT.alertReceival");
+                    NOTIFY_STATE_ENTERED("ROOT.receiverStandby");
+                    rootState_subState = receiverStandby;
+                    rootState_active = receiverStandby;
+                    NOTIFY_TRANSITION_TERMINATED("4");
+                    res = eventConsumed;
+                }
+            
+        }
+        break;
+        // State sendCallibrationRequest
+        case sendCallibrationRequest:
+        {
+            if(IS_EVENT_TYPE_OF(OMNullEventId))
+                {
+                    NOTIFY_TRANSITION_STARTED("6");
+                    popNullTransition();
+                    NOTIFY_STATE_EXITED("ROOT.sendCallibrationRequest");
+                    NOTIFY_STATE_ENTERED("ROOT.receiverStandby");
+                    rootState_subState = receiverStandby;
+                    rootState_active = receiverStandby;
+                    NOTIFY_TRANSITION_TERMINATED("6");
                     res = eventConsumed;
                 }
             
@@ -345,9 +437,23 @@ void OMAnimatedReceiver::rootState_serializeStates(AOMSState* aomsState) const {
             begin_serializeStates(aomsState);
         }
         break;
+        case Receiver::alertReceival:
+        {
+            alertReceival_serializeStates(aomsState);
+        }
+        break;
+        case Receiver::sendCallibrationRequest:
+        {
+            sendCallibrationRequest_serializeStates(aomsState);
+        }
+        break;
         default:
             break;
     }
+}
+
+void OMAnimatedReceiver::sendCallibrationRequest_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.sendCallibrationRequest");
 }
 
 void OMAnimatedReceiver::receiverStandby_serializeStates(AOMSState* aomsState) const {
@@ -356,6 +462,10 @@ void OMAnimatedReceiver::receiverStandby_serializeStates(AOMSState* aomsState) c
 
 void OMAnimatedReceiver::begin_serializeStates(AOMSState* aomsState) const {
     aomsState->addState("ROOT.begin");
+}
+
+void OMAnimatedReceiver::alertReceival_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.alertReceival");
 }
 
 static AOMClass* _ReceiverSuper[2] = {

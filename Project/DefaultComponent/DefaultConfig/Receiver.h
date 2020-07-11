@@ -40,11 +40,19 @@
 //## auto_generated
 #include <array>
 //## class port_3_C
+#include "iCalibrateRequest.h"
+//## class port_3_C
 #include "iConfirmDataReceival.h"
+//## class port_3_C
+#include "iGetAlertDetails.h"
 //## class port_3_C
 #include "iInitialize.h"
 //## class port_3_C
 #include "iPrint.h"
+//## auto_generated
+#include <fstream>
+//## auto_generated
+#include <stdio.h>
 //## package Default
 
 //## class Receiver
@@ -53,7 +61,7 @@ public :
 
 //#[ ignore
     //## package Default
-    class port_3_C : public iPrint, public iInitialize, public iConfirmDataReceival {
+    class port_3_C : public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails, public iCalibrateRequest {
         ////    Constructors and destructors    ////
         
     public :
@@ -67,10 +75,22 @@ public :
         ////    Operations    ////
         
         //## auto_generated
+        virtual void calibrateRequest();
+        
+        //## auto_generated
         virtual void confirmReceival();
         
         //## auto_generated
+        virtual std::vector<std::pair<long, int>> getAlertDetails();
+        
+        //## auto_generated
+        iCalibrateRequest* getItsICalibrateRequest();
+        
+        //## auto_generated
         iConfirmDataReceival* getItsIConfirmDataReceival();
+        
+        //## auto_generated
+        iGetAlertDetails* getItsIGetAlertDetails();
         
         //## auto_generated
         iInitialize* getItsIInitialize();
@@ -90,7 +110,13 @@ public :
         ////    Additional operations    ////
         
         //## auto_generated
+        void setItsICalibrateRequest(iCalibrateRequest* p_iCalibrateRequest);
+        
+        //## auto_generated
         void setItsIConfirmDataReceival(iConfirmDataReceival* p_iConfirmDataReceival);
+        
+        //## auto_generated
+        void setItsIGetAlertDetails(iGetAlertDetails* p_iGetAlertDetails);
         
         //## auto_generated
         void setItsIInitialize(iInitialize* p_iInitialize);
@@ -109,7 +135,11 @@ public :
         
         ////    Relations and components    ////
         
+        iCalibrateRequest* itsICalibrateRequest;		//## link itsICalibrateRequest
+        
         iConfirmDataReceival* itsIConfirmDataReceival;		//## link itsIConfirmDataReceival
+        
+        iGetAlertDetails* itsIGetAlertDetails;		//## link itsIGetAlertDetails
         
         iInitialize* itsIInitialize;		//## link itsIInitialize
         
@@ -207,16 +237,16 @@ public :
     port_5_C* get_port_5() const;
     
     //## auto_generated
+    virtual bool startBehavior();
+
+protected :
+
+    //## auto_generated
     std::vector<std::pair<int, int>> getAlert_TimeAndWhichParticulate() const;
     
     //## auto_generated
     void setAlert_TimeAndWhichParticulate(std::vector<std::pair<int, int>> p_Alert_TimeAndWhichParticulate);
     
-    //## auto_generated
-    virtual bool startBehavior();
-
-protected :
-
     //## auto_generated
     std::vector<StationData> getDataReceived() const;
     
@@ -257,6 +287,10 @@ public :
     //## statechart_method
     virtual IOxfReactive::TakeEventStatus rootState_processEvent();
     
+    // sendCallibrationRequest:
+    //## statechart_method
+    inline bool sendCallibrationRequest_IN() const;
+    
     // receiverStandby:
     //## statechart_method
     inline bool receiverStandby_IN() const;
@@ -265,6 +299,10 @@ public :
     //## statechart_method
     inline bool begin_IN() const;
     
+    // alertReceival:
+    //## statechart_method
+    inline bool alertReceival_IN() const;
+    
     ////    Framework    ////
 
 protected :
@@ -272,8 +310,10 @@ protected :
 //#[ ignore
     enum Receiver_Enum {
         OMNonState = 0,
-        receiverStandby = 1,
-        begin = 2
+        sendCallibrationRequest = 1,
+        receiverStandby = 2,
+        begin = 3,
+        alertReceival = 4
     };
     
     int rootState_subState;
@@ -299,10 +339,16 @@ public :
     void rootState_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
+    void sendCallibrationRequest_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
     void receiverStandby_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
     void begin_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void alertReceival_serializeStates(AOMSState* aomsState) const;
 };
 //#]
 #endif // _OMINSTRUMENT
@@ -311,12 +357,20 @@ inline bool Receiver::rootState_IN() const {
     return true;
 }
 
+inline bool Receiver::sendCallibrationRequest_IN() const {
+    return rootState_subState == sendCallibrationRequest;
+}
+
 inline bool Receiver::receiverStandby_IN() const {
     return rootState_subState == receiverStandby;
 }
 
 inline bool Receiver::begin_IN() const {
     return rootState_subState == begin;
+}
+
+inline bool Receiver::alertReceival_IN() const {
+    return rootState_subState == alertReceival;
 }
 
 #endif

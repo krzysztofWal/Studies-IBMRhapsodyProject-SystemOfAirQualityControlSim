@@ -23,6 +23,12 @@
 #include <utility>
 //## auto_generated
 #include <vector>
+//## auto_generated
+#include <fstream>
+//## auto_generated
+#include <array>
+//## auto_generated
+#include <stdio.h>
 //## package Default
 
 //## class iSendAlert

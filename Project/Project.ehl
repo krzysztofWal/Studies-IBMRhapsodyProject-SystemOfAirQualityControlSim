@@ -2,17 +2,4 @@
 [Events]
 itsController->GEN(timerCzytajSensory())`Controller
 itsReceiver->GEN(serwZadajPakietu())`Receiver
-itsReceiver->GEN(evBegin())`Receiver
-itsController->GEN(potwierdzOdbior())`Controller
-itsTransmitter->GEN(evGonnaSend())`Transmitter
-itsController->GEN(evInicjujWyslaniePakietu())`Controller
-itsController->itsTransmitter->GEN(evGonnaSend())`Transmitter
-itsController->itsTransmitter->GEN(evSendAlert())`Transmitter
-itsController->itsTransmitter->GEN(evSendToReceiver())`Transmitter
-itsController->GEN(wyslijDane(0.5))`Controller
-Controller[1]->GEN(wyslijDane(0.5))`Controller
-Controller[1]->GEN(wyslijDane())`Controller
-Controller[0]->GEN(evInicjujWyslaniePakietu())`Controller
-Controller[0]->GEN(evWlacz())`Controller
-Controller[0]->GEN(evKont())`Controller
 [Breakpoints]

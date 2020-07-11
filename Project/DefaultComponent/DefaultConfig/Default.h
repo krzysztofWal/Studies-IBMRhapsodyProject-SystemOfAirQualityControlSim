@@ -60,6 +60,12 @@ class StationData;
 class Thermometer;
 
 //## auto_generated
+class Timer;
+
+//## auto_generated
+class iCalibrateRequest;
+
+//## auto_generated
 class iConfirmDataReceival;
 
 //## auto_generated
@@ -153,6 +159,12 @@ class iSendAlert;
 #define timer_Default_id 18637
 
 #define timerCzytajSensory_Default_id 18638
+
+#define serwSkalibruj_Default_id 18639
+
+#define callibrateCauseRequested_Default_id 18640
+
+#define envSkalibruj_Default_id 18641
 //#]
 
 //## package Default
@@ -1336,6 +1348,93 @@ public :
 //#[ ignore
 class OMAnimatedtimerCzytajSensory : virtual public AOMEvent {
     DECLARE_META_EVENT(timerCzytajSensory)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event serwSkalibruj()
+class serwSkalibruj : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedserwSkalibruj;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    serwSkalibruj();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedserwSkalibruj : virtual public AOMEvent {
+    DECLARE_META_EVENT(serwSkalibruj)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event callibrateCauseRequested()
+class callibrateCauseRequested : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedcallibrateCauseRequested;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    callibrateCauseRequested();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedcallibrateCauseRequested : virtual public AOMEvent {
+    DECLARE_META_EVENT(callibrateCauseRequested)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event envSkalibruj()
+class envSkalibruj : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedenvSkalibruj;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    envSkalibruj();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedenvSkalibruj : virtual public AOMEvent {
+    DECLARE_META_EVENT(envSkalibruj)
 };
 //#]
 #endif // _OMINSTRUMENT

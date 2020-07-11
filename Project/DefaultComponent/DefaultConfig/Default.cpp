@@ -27,6 +27,8 @@
 //## auto_generated
 #include "Hygrometer.h"
 //## auto_generated
+#include "iCalibrateRequest.h"
+//## auto_generated
 #include "iConfirmDataReceival.h"
 //## auto_generated
 #include "iGetAlertDetails.h"
@@ -54,6 +56,8 @@
 #include "SO2_Sensor.h"
 //## auto_generated
 #include "Thermometer.h"
+//## auto_generated
+#include "Timer.h"
 //#[ ignore
 #define evSendAlert_SERIALIZE \
     OMADD_SER(stationId, x2String(myEvent->stationId))\
@@ -284,6 +288,24 @@
 #define timerCzytajSensory_UNSERIALIZE OM_NO_OP
 
 #define timerCzytajSensory_CONSTRUCTOR timerCzytajSensory()
+
+#define serwSkalibruj_SERIALIZE OM_NO_OP
+
+#define serwSkalibruj_UNSERIALIZE OM_NO_OP
+
+#define serwSkalibruj_CONSTRUCTOR serwSkalibruj()
+
+#define callibrateCauseRequested_SERIALIZE OM_NO_OP
+
+#define callibrateCauseRequested_UNSERIALIZE OM_NO_OP
+
+#define callibrateCauseRequested_CONSTRUCTOR callibrateCauseRequested()
+
+#define envSkalibruj_SERIALIZE OM_NO_OP
+
+#define envSkalibruj_UNSERIALIZE OM_NO_OP
+
+#define envSkalibruj_CONSTRUCTOR envSkalibruj()
 //#]
 
 //## package Default
@@ -319,6 +341,10 @@ void Default_initRelations() {
         itsReceiver.get_port_3()->setItsIInitialize(itsController.get_port_33()->getItsIInitialize());
         
         itsReceiver.get_port_3()->setItsIConfirmDataReceival(itsController.get_port_33()->getItsIConfirmDataReceival());
+        
+        itsReceiver.get_port_3()->setItsIGetAlertDetails(itsController.get_port_33()->getItsIGetAlertDetails());
+        
+        itsReceiver.get_port_3()->setItsICalibrateRequest(itsController.get_port_33()->getItsICalibrateRequest());
         
     }
     {
@@ -841,6 +867,42 @@ bool timerCzytajSensory::isTypeOf(const short id) const {
 }
 
 IMPLEMENT_META_EVENT_P(timerCzytajSensory, Default, Default, timerCzytajSensory())
+
+//## event serwSkalibruj()
+serwSkalibruj::serwSkalibruj() {
+    NOTIFY_EVENT_CONSTRUCTOR(serwSkalibruj)
+    setId(serwSkalibruj_Default_id);
+}
+
+bool serwSkalibruj::isTypeOf(const short id) const {
+    return (serwSkalibruj_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(serwSkalibruj, Default, Default, serwSkalibruj())
+
+//## event callibrateCauseRequested()
+callibrateCauseRequested::callibrateCauseRequested() {
+    NOTIFY_EVENT_CONSTRUCTOR(callibrateCauseRequested)
+    setId(callibrateCauseRequested_Default_id);
+}
+
+bool callibrateCauseRequested::isTypeOf(const short id) const {
+    return (callibrateCauseRequested_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(callibrateCauseRequested, Default, Default, callibrateCauseRequested())
+
+//## event envSkalibruj()
+envSkalibruj::envSkalibruj() {
+    NOTIFY_EVENT_CONSTRUCTOR(envSkalibruj)
+    setId(envSkalibruj_Default_id);
+}
+
+bool envSkalibruj::isTypeOf(const short id) const {
+    return (envSkalibruj_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(envSkalibruj, Default, Default, envSkalibruj())
 
 /*********************************************************************
 	File Path	: DefaultComponent\DefaultConfig\Default.cpp

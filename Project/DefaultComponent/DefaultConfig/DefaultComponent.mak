@@ -104,6 +104,8 @@ OBJS= \
   iConfirmDataReceival.obj \
   iSendAlert.obj \
   iGetAlertDetails.obj \
+  iCalibrateRequest.obj \
+  Timer.obj \
   Default.obj
 
 
@@ -199,7 +201,7 @@ O3_Sensor.obj : O3_Sensor.cpp O3_Sensor.h    Default.h Controller.h Sensor.h
 
 
 
-Controller.obj : Controller.cpp Controller.h    Default.h O3_Sensor.h Thermometer.h Hygrometer.h Barometer.h CO_Sensor.h SO2_Sensor.h NO2_Sensor.h PM10_Sensor.h PM2_5Sensor.h PM1_Sensor.h StationData.h iInform.h iSendAlert.h iPrint.h Sensor.h iInitialize.h iConfirmDataReceival.h iGetAlertDetails.h 
+Controller.obj : Controller.cpp Controller.h    Default.h O3_Sensor.h Thermometer.h Hygrometer.h Barometer.h CO_Sensor.h SO2_Sensor.h NO2_Sensor.h PM10_Sensor.h PM2_5Sensor.h PM1_Sensor.h Timer.h StationData.h iInform.h iSendAlert.h iPrint.h Sensor.h iInitialize.h iConfirmDataReceival.h iGetAlertDetails.h iCalibrateRequest.h 
 	$(CREATE_OBJ_DIR)
 	$(CPP) $(ConfigurationCPPCompileSwitches)  /Fo"Controller.obj" "Controller.cpp" 
 
@@ -229,7 +231,7 @@ StationData.obj : StationData.cpp StationData.h    Default.h
 
 
 
-Receiver.obj : Receiver.cpp Receiver.h    Default.h StationData.h iPrint.h iInitialize.h iConfirmDataReceival.h iInform.h iSendAlert.h 
+Receiver.obj : Receiver.cpp Receiver.h    Default.h StationData.h iPrint.h iInitialize.h iConfirmDataReceival.h iGetAlertDetails.h iCalibrateRequest.h iInform.h iSendAlert.h 
 	$(CREATE_OBJ_DIR)
 	$(CPP) $(ConfigurationCPPCompileSwitches)  /Fo"Receiver.obj" "Receiver.cpp" 
 
@@ -307,7 +309,19 @@ iGetAlertDetails.obj : iGetAlertDetails.cpp iGetAlertDetails.h    Default.h
 
 
 
-Default.obj : Default.cpp Default.h    StationData.h Sensor.h O3_Sensor.h Controller.h Thermometer.h Hygrometer.h Barometer.h Receiver.h CO_Sensor.h SO2_Sensor.h NO2_Sensor.h PM1_Sensor.h PM2_5Sensor.h PM10_Sensor.h iPrint.h iInitialize.h iInform.h iConfirmDataReceival.h iSendAlert.h iGetAlertDetails.h 
+iCalibrateRequest.obj : iCalibrateRequest.cpp iCalibrateRequest.h    Default.h 
+	$(CREATE_OBJ_DIR)
+	$(CPP) $(ConfigurationCPPCompileSwitches)  /Fo"iCalibrateRequest.obj" "iCalibrateRequest.cpp" 
+
+
+
+Timer.obj : Timer.cpp Timer.h    Default.h Controller.h 
+	$(CREATE_OBJ_DIR)
+	$(CPP) $(ConfigurationCPPCompileSwitches)  /Fo"Timer.obj" "Timer.cpp" 
+
+
+
+Default.obj : Default.cpp Default.h    StationData.h Sensor.h O3_Sensor.h Controller.h Thermometer.h Hygrometer.h Barometer.h Receiver.h CO_Sensor.h SO2_Sensor.h NO2_Sensor.h PM1_Sensor.h PM2_5Sensor.h PM10_Sensor.h iPrint.h iInitialize.h iInform.h iConfirmDataReceival.h iSendAlert.h iGetAlertDetails.h iCalibrateRequest.h Timer.h 
 	$(CREATE_OBJ_DIR)
 	$(CPP) $(ConfigurationCPPCompileSwitches)  /Fo"Default.obj" "Default.cpp" 
 
@@ -360,6 +374,8 @@ clean:
 	if exist iConfirmDataReceival.obj erase iConfirmDataReceival.obj
 	if exist iSendAlert.obj erase iSendAlert.obj
 	if exist iGetAlertDetails.obj erase iGetAlertDetails.obj
+	if exist iCalibrateRequest.obj erase iCalibrateRequest.obj
+	if exist Timer.obj erase Timer.obj
 	if exist Default.obj erase Default.obj
 	if exist $(TARGET_MAIN)$(OBJ_EXT) erase $(TARGET_MAIN)$(OBJ_EXT)
 	if exist *$(OBJ_EXT) erase *$(OBJ_EXT)
