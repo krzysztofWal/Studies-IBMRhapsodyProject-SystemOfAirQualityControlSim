@@ -20,6 +20,8 @@
 #define Default_Receiver_Receiver_SERIALIZE OM_NO_OP
 
 #define Default_Receiver_inform_SERIALIZE OM_NO_OP
+
+#define Default_Receiver_sendAlert_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
@@ -68,12 +70,12 @@ void Receiver::port_3_C::initialize() {
     
 }
 
-void Receiver::port_3_C::print() {
-    
+StationData* Receiver::port_3_C::print() {
+    StationData* res = NULL;
     if (itsIPrint != NULL) {
-        itsIPrint->print();
+        res = itsIPrint->print();
     }
-    
+    return res;
 }
 
 void Receiver::port_3_C::setItsIConfirmDataReceival(iConfirmDataReceival* p_iConfirmDataReceival) {
@@ -105,6 +107,7 @@ void Receiver::port_3_C::cleanUpRelations() {
 
 Receiver::port_5_C::port_5_C() : _p_(0) {
     itsIInform = NULL;
+    itsISendAlert = NULL;
 }
 
 Receiver::port_5_C::~port_5_C() {
@@ -113,10 +116,15 @@ Receiver::port_5_C::~port_5_C() {
 
 void Receiver::port_5_C::connectReceiver(Receiver* part) {
     setItsIInform(part);
+    setItsISendAlert(part);
     
 }
 
 iInform* Receiver::port_5_C::getItsIInform() {
+    return this;
+}
+
+iSendAlert* Receiver::port_5_C::getItsISendAlert() {
     return this;
 }
 
@@ -128,14 +136,30 @@ void Receiver::port_5_C::inform() {
     
 }
 
+void Receiver::port_5_C::sendAlert() {
+    
+    if (itsISendAlert != NULL) {
+        itsISendAlert->sendAlert();
+    }
+    
+}
+
 void Receiver::port_5_C::setItsIInform(iInform* p_iInform) {
     itsIInform = p_iInform;
+}
+
+void Receiver::port_5_C::setItsISendAlert(iSendAlert* p_iSendAlert) {
+    itsISendAlert = p_iSendAlert;
 }
 
 void Receiver::port_5_C::cleanUpRelations() {
     if(itsIInform != NULL)
         {
             itsIInform = NULL;
+        }
+    if(itsISendAlert != NULL)
+        {
+            itsISendAlert = NULL;
         }
 }
 //#]
@@ -159,6 +183,13 @@ void Receiver::inform() {
     //#[ operation inform()
     GEN(Inform);
     std::cout << "contr to rec - 've got data you can have them" << std::endl;
+    //#]
+}
+
+void Receiver::sendAlert() {
+    NOTIFY_OPERATION(sendAlert, sendAlert(), 0, Default_Receiver_sendAlert_SERIALIZE);
+    //#[ operation sendAlert()
+    GEN(SendAlert);
     //#]
 }
 
@@ -251,12 +282,28 @@ IOxfReactive::TakeEventStatus Receiver::rootState_processEvent() {
         // State begin
         case begin:
         {
-            if(IS_EVENT_TYPE_OF(Inform_Default_id))
+            if(IS_EVENT_TYPE_OF(SendAlert_Default_id))
+                {
+                    NOTIFY_TRANSITION_STARTED("3");
+                    NOTIFY_STATE_EXITED("ROOT.begin");
+                    //#[ transition 3 
+                    std::cout << "rec received an alert" << std::endl;
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.begin");
+                    rootState_subState = begin;
+                    rootState_active = begin;
+                    //#[ state begin.(Entry) 
+                    OUT_PORT(port_3)->initialize();
+                    //#]
+                    NOTIFY_TRANSITION_TERMINATED("3");
+                    res = eventConsumed;
+                }
+            else if(IS_EVENT_TYPE_OF(Inform_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("1");
                     NOTIFY_STATE_EXITED("ROOT.begin");
                     //#[ transition 1 
-                    OUT_PORT(port_3)->print();
+                    dataReceived.emplace_back(OUT_PORT(port_3)->print());
                     OUT_PORT(port_3)->confirmReceival();
                     //#]
                     NOTIFY_STATE_ENTERED("ROOT.receiverStandby");
@@ -280,10 +327,12 @@ void OMAnimatedReceiver::serializeAttributes(AOMSAttributes* aomsAttributes) con
     aomsAttributes->addAttribute("dataReceived", UNKNOWN2STRING(myReal->dataReceived));
     aomsAttributes->addAttribute("Alert_TimeAndWhichParticulate", UNKNOWN2STRING(myReal->Alert_TimeAndWhichParticulate));
     OMAnimatediInform::serializeAttributes(aomsAttributes);
+    OMAnimatediSendAlert::serializeAttributes(aomsAttributes);
 }
 
 void OMAnimatedReceiver::serializeRelations(AOMSRelations* aomsRelations) const {
     OMAnimatediInform::serializeRelations(aomsRelations);
+    OMAnimatediSendAlert::serializeRelations(aomsRelations);
 }
 
 void OMAnimatedReceiver::rootState_serializeStates(AOMSState* aomsState) const {
@@ -311,11 +360,17 @@ void OMAnimatedReceiver::receiverStandby_serializeStates(AOMSState* aomsState) c
 void OMAnimatedReceiver::begin_serializeStates(AOMSState* aomsState) const {
     aomsState->addState("ROOT.begin");
 }
+
+static AOMClass* _ReceiverSuper[2] = {
+OMAnimatediInform::staticGetClass(),
+OMAnimatediSendAlert::staticGetClass()};
 //#]
 
-IMPLEMENT_REACTIVE_META_S_P(Receiver, Default, false, iInform, OMAnimatediInform, OMAnimatedReceiver)
+IMPLEMENT_REACTIVE_META_M_P(Receiver, Default, false, _ReceiverSuper, 2, OMAnimatedReceiver)
 
 OMINIT_SUPERCLASS(iInform, OMAnimatediInform)
+
+OMINIT_SUPERCLASS(iSendAlert, OMAnimatediSendAlert)
 
 OMREGISTER_REACTIVE_CLASS
 #endif // _OMINSTRUMENT

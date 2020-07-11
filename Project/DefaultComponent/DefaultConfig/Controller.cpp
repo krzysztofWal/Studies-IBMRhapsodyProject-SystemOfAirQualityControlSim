@@ -14,8 +14,6 @@
 #define _OMSTATECHART_ANIMATED
 //#]
 
-//## attribute dataPackage
-#include "StationData.h"
 //## auto_generated
 #include "Controller.h"
 //#[ ignore
@@ -34,6 +32,8 @@
 #define Default_Controller_createPackage_SERIALIZE aomsmethod->addAttribute("time", x2String(time));
 
 #define Default_Controller_deletePackage_SERIALIZE OM_NO_OP
+
+#define Default_Controller_getAlertDetails_SERIALIZE OM_NO_OP
 
 #define Default_Controller_getDataPackage_SERIALIZE OM_NO_OP
 
@@ -65,10 +65,11 @@
 //## class Controller
 #ifdef _OMINSTRUMENT
 //#[ ignore
-static AOMClass* _ControllerSuper[3] = {
+static AOMClass* _ControllerSuper[4] = {
 OMAnimatediPrint::staticGetClass(),
 OMAnimatediInitialize::staticGetClass(),
-OMAnimatediConfirmDataReceival::staticGetClass()};
+OMAnimatediConfirmDataReceival::staticGetClass(),
+OMAnimatediGetAlertDetails::staticGetClass()};
 //#]
 #endif // _OMINSTRUMENT
 
@@ -188,6 +189,7 @@ Controller::object_0_C::~object_0_C() {
 //#[ ignore
 Controller::port_33_C::port_33_C() : _p_(0) {
     itsIConfirmDataReceival = NULL;
+    itsIGetAlertDetails = NULL;
     itsIInitialize = NULL;
     itsIPrint = NULL;
 }
@@ -208,10 +210,23 @@ void Controller::port_33_C::connectController(Controller* part) {
     setItsIPrint(part);
     setItsIInitialize(part);
     setItsIConfirmDataReceival(part);
+    setItsIGetAlertDetails(part);
+    
+}
+
+void Controller::port_33_C::getAlertDetails() {
+    
+    if (itsIGetAlertDetails != NULL) {
+        itsIGetAlertDetails->getAlertDetails();
+    }
     
 }
 
 iConfirmDataReceival* Controller::port_33_C::getItsIConfirmDataReceival() {
+    return this;
+}
+
+iGetAlertDetails* Controller::port_33_C::getItsIGetAlertDetails() {
     return this;
 }
 
@@ -231,16 +246,20 @@ void Controller::port_33_C::initialize() {
     
 }
 
-void Controller::port_33_C::print() {
-    
+StationData* Controller::port_33_C::print() {
+    StationData* res = NULL;
     if (itsIPrint != NULL) {
-        itsIPrint->print();
+        res = itsIPrint->print();
     }
-    
+    return res;
 }
 
 void Controller::port_33_C::setItsIConfirmDataReceival(iConfirmDataReceival* p_iConfirmDataReceival) {
     itsIConfirmDataReceival = p_iConfirmDataReceival;
+}
+
+void Controller::port_33_C::setItsIGetAlertDetails(iGetAlertDetails* p_iGetAlertDetails) {
+    itsIGetAlertDetails = p_iGetAlertDetails;
 }
 
 void Controller::port_33_C::setItsIInitialize(iInitialize* p_iInitialize) {
@@ -256,6 +275,10 @@ void Controller::port_33_C::cleanUpRelations() {
         {
             itsIConfirmDataReceival = NULL;
         }
+    if(itsIGetAlertDetails != NULL)
+        {
+            itsIGetAlertDetails = NULL;
+        }
     if(itsIInitialize != NULL)
         {
             itsIInitialize = NULL;
@@ -268,6 +291,7 @@ void Controller::port_33_C::cleanUpRelations() {
 
 Controller::port_35_C::port_35_C() : _p_(0) {
     itsIInform = NULL;
+    itsISendAlert = NULL;
 }
 
 Controller::port_35_C::~port_35_C() {
@@ -278,7 +302,11 @@ iInform* Controller::port_35_C::getItsIInform() {
     return this;
 }
 
-iInform* Controller::port_35_C::getOutBound() {
+iSendAlert* Controller::port_35_C::getItsISendAlert() {
+    return this;
+}
+
+Controller::port_35_C* Controller::port_35_C::getOutBound() {
     return this;
 }
 
@@ -290,14 +318,30 @@ void Controller::port_35_C::inform() {
     
 }
 
+void Controller::port_35_C::sendAlert() {
+    
+    if (itsISendAlert != NULL) {
+        itsISendAlert->sendAlert();
+    }
+    
+}
+
 void Controller::port_35_C::setItsIInform(iInform* p_iInform) {
     itsIInform = p_iInform;
+}
+
+void Controller::port_35_C::setItsISendAlert(iSendAlert* p_iSendAlert) {
+    itsISendAlert = p_iSendAlert;
 }
 
 void Controller::port_35_C::cleanUpRelations() {
     if(itsIInform != NULL)
         {
             itsIInform = NULL;
+        }
+    if(itsISendAlert != NULL)
+        {
+            itsISendAlert = NULL;
         }
 }
 //#]
@@ -358,6 +402,12 @@ void Controller::deletePackage() {
     //#]
 }
 
+void Controller::getAlertDetails() {
+    NOTIFY_OPERATION(getAlertDetails, getAlertDetails(), 0, Default_Controller_getAlertDetails_SERIALIZE);
+    //#[ operation getAlertDetails()
+    //#]
+}
+
 StationData* Controller::getDataPackage() const {
     NOTIFY_OPERATION(getDataPackage, getDataPackage() const, 0, Default_Controller_getDataPackage_SERIALIZE);
     //#[ operation getDataPackage() const
@@ -383,14 +433,22 @@ bool Controller::isAnyAlert() {
     	temp = true; 
     }          
     iterator = 0;
+    std::cout << "Czy ktorys element jest ponad poziom?" << temp << std::endl;
     return temp;
     //#]
 }
 
-void Controller::print() {
+StationData* Controller::print() {
     NOTIFY_OPERATION(print, print(), 0, Default_Controller_print_SERIALIZE);
     //#[ operation print()
+    
     printPackage();
+    return StationData(	dataPackage->get(1),
+    					dataPackage->get(2),
+    					dataPackage->get(3),
+    					dataPackage->get(4),
+    					stationId,
+    					dataPackage->getTime());
     //#]
 }
 
@@ -828,6 +886,32 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
             
         }
         break;
+        // State wysylanieAlertu
+        case wysylanieAlertu:
+        {
+            if(IS_EVENT_TYPE_OF(OMNullEventId))
+                {
+                    NOTIFY_TRANSITION_STARTED("21");
+                    popNullTransition();
+                    //#[ state wysylanieAlertu.(Exit) 
+                    iterator = 0;
+                    //#]
+                    NOTIFY_STATE_EXITED("ROOT.wysylanieAlertu");
+                    NOTIFY_STATE_ENTERED("ROOT.packageReadyInformation");
+                    rootState_subState = packageReadyInformation;
+                    rootState_active = packageReadyInformation;
+                    //#[ state packageReadyInformation.(Entry) 
+                    OUT_PORT(port_35)->inform();
+                    //printPackage();
+                     //itsTransmitter.GEN(evSendToReceiver(dataPackage));
+                    // deletePackage();
+                    //#]
+                    NOTIFY_TRANSITION_TERMINATED("21");
+                    res = eventConsumed;
+                }
+            
+        }
+        break;
         // State packageReadyInformation
         case packageReadyInformation:
         {
@@ -852,23 +936,54 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
         {
             if(IS_EVENT_TYPE_OF(OMNullEventId))
                 {
-                    NOTIFY_TRANSITION_STARTED("14");
-                    popNullTransition();
-                    NOTIFY_STATE_EXITED("ROOT.soonToCheckIfAlert");
-                    //#[ transition 14 
-                    sprawdzPoziomy();
-                    //#]
-                    NOTIFY_STATE_ENTERED("ROOT.packageReadyInformation");
-                    rootState_subState = packageReadyInformation;
-                    rootState_active = packageReadyInformation;
-                    //#[ state packageReadyInformation.(Entry) 
-                    OUT_PORT(port_35)->inform();
-                    //printPackage();
-                     //itsTransmitter.GEN(evSendToReceiver(dataPackage));
-                    // deletePackage();
-                    //#]
-                    NOTIFY_TRANSITION_TERMINATED("14");
-                    res = eventConsumed;
+                    //## transition 20 
+                    if( isAnyAlert())
+                        {
+                            NOTIFY_TRANSITION_STARTED("14");
+                            NOTIFY_TRANSITION_STARTED("20");
+                            popNullTransition();
+                            NOTIFY_STATE_EXITED("ROOT.soonToCheckIfAlert");
+                            //#[ transition 14 
+                            sprawdzPoziomy();
+                            //#]
+                            NOTIFY_STATE_ENTERED("ROOT.wysylanieAlertu");
+                            pushNullTransition();
+                            rootState_subState = wysylanieAlertu;
+                            rootState_active = wysylanieAlertu;
+                            //#[ state wysylanieAlertu.(Entry) 
+                            OUT_PORT(port_35)->sendAlert();
+                            //for (iterator++; iterator <=4; iterator++) {
+                            //	if (alert[iterator] == true)
+                            //		itsReceiver->GEN(evSendAlert(stationId, iterator));		 
+                            //}
+                            
+                            //#]
+                            NOTIFY_TRANSITION_TERMINATED("20");
+                            NOTIFY_TRANSITION_TERMINATED("14");
+                            res = eventConsumed;
+                        }
+                    else
+                        {
+                            NOTIFY_TRANSITION_STARTED("14");
+                            NOTIFY_TRANSITION_STARTED("22");
+                            popNullTransition();
+                            NOTIFY_STATE_EXITED("ROOT.soonToCheckIfAlert");
+                            //#[ transition 14 
+                            sprawdzPoziomy();
+                            //#]
+                            NOTIFY_STATE_ENTERED("ROOT.packageReadyInformation");
+                            rootState_subState = packageReadyInformation;
+                            rootState_active = packageReadyInformation;
+                            //#[ state packageReadyInformation.(Entry) 
+                            OUT_PORT(port_35)->inform();
+                            //printPackage();
+                             //itsTransmitter.GEN(evSendToReceiver(dataPackage));
+                            // deletePackage();
+                            //#]
+                            NOTIFY_TRANSITION_TERMINATED("22");
+                            NOTIFY_TRANSITION_TERMINATED("14");
+                            res = eventConsumed;
+                        }
                 }
             
         }
@@ -954,6 +1069,7 @@ void OMAnimatedController::serializeAttributes(AOMSAttributes* aomsAttributes) c
     OMAnimatediPrint::serializeAttributes(aomsAttributes);
     OMAnimatediInitialize::serializeAttributes(aomsAttributes);
     OMAnimatediConfirmDataReceival::serializeAttributes(aomsAttributes);
+    OMAnimatediGetAlertDetails::serializeAttributes(aomsAttributes);
 }
 
 void OMAnimatedController::serializeRelations(AOMSRelations* aomsRelations) const {
@@ -982,6 +1098,7 @@ void OMAnimatedController::serializeRelations(AOMSRelations* aomsRelations) cons
     OMAnimatediPrint::serializeRelations(aomsRelations);
     OMAnimatediInitialize::serializeRelations(aomsRelations);
     OMAnimatediConfirmDataReceival::serializeRelations(aomsRelations);
+    OMAnimatediGetAlertDetails::serializeRelations(aomsRelations);
 }
 
 void OMAnimatedController::rootState_serializeStates(AOMSState* aomsState) const {
@@ -1101,13 +1218,15 @@ void OMAnimatedController::packageReadyInformation_serializeStates(AOMSState* ao
 }
 //#]
 
-IMPLEMENT_REACTIVE_META_M_P(Controller, Default, false, _ControllerSuper, 3, OMAnimatedController)
+IMPLEMENT_REACTIVE_META_M_P(Controller, Default, false, _ControllerSuper, 4, OMAnimatedController)
 
 OMINIT_SUPERCLASS(iPrint, OMAnimatediPrint)
 
 OMINIT_SUPERCLASS(iInitialize, OMAnimatediInitialize)
 
 OMINIT_SUPERCLASS(iConfirmDataReceival, OMAnimatediConfirmDataReceival)
+
+OMINIT_SUPERCLASS(iGetAlertDetails, OMAnimatediGetAlertDetails)
 
 OMREGISTER_REACTIVE_CLASS
 

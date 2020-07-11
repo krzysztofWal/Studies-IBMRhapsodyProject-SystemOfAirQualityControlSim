@@ -29,11 +29,15 @@
 //## auto_generated
 #include "iConfirmDataReceival.h"
 //## auto_generated
+#include "iGetAlertDetails.h"
+//## auto_generated
 #include "iInform.h"
 //## auto_generated
 #include "iInitialize.h"
 //## auto_generated
 #include "iPrint.h"
+//## auto_generated
+#include "iSendAlert.h"
 //## auto_generated
 #include "NO2_Sensor.h"
 //## auto_generated
@@ -238,6 +242,12 @@
 #define Inform_UNSERIALIZE OM_NO_OP
 
 #define Inform_CONSTRUCTOR Inform()
+
+#define SendAlert_SERIALIZE OM_NO_OP
+
+#define SendAlert_UNSERIALIZE OM_NO_OP
+
+#define SendAlert_CONSTRUCTOR SendAlert()
 //#]
 
 //## package Default
@@ -278,6 +288,8 @@ void Default_initRelations() {
     {
         
         itsController.get_port_35()->setItsIInform(itsReceiver.get_port_5()->getItsIInform());
+        
+        itsController.get_port_35()->setItsISendAlert(itsReceiver.get_port_5()->getItsISendAlert());
         
     }
     
@@ -709,6 +721,18 @@ bool Inform::isTypeOf(const short id) const {
 }
 
 IMPLEMENT_META_EVENT_P(Inform, Default, Default, Inform())
+
+//## event SendAlert()
+SendAlert::SendAlert() {
+    NOTIFY_EVENT_CONSTRUCTOR(SendAlert)
+    setId(SendAlert_Default_id);
+}
+
+bool SendAlert::isTypeOf(const short id) const {
+    return (SendAlert_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(SendAlert, Default, Default, SendAlert())
 
 /*********************************************************************
 	File Path	: DefaultComponent\DefaultConfig\Default.cpp

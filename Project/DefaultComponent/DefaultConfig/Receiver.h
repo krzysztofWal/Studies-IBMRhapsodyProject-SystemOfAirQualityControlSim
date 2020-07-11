@@ -27,12 +27,18 @@
 #include <oxf\event.h>
 //## class Receiver
 #include "iInform.h"
+//## class Receiver
+#include "iSendAlert.h"
+//## dependency StationData
+#include "StationData.h"
 //## auto_generated
 #include <map>
 //## auto_generated
 #include <utility>
 //## auto_generated
 #include <vector>
+//## auto_generated
+#include <array>
 //## class port_3_C
 #include "iConfirmDataReceival.h"
 //## class port_3_C
@@ -42,7 +48,7 @@
 //## package Default
 
 //## class Receiver
-class Receiver : public OMThread, public OMReactive, public iInform {
+class Receiver : public OMThread, public OMReactive, public iInform, public iSendAlert {
 public :
 
 //#[ ignore
@@ -79,7 +85,7 @@ public :
         virtual void initialize();
         
         //## auto_generated
-        virtual void print();
+        virtual StationData* print();
         
         ////    Additional operations    ////
         
@@ -111,7 +117,7 @@ public :
     };
     
     //## package Default
-    class port_5_C : public iInform {
+    class port_5_C : public iInform, public iSendAlert {
         ////    Constructors and destructors    ////
         
     public :
@@ -131,12 +137,21 @@ public :
         iInform* getItsIInform();
         
         //## auto_generated
+        iSendAlert* getItsISendAlert();
+        
+        //## auto_generated
         virtual void inform();
+        
+        //## auto_generated
+        virtual void sendAlert();
         
         ////    Additional operations    ////
         
         //## auto_generated
         void setItsIInform(iInform* p_iInform);
+        
+        //## auto_generated
+        void setItsISendAlert(iSendAlert* p_iSendAlert);
     
     protected :
     
@@ -150,6 +165,8 @@ public :
         ////    Relations and components    ////
         
         iInform* itsIInform;		//## link itsIInform
+        
+        iSendAlert* itsISendAlert;		//## link itsISendAlert
     };
 //#]
 
@@ -171,6 +188,9 @@ public :
     
     //## operation inform()
     virtual void inform();
+    
+    //## operation sendAlert()
+    virtual void sendAlert();
     
     ////    Additional operations    ////
     
@@ -264,7 +284,7 @@ protected :
 
 #ifdef _OMINSTRUMENT
 //#[ ignore
-class OMAnimatedReceiver : public OMAnimatediInform {
+class OMAnimatedReceiver : public OMAnimatediInform, public OMAnimatediSendAlert {
     DECLARE_REACTIVE_META(Receiver, OMAnimatedReceiver)
     
     ////    Framework operations    ////

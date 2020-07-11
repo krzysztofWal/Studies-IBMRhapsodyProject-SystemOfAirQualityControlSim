@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: StationData
-//!	Generated Date	: Fri, 10, Jul 2020  
+//!	Generated Date	: Sat, 11, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\StationData.h
 *********************************************************************/
 
@@ -40,8 +40,14 @@ public :
     //## operation StationData(long)
     StationData(long time);
     
-    //## auto_generated
+    //## operation StationData()
     StationData();
+    
+    //## operation StationData(StationData)
+    StationData(const StationData& source);
+    
+    //## operation StationData(double,double,double,double,int,long)
+    StationData(double co, double no2, double o3, double so2, int stationId, long time);
     
     //## auto_generated
     ~StationData();
@@ -50,6 +56,9 @@ public :
     
     //## operation get(int)
     double get(int which);
+    
+    //## operation getTime()
+    long getTime();
     
     //## operation set(int,double)
     void set(int which, double value);
@@ -85,9 +94,6 @@ public :
     
     //## auto_generated
     void setStationId(int p_stationId);
-    
-    //## auto_generated
-    long getTime() const;
     
     //## auto_generated
     void setTime(long p_time);

@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Sensor
-//!	Generated Date	: Fri, 10, Jul 2020  
+//!	Generated Date	: Sat, 11, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Sensor.cpp
 *********************************************************************/
 
@@ -40,8 +40,8 @@ Sensor::~Sensor() {
 double Sensor::odczytajDane() {
     NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_Sensor_odczytajDane_SERIALIZE);
     //#[ operation odczytajDane()
-    
-     return 0.5;
+    recentValue += 0.5;
+    return 0.;
     //#]
 }
 

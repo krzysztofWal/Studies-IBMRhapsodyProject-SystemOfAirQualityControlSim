@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: StationData
-//!	Generated Date	: Fri, 10, Jul 2020  
+//!	Generated Date	: Sat, 11, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\StationData.cpp
 *********************************************************************/
 
@@ -15,6 +15,13 @@
 //## auto_generated
 #include "StationData.h"
 //#[ ignore
+#define OM_Default_StationData_StationData_3_SERIALIZE \
+    aomsmethod->addAttribute("co", x2String(co));\
+    aomsmethod->addAttribute("no2", x2String(no2));\
+    aomsmethod->addAttribute("o3", x2String(o3));\
+    aomsmethod->addAttribute("so2", x2String(so2));\
+    aomsmethod->addAttribute("stationId", x2String(stationId));\
+    aomsmethod->addAttribute("time", x2String(time));
 #define Default_StationData_set_SERIALIZE \
     aomsmethod->addAttribute("which", x2String(which));\
     aomsmethod->addAttribute("value", x2String(value));
@@ -22,7 +29,11 @@
 
 #define OM_Default_StationData_StationData_1_SERIALIZE OM_NO_OP
 
+#define OM_Default_StationData_StationData_2_SERIALIZE aomsmethod->addAttribute("source", X2ITEM(&source));
+
 #define Default_StationData_get_SERIALIZE aomsmethod->addAttribute("which", x2String(which));
+
+#define Default_StationData_getTime_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
@@ -37,6 +48,20 @@ StationData::StationData(long time) : co(0), o3(0.), so2(0), stationId(0) {
 
 StationData::StationData() : co(0), o3(0.), so2(0), stationId(0) {
     NOTIFY_CONSTRUCTOR(StationData, StationData(), 0, OM_Default_StationData_StationData_1_SERIALIZE);
+    //#[ operation StationData()
+    //#]
+}
+
+StationData::StationData(const StationData& source) : :StationData (source.co,source.no2,source.o3,source.so2,source.stationId,source.time), co(0), o3(0.), so2(0), stationId(0) {
+    NOTIFY_CONSTRUCTOR(StationData, StationData(const StationData&), 1, OM_Default_StationData_StationData_2_SERIALIZE);
+    //#[ operation StationData(StationData)
+    //#]
+}
+
+StationData::StationData(double co, double no2, double o3, double so2, int stationId, long time) : co(co), no2(no2), o3(o3), so2(so2), stationId(stationId), time(time) {
+    NOTIFY_CONSTRUCTOR(StationData, StationData(double,double,double,double,int,long), 6, OM_Default_StationData_StationData_3_SERIALIZE);
+    //#[ operation StationData(double,double,double,double,int,long)
+    //#]
 }
 
 StationData::~StationData() {
@@ -60,6 +85,13 @@ double StationData::get(int which) {
     	std::cout << "Reached default in appendToPackage()" << std::endl;
     	return 0.0;
     }
+    //#]
+}
+
+long StationData::getTime() {
+    NOTIFY_OPERATION(getTime, getTime(), 0, Default_StationData_getTime_SERIALIZE);
+    //#[ operation getTime()
+    return time;
     //#]
 }
 
@@ -123,10 +155,6 @@ int StationData::getStationId() const {
 
 void StationData::setStationId(int p_stationId) {
     stationId = p_stationId;
-}
-
-long StationData::getTime() const {
-    return time;
 }
 
 void StationData::setTime(long p_time) {

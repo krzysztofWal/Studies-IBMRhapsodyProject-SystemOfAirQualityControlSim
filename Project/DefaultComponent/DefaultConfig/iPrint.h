@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: iPrint
-//!	Generated Date	: Fri, 10, Jul 2020  
+//!	Generated Date	: Sat, 11, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\iPrint.h
 *********************************************************************/
 
@@ -23,6 +23,9 @@
 #include <utility>
 //## auto_generated
 #include <vector>
+//## operation print()
+class StationData;
+
 //## package Default
 
 //## class iPrint
@@ -46,7 +49,7 @@ public :
     ////    Operations    ////
     
     //## operation print()
-    virtual void print() = 0;
+    virtual StationData* print() = 0;
 };
 
 #ifdef _OMINSTRUMENT

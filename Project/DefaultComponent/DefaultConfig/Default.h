@@ -63,6 +63,9 @@ class Thermometer;
 class iConfirmDataReceival;
 
 //## auto_generated
+class iGetAlertDetails;
+
+//## auto_generated
 class iInform;
 
 //## auto_generated
@@ -70,6 +73,9 @@ class iInitialize;
 
 //## auto_generated
 class iPrint;
+
+//## auto_generated
+class iSendAlert;
 
 //#[ ignore
 #define inicjalizujWyslaniePakietu_Default_id 18601
@@ -133,6 +139,8 @@ class iPrint;
 #define ConfirmRecival_Default_id 18630
 
 #define Inform_Default_id 18631
+
+#define SendAlert_Default_id 18632
 //#]
 
 //## package Default
@@ -1114,6 +1122,35 @@ public :
 //#[ ignore
 class OMAnimatedInform : virtual public AOMEvent {
     DECLARE_META_EVENT(Inform)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event SendAlert()
+class SendAlert : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedSendAlert;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    SendAlert();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedSendAlert : virtual public AOMEvent {
+    DECLARE_META_EVENT(SendAlert)
 };
 //#]
 #endif // _OMINSTRUMENT

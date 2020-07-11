@@ -102,6 +102,8 @@ OBJS= \
   iInitialize.obj \
   iInform.obj \
   iConfirmDataReceival.obj \
+  iSendAlert.obj \
+  iGetAlertDetails.obj \
   Default.obj
 
 
@@ -197,7 +199,7 @@ O3_Sensor.obj : O3_Sensor.cpp O3_Sensor.h    Default.h Controller.h Sensor.h
 
 
 
-Controller.obj : Controller.cpp Controller.h    Default.h O3_Sensor.h Thermometer.h Hygrometer.h Barometer.h CO_Sensor.h SO2_Sensor.h NO2_Sensor.h PM10_Sensor.h PM2_5Sensor.h PM1_Sensor.h iInform.h StationData.h iPrint.h Sensor.h iInitialize.h iConfirmDataReceival.h 
+Controller.obj : Controller.cpp Controller.h    Default.h O3_Sensor.h Thermometer.h Hygrometer.h Barometer.h CO_Sensor.h SO2_Sensor.h NO2_Sensor.h PM10_Sensor.h PM2_5Sensor.h PM1_Sensor.h iInform.h iSendAlert.h StationData.h iPrint.h Sensor.h iInitialize.h iConfirmDataReceival.h iGetAlertDetails.h 
 	$(CREATE_OBJ_DIR)
 	$(CPP) $(ConfigurationCPPCompileSwitches)  /Fo"Controller.obj" "Controller.cpp" 
 
@@ -227,7 +229,7 @@ StationData.obj : StationData.cpp StationData.h    Default.h
 
 
 
-Receiver.obj : Receiver.cpp Receiver.h    Default.h iPrint.h iInitialize.h iConfirmDataReceival.h StationData.h iInform.h 
+Receiver.obj : Receiver.cpp Receiver.h    Default.h iPrint.h iInitialize.h iConfirmDataReceival.h iInform.h iSendAlert.h 
 	$(CREATE_OBJ_DIR)
 	$(CPP) $(ConfigurationCPPCompileSwitches)  /Fo"Receiver.obj" "Receiver.cpp" 
 
@@ -293,7 +295,19 @@ iConfirmDataReceival.obj : iConfirmDataReceival.cpp iConfirmDataReceival.h    De
 
 
 
-Default.obj : Default.cpp Default.h    StationData.h Sensor.h O3_Sensor.h Controller.h Thermometer.h Hygrometer.h Barometer.h Receiver.h CO_Sensor.h SO2_Sensor.h NO2_Sensor.h PM1_Sensor.h PM2_5Sensor.h PM10_Sensor.h iPrint.h iInitialize.h iInform.h iConfirmDataReceival.h 
+iSendAlert.obj : iSendAlert.cpp iSendAlert.h    Default.h 
+	$(CREATE_OBJ_DIR)
+	$(CPP) $(ConfigurationCPPCompileSwitches)  /Fo"iSendAlert.obj" "iSendAlert.cpp" 
+
+
+
+iGetAlertDetails.obj : iGetAlertDetails.cpp iGetAlertDetails.h    Default.h 
+	$(CREATE_OBJ_DIR)
+	$(CPP) $(ConfigurationCPPCompileSwitches)  /Fo"iGetAlertDetails.obj" "iGetAlertDetails.cpp" 
+
+
+
+Default.obj : Default.cpp Default.h    StationData.h Sensor.h O3_Sensor.h Controller.h Thermometer.h Hygrometer.h Barometer.h Receiver.h CO_Sensor.h SO2_Sensor.h NO2_Sensor.h PM1_Sensor.h PM2_5Sensor.h PM10_Sensor.h iPrint.h iInitialize.h iInform.h iConfirmDataReceival.h iSendAlert.h iGetAlertDetails.h 
 	$(CREATE_OBJ_DIR)
 	$(CPP) $(ConfigurationCPPCompileSwitches)  /Fo"Default.obj" "Default.cpp" 
 
@@ -344,6 +358,8 @@ clean:
 	if exist iInitialize.obj erase iInitialize.obj
 	if exist iInform.obj erase iInform.obj
 	if exist iConfirmDataReceival.obj erase iConfirmDataReceival.obj
+	if exist iSendAlert.obj erase iSendAlert.obj
+	if exist iGetAlertDetails.obj erase iGetAlertDetails.obj
 	if exist Default.obj erase Default.obj
 	if exist $(TARGET_MAIN)$(OBJ_EXT) erase $(TARGET_MAIN)$(OBJ_EXT)
 	if exist *$(OBJ_EXT) erase *$(OBJ_EXT)

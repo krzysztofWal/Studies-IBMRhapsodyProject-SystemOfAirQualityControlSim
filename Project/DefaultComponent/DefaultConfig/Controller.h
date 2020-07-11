@@ -36,6 +36,8 @@
 //## class Controller
 #include "iConfirmDataReceival.h"
 //## class Controller
+#include "iGetAlertDetails.h"
+//## class Controller
 #include "iInitialize.h"
 //## class Controller
 #include "iPrint.h"
@@ -51,6 +53,8 @@
 #include "PM2_5Sensor.h"
 //## link itsSO2_Sensor
 #include "SO2_Sensor.h"
+//## dependency StationData
+#include "StationData.h"
 //## auto_generated
 #include <map>
 //## auto_generated
@@ -59,17 +63,16 @@
 #include <vector>
 //## class port_35_C
 #include "iInform.h"
+//## class port_35_C
+#include "iSendAlert.h"
 //#[ ignore
 #define OMAnim_Default_Controller_setStationStatus_statusType_ARGS_DECLARATION statusType p_stationStatus;
 //#]
 
-//## attribute dataPackage
-class StationData;
-
 //## package Default
 
 //## class Controller
-class Controller : public OMThread, public OMReactive, public iPrint, public iInitialize, public iConfirmDataReceival {
+class Controller : public OMThread, public OMReactive, public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails {
 public :
 
     ////    Friends    ////
@@ -162,7 +165,7 @@ public :
     
 //#[ ignore
     //## package Default
-    class port_33_C : public iPrint, public iInitialize, public iConfirmDataReceival {
+    class port_33_C : public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails {
         ////    Constructors and destructors    ////
         
     public :
@@ -182,7 +185,13 @@ public :
         void connectController(Controller* part);
         
         //## auto_generated
+        virtual void getAlertDetails();
+        
+        //## auto_generated
         iConfirmDataReceival* getItsIConfirmDataReceival();
+        
+        //## auto_generated
+        iGetAlertDetails* getItsIGetAlertDetails();
         
         //## auto_generated
         iInitialize* getItsIInitialize();
@@ -194,12 +203,15 @@ public :
         virtual void initialize();
         
         //## auto_generated
-        virtual void print();
+        virtual StationData* print();
         
         ////    Additional operations    ////
         
         //## auto_generated
         void setItsIConfirmDataReceival(iConfirmDataReceival* p_iConfirmDataReceival);
+        
+        //## auto_generated
+        void setItsIGetAlertDetails(iGetAlertDetails* p_iGetAlertDetails);
         
         //## auto_generated
         void setItsIInitialize(iInitialize* p_iInitialize);
@@ -220,13 +232,15 @@ public :
         
         iConfirmDataReceival* itsIConfirmDataReceival;		//## link itsIConfirmDataReceival
         
+        iGetAlertDetails* itsIGetAlertDetails;		//## link itsIGetAlertDetails
+        
         iInitialize* itsIInitialize;		//## link itsIInitialize
         
         iPrint* itsIPrint;		//## link itsIPrint
     };
     
     //## package Default
-    class port_35_C : public iInform {
+    class port_35_C : public iInform, public iSendAlert {
         ////    Constructors and destructors    ////
         
     public :
@@ -243,15 +257,24 @@ public :
         iInform* getItsIInform();
         
         //## auto_generated
-        iInform* getOutBound();
+        iSendAlert* getItsISendAlert();
+        
+        //## auto_generated
+        Controller::port_35_C* getOutBound();
         
         //## auto_generated
         virtual void inform();
+        
+        //## auto_generated
+        virtual void sendAlert();
         
         ////    Additional operations    ////
         
         //## auto_generated
         void setItsIInform(iInform* p_iInform);
+        
+        //## auto_generated
+        void setItsISendAlert(iSendAlert* p_iSendAlert);
     
     protected :
     
@@ -265,6 +288,8 @@ public :
         ////    Relations and components    ////
         
         iInform* itsIInform;		//## link itsIInform
+        
+        iSendAlert* itsISendAlert;		//## link itsISendAlert
     };
 //#]
 
@@ -286,6 +311,9 @@ public :
     //## operation deletePackage()
     void deletePackage();
     
+    //## operation getAlertDetails()
+    virtual void getAlertDetails();
+    
     //## operation getDataPackage() const
     StationData* getDataPackage() const;
     
@@ -296,7 +324,7 @@ public :
     bool isAnyAlert();
     
     //## operation print()
-    virtual void print();
+    virtual StationData* print();
     
     //## operation printPackage()
     void printPackage();
@@ -515,7 +543,7 @@ protected :
 DECLARE_OPERATION_CLASS(Default_Controller_setStationStatus_statusType)
 
 //#[ ignore
-class OMAnimatedController : public OMAnimatediPrint, public OMAnimatediInitialize, public OMAnimatediConfirmDataReceival {
+class OMAnimatedController : public OMAnimatediPrint, public OMAnimatediInitialize, public OMAnimatediConfirmDataReceival, public OMAnimatediGetAlertDetails {
     DECLARE_REACTIVE_META(Controller, OMAnimatedController)
     
     DECLARE_META_OP(Default_Controller_setStationStatus_statusType)
