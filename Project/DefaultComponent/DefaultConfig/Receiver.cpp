@@ -70,8 +70,8 @@ void Receiver::port_3_C::initialize() {
     
 }
 
-StationData* Receiver::port_3_C::print() {
-    StationData* res = NULL;
+StationData Receiver::port_3_C::print() {
+    StationData res;
     if (itsIPrint != NULL) {
         res = itsIPrint->print();
     }

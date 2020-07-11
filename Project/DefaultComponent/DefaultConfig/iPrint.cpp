@@ -14,8 +14,6 @@
 
 //## auto_generated
 #include "iPrint.h"
-//## operation print()
-#include "StationData.h"
 //#[ ignore
 #define Default_iPrint_iPrint_SERIALIZE OM_NO_OP
 

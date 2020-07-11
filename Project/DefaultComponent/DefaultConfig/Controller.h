@@ -203,7 +203,7 @@ public :
         virtual void initialize();
         
         //## auto_generated
-        virtual StationData* print();
+        virtual StationData print();
         
         ////    Additional operations    ////
         
@@ -324,7 +324,7 @@ public :
     bool isAnyAlert();
     
     //## operation print()
-    virtual StationData* print();
+    virtual StationData print();
     
     //## operation printPackage()
     void printPackage();

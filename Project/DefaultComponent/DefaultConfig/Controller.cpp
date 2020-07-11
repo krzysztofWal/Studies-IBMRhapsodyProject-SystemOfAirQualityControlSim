@@ -246,8 +246,8 @@ void Controller::port_33_C::initialize() {
     
 }
 
-StationData* Controller::port_33_C::print() {
-    StationData* res = NULL;
+StationData Controller::port_33_C::print() {
+    StationData res;
     if (itsIPrint != NULL) {
         res = itsIPrint->print();
     }
@@ -438,7 +438,7 @@ bool Controller::isAnyAlert() {
     //#]
 }
 
-StationData* Controller::print() {
+StationData Controller::print() {
     NOTIFY_OPERATION(print, print(), 0, Default_Controller_print_SERIALIZE);
     //#[ operation print()
     

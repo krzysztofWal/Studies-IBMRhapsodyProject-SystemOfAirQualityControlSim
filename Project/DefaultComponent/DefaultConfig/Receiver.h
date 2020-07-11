@@ -85,7 +85,7 @@ public :
         virtual void initialize();
         
         //## auto_generated
-        virtual StationData* print();
+        virtual StationData print();
         
         ////    Additional operations    ////
         

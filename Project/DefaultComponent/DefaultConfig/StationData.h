@@ -43,9 +43,6 @@ public :
     //## operation StationData()
     StationData();
     
-    //## operation StationData(StationData)
-    StationData(const StationData& source);
-    
     //## operation StationData(double,double,double,double,int,long)
     StationData(double co, double no2, double o3, double so2, int stationId, long time);
     

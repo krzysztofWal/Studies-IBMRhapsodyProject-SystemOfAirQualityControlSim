@@ -11,8 +11,8 @@
 			<_id type="a">GUID 276dc1ec-c611-4917-836a-e9a49290292e</_id>
 			<_myState type="a">8192</_myState>
 			<_name type="a">Project</_name>
-			<_modifiedTimeWeak type="a">7.11.2020::0:38:43</_modifiedTimeWeak>
-			<_modifiedTime type="a">7.11.2020::0:38:43</_modifiedTime>
+			<_modifiedTimeWeak type="a">7.11.2020::0:44:34</_modifiedTimeWeak>
+			<_modifiedTime type="a">7.11.2020::0:44:34</_modifiedTime>
 			<_UserColors type="w">
 				<IRPYRawContainer type="e">
 					<size type="a">16</size>
@@ -767,8 +767,8 @@
 			</_properties>
 			<_name type="a">Klasy</_name>
 			<_modifiedTimeWeak type="a">1.2.1990::0:0:0</_modifiedTimeWeak>
-			<_modifiedTime type="a">7.11.2020::0:38:48</_modifiedTime>
-			<_lastModifiedTime type="a">7.11.2020::0:38:48</_lastModifiedTime>
+			<_modifiedTime type="a">7.11.2020::0:48:21</_modifiedTime>
+			<_lastModifiedTime type="a">7.11.2020::0:48:21</_lastModifiedTime>
 			<m_hReferencedDiagram type="r">
 				<IHandle type="e">
 				</IHandle>
@@ -1416,7 +1416,7 @@
 				</CGIText>
 			</m_name>
 			<m_drawBehavior type="a">395368</m_drawBehavior>
-			<m_transform type="a">0.271437 0 0 0.641711 998.454 28.877 </m_transform>
+			<m_transform type="a">0.271437 0 0 0.665775 998.454 20.9599 </m_transform>
 			<m_bIsPreferencesInitialized type="a">1</m_bIsPreferencesInitialized>
 			<m_AdditionalLabel type="p">
 				<CGIText type="e">
@@ -2280,7 +2280,7 @@
 					<m_nOrientationCtrlPt type="a">7</m_nOrientationCtrlPt>
 				</CGIText>
 			</m_rpn>
-			<m_arrow type="a">1 402 390  </m_arrow>
+			<m_arrow type="a">1 402 396  </m_arrow>
 			<m_anglePoint1 type="a">0 0 </m_anglePoint1>
 			<m_anglePoint2 type="a">0 0 </m_anglePoint2>
 			<m_line_style type="a">2</m_line_style>
@@ -3138,8 +3138,7 @@
 			<m_displayOption type="a">All</m_displayOption>
 			<m_bShowInherited type="a">1</m_bShowInherited>
 			<m_bOrdered type="a">0</m_bOrdered>
-			<_itemValueOfFontPropertiesMapCount type="a">7</_itemValueOfFontPropertiesMapCount>
-			<_fontPropValues type="a">Tahoma 8 400 0 0 0 0</_fontPropValues>
+			<_itemValueOfFontPropertiesMapCount type="a">6</_itemValueOfFontPropertiesMapCount>
 			<_fontPropValues type="a">Tahoma 8 400 0 0 0 0</_fontPropValues>
 			<_fontPropValues type="a">Tahoma 8 400 0 0 0 0</_fontPropValues>
 			<_fontPropValues type="a">Tahoma 8 400 0 0 0 0</_fontPropValues>
@@ -4368,7 +4367,7 @@
 					<m_nOrientationCtrlPt type="a">7</m_nOrientationCtrlPt>
 				</CGIText>
 			</m_rpn>
-			<m_arrow type="a">1 586 370  </m_arrow>
+			<m_arrow type="a">1 586 375  </m_arrow>
 			<m_anglePoint1 type="a">0 0 </m_anglePoint1>
 			<m_anglePoint2 type="a">0 0 </m_anglePoint2>
 			<m_line_style type="a">2</m_line_style>
@@ -4559,7 +4558,7 @@
 					<m_nOrientationCtrlPt type="a">7</m_nOrientationCtrlPt>
 				</CGIText>
 			</m_rpn>
-			<m_arrow type="a">1 708 350  </m_arrow>
+			<m_arrow type="a">1 708 354  </m_arrow>
 			<m_anglePoint1 type="a">0 0 </m_anglePoint1>
 			<m_anglePoint2 type="a">0 0 </m_anglePoint2>
 			<m_line_style type="a">2</m_line_style>
@@ -4747,11 +4746,11 @@
 					<m_nOrientationCtrlPt type="a">7</m_nOrientationCtrlPt>
 				</CGIText>
 			</m_rpn>
-			<m_arrow type="a">1 886 329  </m_arrow>
+			<m_arrow type="a">1 886 333  </m_arrow>
 			<m_anglePoint1 type="a">0 0 </m_anglePoint1>
 			<m_anglePoint2 type="a">0 0 </m_anglePoint2>
 			<m_line_style type="a">2</m_line_style>
-			<m_SourcePort type="a">-2 468 </m_SourcePort>
+			<m_SourcePort type="a">-2 469 </m_SourcePort>
 			<m_TargetPort type="a">611 1451 </m_TargetPort>
 			<m_pInverseModelObject type="r">
 				<IAssociationEndHandle type="e">
@@ -5366,7 +5365,7 @@
 					<m_nOrientationCtrlPt type="a">7</m_nOrientationCtrlPt>
 				</CGIText>
 			</m_rpn>
-			<m_arrow type="a">1 733 712  </m_arrow>
+			<m_arrow type="a">1 733 730  </m_arrow>
 			<m_anglePoint1 type="a">0 0 </m_anglePoint1>
 			<m_anglePoint2 type="a">0 0 </m_anglePoint2>
 			<m_line_style type="a">2</m_line_style>
@@ -5558,7 +5557,7 @@
 					<m_nOrientationCtrlPt type="a">7</m_nOrientationCtrlPt>
 				</CGIText>
 			</m_rpn>
-			<m_arrow type="a">1 574 737  </m_arrow>
+			<m_arrow type="a">1 574 755  </m_arrow>
 			<m_anglePoint1 type="a">0 0 </m_anglePoint1>
 			<m_anglePoint2 type="a">0 0 </m_anglePoint2>
 			<m_line_style type="a">2</m_line_style>
@@ -5751,7 +5750,7 @@
 					<m_nOrientationCtrlPt type="a">7</m_nOrientationCtrlPt>
 				</CGIText>
 			</m_rpn>
-			<m_arrow type="a">1 451 773  </m_arrow>
+			<m_arrow type="a">1 451 793  </m_arrow>
 			<m_anglePoint1 type="a">0 0 </m_anglePoint1>
 			<m_anglePoint2 type="a">0 0 </m_anglePoint2>
 			<m_line_style type="a">2</m_line_style>
@@ -6013,7 +6012,7 @@
 				</CGIText>
 			</m_name>
 			<m_drawBehavior type="a">4096</m_drawBehavior>
-			<m_transform type="a">0 1.55833 -3.68409 0 1203.94 296.118 </m_transform>
+			<m_transform type="a">0 1.50201 -3.68409 0 1203.94 297.904 </m_transform>
 			<m_bIsPreferencesInitialized type="a">1</m_bIsPreferencesInitialized>
 			<m_AdditionalLabel type="p">
 				<CGIText type="e">
@@ -6798,7 +6797,7 @@
 				</CGIText>
 			</m_name>
 			<m_drawBehavior type="a">0</m_drawBehavior>
-			<m_transform type="a">0 1.55833 -3.6841 0 1204.7 525.878 </m_transform>
+			<m_transform type="a">0 1.502 -3.6841 0 1204.7 527.666 </m_transform>
 			<m_bIsPreferencesInitialized type="a">0</m_bIsPreferencesInitialized>
 			<m_AdditionalLabel type="p">
 				<CGIText type="e">
@@ -7400,7 +7399,7 @@
 			<m_anglePoint1 type="a">0 0 </m_anglePoint1>
 			<m_anglePoint2 type="a">0 0 </m_anglePoint2>
 			<m_line_style type="a">0</m_line_style>
-			<m_SourcePort type="a">1059 926 </m_SourcePort>
+			<m_SourcePort type="a">1059 925 </m_SourcePort>
 			<m_TargetPort type="a">0 637 </m_TargetPort>
 			<m_ShowName type="a">0</m_ShowName>
 			<m_ShowStereotype type="a">1</m_ShowStereotype>

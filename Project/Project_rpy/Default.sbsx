@@ -11,10 +11,10 @@
 			<_id type="a">GUID e33a1f4f-d5ca-497a-8673-ece9fbd20dfa</_id>
 			<_myState type="a">8192</_myState>
 			<_name type="a">Default</_name>
-			<_modifiedTimeWeak type="a">7.11.2020::0:7:1</_modifiedTimeWeak>
-			<_modifiedTime type="a">7.11.2020::0:37:4</_modifiedTime>
+			<_modifiedTimeWeak type="a">7.11.2020::0:45:4</_modifiedTimeWeak>
+			<_modifiedTime type="a">7.11.2020::0:45:4</_modifiedTime>
 			<_lastID type="a">85</_lastID>
-			<weakCGTime type="a">7.11.2020::0:7:1</weakCGTime>
+			<weakCGTime type="a">7.11.2020::0:45:4</weakCGTime>
 			<strongCGTime type="a">7.10.2020::22:8:29</strongCGTime>
 			<_defaultComposite type="s">GUID 497f565d-f4d4-4b08-a3ce-1d07f510e066</_defaultComposite>
 			<_eventsBaseID type="a">18601</_eventsBaseID>
@@ -11407,7 +11407,7 @@ return 0.;</_bodyData>
 			</IPropertyContainer>
 			</_properties>
 			<_name type="a">Controller</_name>
-			<_modifiedTimeWeak type="a">7.11.2020::0:36:31</_modifiedTimeWeak>
+			<_modifiedTimeWeak type="a">7.11.2020::0:45:4</_modifiedTimeWeak>
 			<_theMainDiagram type="r">
 				<IHandle type="e">
 					<_hm2Class type="a">IDiagram</_hm2Class>
@@ -11415,9 +11415,9 @@ return 0.;</_bodyData>
 					<_hid type="a">GUID 6094218e-79b1-4cb5-9edc-8c271d292ca1</_hid>
 				</IHandle>
 			</_theMainDiagram>
-			<_modifiedTime type="a">7.11.2020::0:36:31</_modifiedTime>
+			<_modifiedTime type="a">7.11.2020::0:45:4</_modifiedTime>
 			<_lastID type="a">39</_lastID>
-			<weakCGTime type="a">7.11.2020::0:36:31</weakCGTime>
+			<weakCGTime type="a">7.11.2020::0:45:4</weakCGTime>
 			<strongCGTime type="a">7.10.2020::21:34:29</strongCGTime>
 			<_itsStateChart type="r">
 				<IHandle type="e">
@@ -13669,20 +13669,14 @@ return temp;</_bodyData>
 			</IPropertyContainer>
 			</_properties>
 			<_name type="a">print</_name>
-			<_modifiedTimeWeak type="a">7.11.2020::0:36:31</_modifiedTimeWeak>
-			<_modifiedTime type="a">7.11.2020::0:36:31</_modifiedTime>
+			<_modifiedTimeWeak type="a">7.11.2020::0:45:4</_modifiedTimeWeak>
+			<_modifiedTime type="a">7.11.2020::0:45:4</_modifiedTime>
 			<_virtual type="a">1</_virtual>
 			<Args type="c">
 				<IRPYRawContainer type="e">
 					<size type="a">0</size>
 				</IRPYRawContainer>
 			</Args>
-			<_returnType type="r">
-				<IHandle type="e">
-					<_hm2Class type="a">IClass</_hm2Class>
-					<_hid type="a">GUID 444b515a-051e-41f7-8fe9-9abaead886c9</_hid>
-				</IHandle>
-			</_returnType>
 			<_abstract type="a">0</_abstract>
 			<_final type="a">0</_final>
 			<_concurrency type="a">Sequential</_concurrency>
@@ -13700,7 +13694,18 @@ return StationData(	dataPackage-&gt;get(1),%0D
 					dataPackage-&gt;getTime());</_bodyData>
 			</IBody>
 			</_itsBody>
+			<AggregatesList type="e">
+				<value>GUID d78f53d5-4b8e-436e-b8af-f963bb30f456</value>
+			</AggregatesList>
 		</IPrimitiveOperation>
+		<IType type="e">
+			<_id type="a">GUID d78f53d5-4b8e-436e-b8af-f963bb30f456</_id>
+			<_myState type="a">8192</_myState>
+			<_modifiedTimeWeak type="a">1.2.1990::0:0:0</_modifiedTimeWeak>
+			<_modifiedTime type="a">1.1.1970::1:0:0</_modifiedTime>
+			<_declaration type="a">StationData</_declaration>
+			<_kind type="a">Language</_kind>
+		</IType>
 		<IReception type="e">
 			<_id type="a">GUID dcc964d2-498f-4634-8872-2ee2c27f2922</_id>
 			<_myState type="a">8192</_myState>
@@ -21873,7 +21878,7 @@ createPackage(this-&gt;time);</m_str>
 			</IPropertyContainer>
 			</_properties>
 			<_name type="a">StationData</_name>
-			<_modifiedTimeWeak type="a">7.11.2020::0:34:10</_modifiedTimeWeak>
+			<_modifiedTimeWeak type="a">7.11.2020::0:48:21</_modifiedTimeWeak>
 			<_theMainDiagram type="r">
 				<IHandle type="e">
 					<_hm2Class type="a">IDiagram</_hm2Class>
@@ -21881,9 +21886,9 @@ createPackage(this-&gt;time);</m_str>
 					<_hid type="a">GUID 6094218e-79b1-4cb5-9edc-8c271d292ca1</_hid>
 				</IHandle>
 			</_theMainDiagram>
-			<_modifiedTime type="a">7.11.2020::0:34:10</_modifiedTime>
+			<_modifiedTime type="a">7.11.2020::0:48:21</_modifiedTime>
 			<_lastID type="a">23</_lastID>
-			<weakCGTime type="a">7.11.2020::0:34:10</weakCGTime>
+			<weakCGTime type="a">7.11.2020::0:48:21</weakCGTime>
 			<strongCGTime type="a">7.8.2020::22:50:43</strongCGTime>
 			<_itsStateChart type="r">
 				<IHandle type="e">
@@ -21895,7 +21900,6 @@ createPackage(this-&gt;time);</m_str>
 				<value>GUID 0dc1d294-6e1c-457c-8c81-b615de48c279</value>
 				<value>GUID 14d4be54-ec30-469c-a922-6c63a00d4d3a</value>
 				<value>GUID 07dbc86d-433b-4332-9259-bd9fec67f5e6</value>
-				<value>GUID 6902721f-e1d0-435e-a393-80b3c0a26754</value>
 				<value>GUID 2fb4a79d-da9f-4889-b7ef-ce4231987b1a</value>
 				<value>GUID f3d6b9f3-71e8-4a6e-a8de-137e1017d85e</value>
 				<value>GUID 43fc3669-601e-49cf-98c3-2f0ae651914e</value>
@@ -22110,42 +22114,6 @@ default:%0D
 			<_static type="a">0</_static>
 			<_constant type="a">0</_constant>
 		</IConstructor>
-		<IConstructor type="e">
-			<_id type="a">GUID 6902721f-e1d0-435e-a393-80b3c0a26754</_id>
-			<_myState type="a">8192</_myState>
-			<_modifiedTimeWeak type="a">7.11.2020::0:24:36</_modifiedTimeWeak>
-			<_modifiedTime type="a">7.11.2020::0:24:36</_modifiedTime>
-			<_virtual type="a">0</_virtual>
-			<_returnType type="r">
-				<IHandle type="e">
-				</IHandle>
-			</_returnType>
-			<_abstract type="a">0</_abstract>
-			<_final type="a">0</_final>
-			<_concurrency type="a">Sequential</_concurrency>
-			<_protection type="a">iPublic</_protection>
-			<_static type="a">0</_static>
-			<_constant type="a">0</_constant>
-			<_initializer type="a">:StationData (source.co,source.no2,source.o3,source.so2,source.stationId,source.time)</_initializer>
-			<AggregatesList type="e">
-				<value>GUID 05be1e15-32c0-4376-bce7-5221d623f806</value>
-			</AggregatesList>
-		</IConstructor>
-		<IArgument type="e">
-			<_id type="a">GUID 05be1e15-32c0-4376-bce7-5221d623f806</_id>
-			<_myState type="a">8192</_myState>
-			<_name type="a">source</_name>
-			<_modifiedTimeWeak type="a">1.2.1990::0:0:0</_modifiedTimeWeak>
-			<_modifiedTime type="a">1.1.1970::1:0:0</_modifiedTime>
-			<_typeOf type="r">
-				<IHandle type="e">
-					<_hm2Class type="a">IClass</_hm2Class>
-					<_hid type="a">GUID 444b515a-051e-41f7-8fe9-9abaead886c9</_hid>
-				</IHandle>
-			</_typeOf>
-			<_isOrdered type="a">0</_isOrdered>
-			<_argumentDirection type="a">In</_argumentDirection>
-		</IArgument>
 		<IConstructor type="e">
 			<_id type="a">GUID 2fb4a79d-da9f-4889-b7ef-ce4231987b1a</_id>
 			<_myState type="a">8192</_myState>
@@ -27839,10 +27807,10 @@ OUT_PORT(port_3)-&gt;confirmReceival();</m_str>
 					
 				</IRPYRawContainer>
 			</Stereotypes>
-			<_modifiedTimeWeak type="a">7.11.2020::0:9:37</_modifiedTimeWeak>
-			<_modifiedTime type="a">7.11.2020::0:9:37</_modifiedTime>
+			<_modifiedTimeWeak type="a">7.11.2020::0:45:35</_modifiedTimeWeak>
+			<_modifiedTime type="a">7.11.2020::0:45:35</_modifiedTime>
 			<_lastID type="a">1</_lastID>
-			<weakCGTime type="a">7.11.2020::0:9:37</weakCGTime>
+			<weakCGTime type="a">7.11.2020::0:45:35</weakCGTime>
 			<strongCGTime type="a">7.10.2020::20:37:50</strongCGTime>
 			<_itsStateChart type="r">
 				<IHandle type="e">
@@ -27890,27 +27858,32 @@ OUT_PORT(port_3)-&gt;confirmReceival();</m_str>
 			</IPropertyContainer>
 			</_properties>
 			<_name type="a">print</_name>
-			<_modifiedTimeWeak type="a">7.11.2020::0:9:37</_modifiedTimeWeak>
-			<_modifiedTime type="a">7.11.2020::0:9:37</_modifiedTime>
+			<_modifiedTimeWeak type="a">7.11.2020::0:45:35</_modifiedTimeWeak>
+			<_modifiedTime type="a">7.11.2020::0:45:35</_modifiedTime>
 			<_virtual type="a">0</_virtual>
 			<Args type="c">
 				<IRPYRawContainer type="e">
 					<size type="a">0</size>
 				</IRPYRawContainer>
 			</Args>
-			<_returnType type="r">
-				<IHandle type="e">
-					<_hm2Class type="a">IClass</_hm2Class>
-					<_hid type="a">GUID 444b515a-051e-41f7-8fe9-9abaead886c9</_hid>
-				</IHandle>
-			</_returnType>
 			<_abstract type="a">0</_abstract>
 			<_final type="a">0</_final>
 			<_concurrency type="a">Sequential</_concurrency>
 			<_protection type="a">iPublic</_protection>
 			<_static type="a">0</_static>
 			<_constant type="a">0</_constant>
+			<AggregatesList type="e">
+				<value>GUID 9086de08-3e4c-4c6c-b39f-9e110b77cab9</value>
+			</AggregatesList>
 		</IPrimitiveOperation>
+		<IType type="e">
+			<_id type="a">GUID 9086de08-3e4c-4c6c-b39f-9e110b77cab9</_id>
+			<_myState type="a">8192</_myState>
+			<_modifiedTimeWeak type="a">1.2.1990::0:0:0</_modifiedTimeWeak>
+			<_modifiedTime type="a">1.1.1970::1:0:0</_modifiedTime>
+			<_declaration type="a">StationData</_declaration>
+			<_kind type="a">Language</_kind>
+		</IType>
 		<IClass type="e">
 			<_id type="a">GUID bcd83194-260b-43b5-90ed-7ed4e3b589a1</_id>
 			<_myState type="a">8192</_myState>

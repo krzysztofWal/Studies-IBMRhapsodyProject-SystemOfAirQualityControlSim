@@ -17,15 +17,14 @@
 #include <aom\aom.h>
 //## auto_generated
 #include "Default.h"
+//## operation print()
+#include "StationData.h"
 //## auto_generated
 #include <map>
 //## auto_generated
 #include <utility>
 //## auto_generated
 #include <vector>
-//## operation print()
-class StationData;
-
 //## package Default
 
 //## class iPrint
@@ -49,7 +48,7 @@ public :
     ////    Operations    ////
     
     //## operation print()
-    virtual StationData* print() = 0;
+    virtual StationData print() = 0;
 };
 
 #ifdef _OMINSTRUMENT
