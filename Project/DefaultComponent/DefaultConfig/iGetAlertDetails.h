@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: iGetAlertDetails
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\iGetAlertDetails.h
 *********************************************************************/
 
@@ -26,9 +26,7 @@
 //## auto_generated
 #include <fstream>
 //## auto_generated
-#include <array>
-//## auto_generated
-#include <stdio.h>
+#include <climits>
 //## package Default
 
 //## class iGetAlertDetails
@@ -52,7 +50,7 @@ public :
     ////    Operations    ////
     
     //## operation getAlertDetails()
-    virtual std::vector<std::pair<long, int>> getAlertDetails() = 0;
+    virtual std::vector<std::pair<unsigned long long, int>> getAlertDetails() = 0;
 };
 
 #ifdef _OMINSTRUMENT

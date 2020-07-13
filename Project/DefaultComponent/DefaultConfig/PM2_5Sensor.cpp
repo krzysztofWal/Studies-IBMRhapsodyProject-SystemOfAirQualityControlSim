@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: PM2_5Sensor
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\PM2_5Sensor.cpp
 *********************************************************************/
 
@@ -22,6 +22,8 @@
 #define Default_PM2_5Sensor_PM2_5Sensor_SERIALIZE OM_NO_OP
 
 #define Default_PM2_5Sensor_funcAb_SERIALIZE OM_NO_OP
+
+#define Default_PM2_5Sensor_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
@@ -45,6 +47,13 @@ PM2_5Sensor::~PM2_5Sensor() {
 void PM2_5Sensor::funcAb() {
     NOTIFY_OPERATION(funcAb, funcAb(), 0, Default_PM2_5Sensor_funcAb_SERIALIZE);
     //#[ operation funcAb()
+    //#]
+}
+
+void PM2_5Sensor::odczytajDane() {
+    NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_PM2_5Sensor_odczytajDane_SERIALIZE);
+    //#[ operation odczytajDane()
+    recentValue=1.2;
     //#]
 }
 

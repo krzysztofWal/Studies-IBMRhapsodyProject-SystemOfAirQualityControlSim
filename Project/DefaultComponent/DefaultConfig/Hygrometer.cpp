@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Hygrometer
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Hygrometer.cpp
 *********************************************************************/
 
@@ -22,6 +22,8 @@
 #define Default_Hygrometer_Hygrometer_SERIALIZE OM_NO_OP
 
 #define Default_Hygrometer_funcAb_SERIALIZE OM_NO_OP
+
+#define Default_Hygrometer_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
@@ -42,6 +44,13 @@ Hygrometer::~Hygrometer() {
 void Hygrometer::funcAb() {
     NOTIFY_OPERATION(funcAb, funcAb(), 0, Default_Hygrometer_funcAb_SERIALIZE);
     //#[ operation funcAb()
+    //#]
+}
+
+void Hygrometer::odczytajDane() {
+    NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_Hygrometer_odczytajDane_SERIALIZE);
+    //#[ operation odczytajDane()
+    recentValue=1.4;
     //#]
 }
 

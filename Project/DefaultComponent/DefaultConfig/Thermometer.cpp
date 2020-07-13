@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Thermometer
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Thermometer.cpp
 *********************************************************************/
 
@@ -22,6 +22,8 @@
 #define Default_Thermometer_Thermometer_SERIALIZE OM_NO_OP
 
 #define Default_Thermometer_funcAb_SERIALIZE OM_NO_OP
+
+#define Default_Thermometer_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
@@ -42,6 +44,13 @@ Thermometer::~Thermometer() {
 void Thermometer::funcAb() {
     NOTIFY_OPERATION(funcAb, funcAb(), 0, Default_Thermometer_funcAb_SERIALIZE);
     //#[ operation funcAb()
+    //#]
+}
+
+void Thermometer::odczytajDane() {
+    NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_Thermometer_odczytajDane_SERIALIZE);
+    //#[ operation odczytajDane()
+    recentValue=0.7;
     //#]
 }
 

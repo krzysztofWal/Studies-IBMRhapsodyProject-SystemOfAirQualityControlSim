@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: PM1_Sensor
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\PM1_Sensor.cpp
 *********************************************************************/
 
@@ -22,6 +22,8 @@
 #define Default_PM1_Sensor_PM1_Sensor_SERIALIZE OM_NO_OP
 
 #define Default_PM1_Sensor_funcAb_SERIALIZE OM_NO_OP
+
+#define Default_PM1_Sensor_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
@@ -45,6 +47,13 @@ PM1_Sensor::~PM1_Sensor() {
 void PM1_Sensor::funcAb() {
     NOTIFY_OPERATION(funcAb, funcAb(), 0, Default_PM1_Sensor_funcAb_SERIALIZE);
     //#[ operation funcAb()
+    //#]
+}
+
+void PM1_Sensor::odczytajDane() {
+    NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_PM1_Sensor_odczytajDane_SERIALIZE);
+    //#[ operation odczytajDane()
+    recentValue=0.6;
     //#]
 }
 

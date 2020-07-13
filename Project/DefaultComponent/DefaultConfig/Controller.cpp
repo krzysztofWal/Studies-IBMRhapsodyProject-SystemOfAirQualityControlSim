@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Controller
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Controller.cpp
 *********************************************************************/
 
@@ -156,7 +156,7 @@ void Controller::destroy() {
     OMReactive::destroy();
 }
 
-Controller::Controller(IOxfActive* theActiveContext) : stationId(1), stationStatus(standBy), time(1603), whetherTimerRead(false) {
+Controller::Controller(IOxfActive* theActiveContext) : stationId(1), stationStatus(standBy), whetherTimerRead(false) {
     NOTIFY_ACTIVE_CONSTRUCTOR(Controller, Controller(), 0, Default_Controller_Controller_SERIALIZE);
     setActiveContext(this, true);
     {
@@ -261,8 +261,8 @@ void Controller::port_33_C::connectController(Controller* part) {
     
 }
 
-std::vector<std::pair<long, int>> Controller::port_33_C::getAlertDetails() {
-    std::vector<std::pair<long, int>> res;
+std::vector<std::pair<unsigned long long, int>> Controller::port_33_C::getAlertDetails() {
+    std::vector<std::pair<unsigned long long, int>> res;
     if (itsIGetAlertDetails != NULL) {
         res = itsIGetAlertDetails->getAlertDetails();
     }
@@ -426,6 +426,24 @@ void Controller::appendToPackage(const sensorType& whichSensor, double value) {
     case so2:
     	dataPackage->set(3,value);
     	break;
+    case pm1:
+    	dataPackage->set(5,value);
+    	break;
+    case pm2_5:
+    	dataPackage->set(6,value);
+    	break;
+    case pm10:
+    	dataPackage->set(7,value);
+    	break;
+    case thermo:
+    	dataPackage->set(8,value);
+    	break;
+    case hygro:
+    	dataPackage->set(9,value);
+    	break;
+    case baro:
+    	dataPackage->set(10,value);
+    	break;
     default:
     	std::cout << "Reached default in appendToPackage()" << std::endl;
     }
@@ -449,13 +467,13 @@ void Controller::confirmReceival() {
     NOTIFY_OPERATION(confirmReceival, confirmReceival(), 0, Default_Controller_confirmReceival_SERIALIZE);
     //#[ operation confirmReceival()
     GEN(ConfirmRecival);
-    std::cout << "rec to contr - i have the data, can delete"<< std::endl;
+    //std::cout << "rec to contr - i have the data, can delete"<< std::endl;
     //#]
 }
 
-void Controller::createPackage(long time) {
-    NOTIFY_OPERATION(createPackage, createPackage(long), 1, Default_Controller_createPackage_SERIALIZE);
-    //#[ operation createPackage(long)
+void Controller::createPackage(unsigned long long time) {
+    NOTIFY_OPERATION(createPackage, createPackage(unsigned long long), 1, Default_Controller_createPackage_SERIALIZE);
+    //#[ operation createPackage(unsigned long long)
     dataPackage = new StationData(time);
     //#]
 }
@@ -464,14 +482,14 @@ void Controller::deletePackage() {
     NOTIFY_OPERATION(deletePackage, deletePackage(), 0, Default_Controller_deletePackage_SERIALIZE);
     //#[ operation deletePackage()
     delete dataPackage;
-    std::cout << "data package deleted" << std::endl;
+    //std::cout << "data package deleted" << std::endl;
     //#]
 }
 
-std::vector<std::pair<long, int>> Controller::getAlertDetails() {
+std::vector<std::pair<unsigned long long, int>> Controller::getAlertDetails() {
     NOTIFY_OPERATION(getAlertDetails, getAlertDetails(), 0, Default_Controller_getAlertDetails_SERIALIZE);
     //#[ operation getAlertDetails()
-    std::vector<std::pair<long, int>> temp;
+    std::vector<std::pair<unsigned long long, int>> temp;
     for (iterator++; iterator <= static_cast<int>(alert.size()); iterator++) {
     	if (alert[iterator]== true) 
     		temp.emplace_back(std::make_pair(dataPackage->getTime(),iterator));
@@ -492,8 +510,7 @@ void Controller::initialize() {
     NOTIFY_OPERATION(initialize, initialize(), 0, Default_Controller_initialize_SERIALIZE);
     //#[ operation initialize()
     GEN(Initialize);
-    //initializationFlag = true;
-    std::cout << "from rec to contr - initialize" << std::endl;
+    //std::cout << "from rec to contr - initialize" << std::endl;
     //#]
 }
 
@@ -506,7 +523,7 @@ bool Controller::isAnyAlert() {
     		temp = true; 
     }          
     iterator = 0;
-    std::cout << "Czy ktorys element jest ponad poziom?" << temp << std::endl;
+    //std::cout << "Czy ktorys element jest ponad poziom?" << temp << std::endl;
     return temp;
     //#]
 }
@@ -544,6 +561,12 @@ void Controller::printPackage() {
     		<< "CO: " << dataPackage->get(2) << std::endl
     		<< "SO2: " << dataPackage->get(3) << std::endl
     		<< "NO2: " << dataPackage->get(4) << std::endl
+    		<< "PM1: " << dataPackage->get(5) << std::endl
+    		<< "PM2.5: " << dataPackage->get(6) << std::endl
+    		<< "PM10: " << dataPackage->get(7) << std::endl
+    		<< "thermometer " << dataPackage->get(8) << std::endl
+    		<< "hygrometer: " << dataPackage->get(9) << std::endl
+    		<< "barometer: " << dataPackage->get(10) << std::endl
     		<< "==========================================" << std::endl;
     		
     //		<< "O3: " << dataPackage->getO3() << std::endl;
@@ -566,7 +589,7 @@ void Controller::setWhenDue(int which, double limit) {
     //#[ operation setWhenDue(int,double)
     if(dataPackage->get(which)> limit)
     alert[which] = true;
-    std::cout << "setWhenDue: " << alert[which] << std::endl;
+    //std::cout << "setWhenDue: " << alert[which] << std::endl;
     //#]
 }
 
@@ -644,11 +667,11 @@ void Controller::setDataPackage(StationData* p_dataPackage) {
     dataPackage = p_dataPackage;
 }
 
-long Controller::getTime() const {
+unsigned long long Controller::getTime() const {
     return time;
 }
 
-void Controller::setTime(long p_time) {
+void Controller::setTime(unsigned long long p_time) {
     time = p_time;
 }
 
@@ -859,10 +882,13 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                     //#[ transition 4 
                     appendToPackage(o3, params->valueBeingSent);
                     //#]
-                    NOTIFY_STATE_ENTERED("ROOT.signalJoin_Timer_Server_Request");
-                    pushNullTransition();
-                    rootState_subState = signalJoin_Timer_Server_Request;
-                    rootState_active = signalJoin_Timer_Server_Request;
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_37");
+                    rootState_subState = sendaction_37;
+                    rootState_active = sendaction_37;
+                    //#[ state sendaction_37.(Entry) 
+                    itsPM1_Sensor.GEN(czytajCzujniki);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_37");
                     NOTIFY_TRANSITION_TERMINATED("4");
                     res = eventConsumed;
                 }
@@ -873,10 +899,13 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                             NOTIFY_TRANSITION_STARTED("8");
                             cancel(rootState_timeout);
                             NOTIFY_STATE_EXITED("ROOT.sendaction_14");
-                            NOTIFY_STATE_ENTERED("ROOT.signalJoin_Timer_Server_Request");
-                            pushNullTransition();
-                            rootState_subState = signalJoin_Timer_Server_Request;
-                            rootState_active = signalJoin_Timer_Server_Request;
+                            NOTIFY_STATE_ENTERED("ROOT.sendaction_37");
+                            rootState_subState = sendaction_37;
+                            rootState_active = sendaction_37;
+                            //#[ state sendaction_37.(Entry) 
+                            itsPM1_Sensor.GEN(czytajCzujniki);
+                            //#]
+                            rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_37");
                             NOTIFY_TRANSITION_TERMINATED("8");
                             res = eventConsumed;
                         }
@@ -1058,10 +1087,22 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
         // State callibration
         case callibration:
         {
-            if(IS_EVENT_TYPE_OF(OMNullEventId))
+            if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+                {
+                    if(getCurrentEvent() == rootState_timeout)
+                        {
+                            NOTIFY_TRANSITION_STARTED("37");
+                            //#[ transition 37 
+                            GEN(callibrated);
+                            //#]
+                            NOTIFY_TRANSITION_TERMINATED("37");
+                            res = eventConsumed;
+                        }
+                }
+            else if(IS_EVENT_TYPE_OF(callibrated_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("23");
-                    popNullTransition();
+                    cancel(rootState_timeout);
                     NOTIFY_STATE_EXITED("ROOT.callibration");
                     NOTIFY_STATE_ENTERED("ROOT.StationStandBy");
                     rootState_subState = StationStandBy;
@@ -1070,6 +1111,303 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                     obsluzTrybOszczedzaniaEnergii();
                     //#]
                     NOTIFY_TRANSITION_TERMINATED("23");
+                    res = eventConsumed;
+                }
+            
+        }
+        break;
+        // State sendaction_37
+        case sendaction_37:
+        {
+            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
+                {
+                    OMSETPARAMS(wyslijDane);
+                    NOTIFY_TRANSITION_STARTED("30");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_37");
+                    //#[ transition 30 
+                    appendToPackage(pm1,params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_38");
+                    rootState_subState = sendaction_38;
+                    rootState_active = sendaction_38;
+                    //#[ state sendaction_38.(Entry) 
+                    itsPM2_5Sensor.GEN(czytajCzujniki);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_38");
+                    NOTIFY_TRANSITION_TERMINATED("30");
+                    res = eventConsumed;
+                }
+            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+                {
+                    if(getCurrentEvent() == rootState_timeout)
+                        {
+                            NOTIFY_TRANSITION_STARTED("24");
+                            cancel(rootState_timeout);
+                            NOTIFY_STATE_EXITED("ROOT.sendaction_37");
+                            NOTIFY_STATE_ENTERED("ROOT.sendaction_38");
+                            rootState_subState = sendaction_38;
+                            rootState_active = sendaction_38;
+                            //#[ state sendaction_38.(Entry) 
+                            itsPM2_5Sensor.GEN(czytajCzujniki);
+                            //#]
+                            rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_38");
+                            NOTIFY_TRANSITION_TERMINATED("24");
+                            res = eventConsumed;
+                        }
+                }
+            
+        }
+        break;
+        // State sendaction_38
+        case sendaction_38:
+        {
+            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
+                {
+                    OMSETPARAMS(wyslijDane);
+                    NOTIFY_TRANSITION_STARTED("31");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_38");
+                    //#[ transition 31 
+                    appendToPackage(pm2_5,params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_39");
+                    rootState_subState = sendaction_39;
+                    rootState_active = sendaction_39;
+                    //#[ state sendaction_39.(Entry) 
+                    itsPM10_Sensor.GEN(czytajCzujniki);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_39");
+                    NOTIFY_TRANSITION_TERMINATED("31");
+                    res = eventConsumed;
+                }
+            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+                {
+                    if(getCurrentEvent() == rootState_timeout)
+                        {
+                            NOTIFY_TRANSITION_STARTED("25");
+                            cancel(rootState_timeout);
+                            NOTIFY_STATE_EXITED("ROOT.sendaction_38");
+                            NOTIFY_STATE_ENTERED("ROOT.sendaction_39");
+                            rootState_subState = sendaction_39;
+                            rootState_active = sendaction_39;
+                            //#[ state sendaction_39.(Entry) 
+                            itsPM10_Sensor.GEN(czytajCzujniki);
+                            //#]
+                            rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_39");
+                            NOTIFY_TRANSITION_TERMINATED("25");
+                            res = eventConsumed;
+                        }
+                }
+            
+        }
+        break;
+        // State sendaction_39
+        case sendaction_39:
+        {
+            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
+                {
+                    OMSETPARAMS(wyslijDane);
+                    NOTIFY_TRANSITION_STARTED("32");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_39");
+                    //#[ transition 32 
+                    appendToPackage(pm10,params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_40");
+                    rootState_subState = sendaction_40;
+                    rootState_active = sendaction_40;
+                    //#[ state sendaction_40.(Entry) 
+                    itsThermometer.GEN(czytajCzujniki);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_40");
+                    NOTIFY_TRANSITION_TERMINATED("32");
+                    res = eventConsumed;
+                }
+            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+                {
+                    if(getCurrentEvent() == rootState_timeout)
+                        {
+                            NOTIFY_TRANSITION_STARTED("26");
+                            cancel(rootState_timeout);
+                            NOTIFY_STATE_EXITED("ROOT.sendaction_39");
+                            NOTIFY_STATE_ENTERED("ROOT.sendaction_40");
+                            rootState_subState = sendaction_40;
+                            rootState_active = sendaction_40;
+                            //#[ state sendaction_40.(Entry) 
+                            itsThermometer.GEN(czytajCzujniki);
+                            //#]
+                            rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_40");
+                            NOTIFY_TRANSITION_TERMINATED("26");
+                            res = eventConsumed;
+                        }
+                }
+            
+        }
+        break;
+        // State sendaction_40
+        case sendaction_40:
+        {
+            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
+                {
+                    OMSETPARAMS(wyslijDane);
+                    NOTIFY_TRANSITION_STARTED("33");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_40");
+                    //#[ transition 33 
+                    appendToPackage(thermo,params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_41");
+                    rootState_subState = sendaction_41;
+                    rootState_active = sendaction_41;
+                    //#[ state sendaction_41.(Entry) 
+                    itsHygrometer.GEN(czytajCzujniki);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_41");
+                    NOTIFY_TRANSITION_TERMINATED("33");
+                    res = eventConsumed;
+                }
+            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+                {
+                    if(getCurrentEvent() == rootState_timeout)
+                        {
+                            NOTIFY_TRANSITION_STARTED("27");
+                            cancel(rootState_timeout);
+                            NOTIFY_STATE_EXITED("ROOT.sendaction_40");
+                            NOTIFY_STATE_ENTERED("ROOT.sendaction_41");
+                            rootState_subState = sendaction_41;
+                            rootState_active = sendaction_41;
+                            //#[ state sendaction_41.(Entry) 
+                            itsHygrometer.GEN(czytajCzujniki);
+                            //#]
+                            rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_41");
+                            NOTIFY_TRANSITION_TERMINATED("27");
+                            res = eventConsumed;
+                        }
+                }
+            
+        }
+        break;
+        // State sendaction_41
+        case sendaction_41:
+        {
+            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
+                {
+                    OMSETPARAMS(wyslijDane);
+                    NOTIFY_TRANSITION_STARTED("34");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_41");
+                    //#[ transition 34 
+                    appendToPackage(hygro,params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_42");
+                    rootState_subState = sendaction_42;
+                    rootState_active = sendaction_42;
+                    //#[ state sendaction_42.(Entry) 
+                    itsBarometer.GEN(czytajCzujniki);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_42");
+                    NOTIFY_TRANSITION_TERMINATED("34");
+                    res = eventConsumed;
+                }
+            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+                {
+                    if(getCurrentEvent() == rootState_timeout)
+                        {
+                            NOTIFY_TRANSITION_STARTED("28");
+                            cancel(rootState_timeout);
+                            NOTIFY_STATE_EXITED("ROOT.sendaction_41");
+                            NOTIFY_STATE_ENTERED("ROOT.sendaction_42");
+                            rootState_subState = sendaction_42;
+                            rootState_active = sendaction_42;
+                            //#[ state sendaction_42.(Entry) 
+                            itsBarometer.GEN(czytajCzujniki);
+                            //#]
+                            rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_42");
+                            NOTIFY_TRANSITION_TERMINATED("28");
+                            res = eventConsumed;
+                        }
+                }
+            
+        }
+        break;
+        // State sendaction_42
+        case sendaction_42:
+        {
+            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
+                {
+                    OMSETPARAMS(wyslijDane);
+                    NOTIFY_TRANSITION_STARTED("35");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_42");
+                    //#[ transition 35 
+                    appendToPackage(baro,params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.signalJoin_Timer_Server_Request");
+                    pushNullTransition();
+                    rootState_subState = signalJoin_Timer_Server_Request;
+                    rootState_active = signalJoin_Timer_Server_Request;
+                    NOTIFY_TRANSITION_TERMINATED("35");
+                    res = eventConsumed;
+                }
+            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+                {
+                    if(getCurrentEvent() == rootState_timeout)
+                        {
+                            NOTIFY_TRANSITION_STARTED("29");
+                            cancel(rootState_timeout);
+                            NOTIFY_STATE_EXITED("ROOT.sendaction_42");
+                            NOTIFY_STATE_ENTERED("ROOT.signalJoin_Timer_Server_Request");
+                            pushNullTransition();
+                            rootState_subState = signalJoin_Timer_Server_Request;
+                            rootState_active = signalJoin_Timer_Server_Request;
+                            NOTIFY_TRANSITION_TERMINATED("29");
+                            res = eventConsumed;
+                        }
+                }
+            
+        }
+        break;
+        // State sendaction_44
+        case sendaction_44:
+        {
+            if(IS_EVENT_TYPE_OF(provideTime_Default_id))
+                {
+                    OMSETPARAMS(provideTime);
+                    NOTIFY_TRANSITION_STARTED("36");
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_44");
+                    //#[ transition 36 
+                    createPackage(params->time);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_10");
+                    rootState_subState = sendaction_10;
+                    rootState_active = sendaction_10;
+                    //#[ state sendaction_10.(Entry) 
+                    itsCO_Sensor.GEN(czytajCzujniki);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_10");
+                    NOTIFY_TRANSITION_TERMINATED("36");
+                    res = eventConsumed;
+                }
+            
+        }
+        break;
+        // State sendaction_47
+        case sendaction_47:
+        {
+            if(IS_EVENT_TYPE_OF(OMNullEventId))
+                {
+                    NOTIFY_TRANSITION_STARTED("38");
+                    popNullTransition();
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_47");
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_10");
+                    rootState_subState = sendaction_10;
+                    rootState_active = sendaction_10;
+                    //#[ state sendaction_10.(Entry) 
+                    itsCO_Sensor.GEN(czytajCzujniki);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_10");
+                    NOTIFY_TRANSITION_TERMINATED("38");
                     res = eventConsumed;
                 }
             
@@ -1087,13 +1425,16 @@ IOxfReactive::TakeEventStatus Controller::StationStandBy_handleEvent() {
         {
             NOTIFY_TRANSITION_STARTED("21");
             NOTIFY_STATE_EXITED("ROOT.StationStandBy");
+            //#[ transition 21 
+            obsluzTrybOszczedzaniaEnergii();
+            //#]
             NOTIFY_STATE_ENTERED("ROOT.callibration");
-            pushNullTransition();
             rootState_subState = callibration;
             rootState_active = callibration;
             //#[ state callibration.(Entry) 
             calibrate();
             //#]
+            rootState_timeout = scheduleTimeout(1000, "ROOT.callibration");
             NOTIFY_TRANSITION_TERMINATED("21");
             res = eventConsumed;
         }
@@ -1102,32 +1443,32 @@ IOxfReactive::TakeEventStatus Controller::StationStandBy_handleEvent() {
             NOTIFY_TRANSITION_STARTED("0");
             NOTIFY_STATE_EXITED("ROOT.StationStandBy");
             //#[ transition 0 
-            obsluzTrybOszczedzaniaEnergii();createPackage(this->time);
+            obsluzTrybOszczedzaniaEnergii();
             //#]
-            NOTIFY_STATE_ENTERED("ROOT.sendaction_10");
-            rootState_subState = sendaction_10;
-            rootState_active = sendaction_10;
-            //#[ state sendaction_10.(Entry) 
-            itsCO_Sensor.GEN(czytajCzujniki);
+            NOTIFY_STATE_ENTERED("ROOT.sendaction_44");
+            rootState_subState = sendaction_44;
+            rootState_active = sendaction_44;
+            //#[ state sendaction_44.(Entry) 
+            itsTimer.GEN(requestTime);
             //#]
-            rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_10");
             NOTIFY_TRANSITION_TERMINATED("0");
             res = eventConsumed;
         }
     else if(IS_EVENT_TYPE_OF(timerCzytajSensory_Default_id))
         {
+            OMSETPARAMS(timerCzytajSensory);
             NOTIFY_TRANSITION_STARTED("11");
             NOTIFY_STATE_EXITED("ROOT.StationStandBy");
             //#[ transition 11 
-            obsluzTrybOszczedzaniaEnergii();whetherTimerRead=true;createPackage(this->time);
+            obsluzTrybOszczedzaniaEnergii();whetherTimerRead=true;createPackage(params->time);std::cout << params->time;
             //#]
-            NOTIFY_STATE_ENTERED("ROOT.sendaction_10");
-            rootState_subState = sendaction_10;
-            rootState_active = sendaction_10;
-            //#[ state sendaction_10.(Entry) 
-            itsCO_Sensor.GEN(czytajCzujniki);
+            NOTIFY_STATE_ENTERED("ROOT.sendaction_47");
+            pushNullTransition();
+            rootState_subState = sendaction_47;
+            rootState_active = sendaction_47;
+            //#[ state sendaction_47.(Entry) 
+            itsTimer.GEN(potwierdzSygnalOdTimera);
             //#]
-            rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_10");
             NOTIFY_TRANSITION_TERMINATED("11");
             res = eventConsumed;
         }
@@ -1135,13 +1476,16 @@ IOxfReactive::TakeEventStatus Controller::StationStandBy_handleEvent() {
         {
             NOTIFY_TRANSITION_STARTED("22");
             NOTIFY_STATE_EXITED("ROOT.StationStandBy");
+            //#[ transition 22 
+            obsluzTrybOszczedzaniaEnergii();
+            //#]
             NOTIFY_STATE_ENTERED("ROOT.callibration");
-            pushNullTransition();
             rootState_subState = callibration;
             rootState_active = callibration;
             //#[ state callibration.(Entry) 
             calibrate();
             //#]
+            rootState_timeout = scheduleTimeout(1000, "ROOT.callibration");
             NOTIFY_TRANSITION_TERMINATED("22");
             res = eventConsumed;
         }
@@ -1256,6 +1600,46 @@ void OMAnimatedController::rootState_serializeStates(AOMSState* aomsState) const
             callibration_serializeStates(aomsState);
         }
         break;
+        case Controller::sendaction_37:
+        {
+            sendaction_37_serializeStates(aomsState);
+        }
+        break;
+        case Controller::sendaction_38:
+        {
+            sendaction_38_serializeStates(aomsState);
+        }
+        break;
+        case Controller::sendaction_39:
+        {
+            sendaction_39_serializeStates(aomsState);
+        }
+        break;
+        case Controller::sendaction_40:
+        {
+            sendaction_40_serializeStates(aomsState);
+        }
+        break;
+        case Controller::sendaction_41:
+        {
+            sendaction_41_serializeStates(aomsState);
+        }
+        break;
+        case Controller::sendaction_42:
+        {
+            sendaction_42_serializeStates(aomsState);
+        }
+        break;
+        case Controller::sendaction_44:
+        {
+            sendaction_44_serializeStates(aomsState);
+        }
+        break;
+        case Controller::sendaction_47:
+        {
+            sendaction_47_serializeStates(aomsState);
+        }
+        break;
         default:
             break;
     }
@@ -1271,6 +1655,38 @@ void OMAnimatedController::StationStandBy_serializeStates(AOMSState* aomsState) 
 
 void OMAnimatedController::signalJoin_Timer_Server_Request_serializeStates(AOMSState* aomsState) const {
     aomsState->addState("ROOT.signalJoin_Timer_Server_Request");
+}
+
+void OMAnimatedController::sendaction_47_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.sendaction_47");
+}
+
+void OMAnimatedController::sendaction_44_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.sendaction_44");
+}
+
+void OMAnimatedController::sendaction_42_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.sendaction_42");
+}
+
+void OMAnimatedController::sendaction_41_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.sendaction_41");
+}
+
+void OMAnimatedController::sendaction_40_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.sendaction_40");
+}
+
+void OMAnimatedController::sendaction_39_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.sendaction_39");
+}
+
+void OMAnimatedController::sendaction_38_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.sendaction_38");
+}
+
+void OMAnimatedController::sendaction_37_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.sendaction_37");
 }
 
 void OMAnimatedController::sendaction_14_serializeStates(AOMSState* aomsState) const {

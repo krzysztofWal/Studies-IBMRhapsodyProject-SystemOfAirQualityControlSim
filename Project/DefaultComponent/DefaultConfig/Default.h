@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Default
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Default.h
 *********************************************************************/
 
@@ -165,6 +165,16 @@ class iSendAlert;
 #define callibrateCauseRequested_Default_id 18640
 
 #define envSkalibruj_Default_id 18641
+
+#define requestTime_Default_id 18642
+
+#define provideTime_Default_id 18643
+
+#define inicjujOdczytTimer_Default_id 18644
+
+#define callibrated_Default_id 18645
+
+#define potwierdzSygnalOdTimera_Default_id 18646
 //#]
 
 //## package Default
@@ -179,12 +189,15 @@ enum statusType {
 //## type sensorType
 enum sensorType {
     o3,
-    ther,
+    thermo,
     hygro,
-    bar,
+    baro,
     so2,
     co,
-    no2
+    no2,
+    pm1,
+    pm2_5,
+    pm10
 };
 
 //## classInstance itsController
@@ -1323,7 +1336,7 @@ class OMAnimatedtimer : virtual public AOMEvent {
 //#]
 #endif // _OMINSTRUMENT
 
-//## event timerCzytajSensory()
+//## event timerCzytajSensory(unsigned long long)
 class timerCzytajSensory : public OMEvent {
     ////    Friends    ////
     
@@ -1338,10 +1351,17 @@ public :
     //## auto_generated
     timerCzytajSensory();
     
+    //## auto_generated
+    timerCzytajSensory(unsigned long long p_time);
+    
     ////    Framework operations    ////
     
     //## statechart_method
     virtual bool isTypeOf(const short id) const;
+    
+    ////    Framework    ////
+    
+    unsigned long long time;		//## auto_generated
 };
 
 #ifdef _OMINSTRUMENT
@@ -1435,6 +1455,158 @@ public :
 //#[ ignore
 class OMAnimatedenvSkalibruj : virtual public AOMEvent {
     DECLARE_META_EVENT(envSkalibruj)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event requestTime()
+class requestTime : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedrequestTime;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    requestTime();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedrequestTime : virtual public AOMEvent {
+    DECLARE_META_EVENT(requestTime)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event provideTime(unsigned long long)
+class provideTime : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedprovideTime;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    provideTime();
+    
+    //## auto_generated
+    provideTime(unsigned long long p_time);
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+    
+    ////    Framework    ////
+    
+    unsigned long long time;		//## auto_generated
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedprovideTime : virtual public AOMEvent {
+    DECLARE_META_EVENT(provideTime)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event inicjujOdczytTimer()
+class inicjujOdczytTimer : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedinicjujOdczytTimer;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    inicjujOdczytTimer();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedinicjujOdczytTimer : virtual public AOMEvent {
+    DECLARE_META_EVENT(inicjujOdczytTimer)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event callibrated()
+class callibrated : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedcallibrated;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    callibrated();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedcallibrated : virtual public AOMEvent {
+    DECLARE_META_EVENT(callibrated)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event potwierdzSygnalOdTimera()
+class potwierdzSygnalOdTimera : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedpotwierdzSygnalOdTimera;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    potwierdzSygnalOdTimera();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedpotwierdzSygnalOdTimera : virtual public AOMEvent {
+    DECLARE_META_EVENT(potwierdzSygnalOdTimera)
 };
 //#]
 #endif // _OMINSTRUMENT

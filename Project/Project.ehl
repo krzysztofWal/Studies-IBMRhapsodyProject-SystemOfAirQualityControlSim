@@ -1,5 +1,3 @@
 [Op Calls]
 [Events]
-itsController->GEN(timerCzytajSensory())`Controller
-itsReceiver->GEN(serwZadajPakietu())`Receiver
 [Breakpoints]

@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: StationData
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\StationData.cpp
 *********************************************************************/
 
@@ -37,20 +37,20 @@
 //## package Default
 
 //## class StationData
-StationData::StationData(long time) : co(0), o3(0.), so2(0), stationId(0) {
-    NOTIFY_CONSTRUCTOR(StationData, StationData(long), 1, Default_StationData_StationData_SERIALIZE);
-    //#[ operation StationData(long)
+StationData::StationData(unsigned long long time) : baro(0), co(0), hygro(0), no2(0), o3(0.), pm1(0), pm10(0), pm2_5(0), so2(0), stationId(0), thermo(0), time(0) {
+    NOTIFY_CONSTRUCTOR(StationData, StationData(unsigned long long), 1, Default_StationData_StationData_SERIALIZE);
+    //#[ operation StationData(unsigned long long)
     //std::cout << "Created StationData object" << std::endl;
     //#]
 }
 
-StationData::StationData() : co(0), o3(0.), so2(0), stationId(0) {
+StationData::StationData() : baro(0), co(0), hygro(0), no2(0), o3(0.), pm1(0), pm10(0), pm2_5(0), so2(0), stationId(0), thermo(0), time(0) {
     NOTIFY_CONSTRUCTOR(StationData, StationData(), 0, OM_Default_StationData_StationData_1_SERIALIZE);
     //#[ operation StationData()
     //#]
 }
 
-StationData::StationData(double co, double no2, double o3, double so2, int stationId, long time) : co(co), no2(no2), o3(o3), so2(so2), stationId(stationId), time(time) {
+StationData::StationData(double co, double no2, double o3, double so2, int stationId, long time) : baro(0), co(co), hygro(0), no2(no2), o3(o3), pm1(0), pm10(0), pm2_5(0), so2(so2), stationId(stationId), thermo(0), time(time) {
     NOTIFY_CONSTRUCTOR(StationData, StationData(double,double,double,double,int,long), 6, OM_Default_StationData_StationData_2_SERIALIZE);
     //#[ operation StationData(double,double,double,double,int,long)
     //#]
@@ -72,15 +72,26 @@ double StationData::get(int which) {
     	return this->so2;
     case 4:
     	return this->no2;
-    
+    case 5:
+    	return this->pm1;
+    case 6:
+    	return this->pm2_5;
+    case 7:
+    	return this->pm10;
+    case 8:
+        return this->thermo;
+    case 9:
+    	return this->hygro;
+    case 10:
+    	return this->baro;
     default:
-    	std::cout << "Reached default in appendToPackage()" << std::endl;
+    	std::cout << "Reached default in get() in StationData" << std::endl;
     	return 0.0;
     }
     //#]
 }
 
-long StationData::getTime() {
+unsigned long long StationData::getTime() {
     NOTIFY_OPERATION(getTime, getTime(), 0, Default_StationData_getTime_SERIALIZE);
     //#[ operation getTime()
     return time;
@@ -103,10 +114,36 @@ void StationData::set(int which, double value) {
     case 3:
     	so2 = value;
     	break;
+    case 5:
+    	pm1 = value;
+    	break;
+    case 6:
+    	pm2_5 = value;
+    	break;
+    case 7:
+    	pm10 = value;
+    	break;
+    case 8:
+        thermo = value;
+        break;
+    case 9:
+    	hygro = value;
+    	break;
+    case 10:
+    	baro = value;
+    	break;
     default:
-    	std::cout << "Reached default in appendToPackage()" << std::endl;
+    	std::cout << "Reached default in set() in StationData" << std::endl;
     }
     //#]
+}
+
+double StationData::getBaro() const {
+    return baro;
+}
+
+void StationData::setBaro(double p_baro) {
+    baro = p_baro;
 }
 
 double StationData::getCo() const {
@@ -115,6 +152,14 @@ double StationData::getCo() const {
 
 void StationData::setCo(double p_co) {
     co = p_co;
+}
+
+double StationData::getHygro() const {
+    return hygro;
+}
+
+void StationData::setHygro(double p_hygro) {
+    hygro = p_hygro;
 }
 
 double StationData::getNo2() const {
@@ -133,6 +178,30 @@ void StationData::setO3(double p_o3) {
     o3 = p_o3;
 }
 
+double StationData::getPm1() const {
+    return pm1;
+}
+
+void StationData::setPm1(double p_pm1) {
+    pm1 = p_pm1;
+}
+
+double StationData::getPm10() const {
+    return pm10;
+}
+
+void StationData::setPm10(double p_pm10) {
+    pm10 = p_pm10;
+}
+
+double StationData::getPm2_5() const {
+    return pm2_5;
+}
+
+void StationData::setPm2_5(double p_pm2_5) {
+    pm2_5 = p_pm2_5;
+}
+
 double StationData::getSo2() const {
     return so2;
 }
@@ -149,7 +218,15 @@ void StationData::setStationId(int p_stationId) {
     stationId = p_stationId;
 }
 
-void StationData::setTime(long p_time) {
+double StationData::getThermo() const {
+    return thermo;
+}
+
+void StationData::setThermo(double p_thermo) {
+    thermo = p_thermo;
+}
+
+void StationData::setTime(unsigned long long p_time) {
     time = p_time;
 }
 
@@ -162,6 +239,12 @@ void OMAnimatedStationData::serializeAttributes(AOMSAttributes* aomsAttributes) 
     aomsAttributes->addAttribute("co", x2String(myReal->co));
     aomsAttributes->addAttribute("so2", x2String(myReal->so2));
     aomsAttributes->addAttribute("no2", x2String(myReal->no2));
+    aomsAttributes->addAttribute("pm1", x2String(myReal->pm1));
+    aomsAttributes->addAttribute("pm2_5", x2String(myReal->pm2_5));
+    aomsAttributes->addAttribute("pm10", x2String(myReal->pm10));
+    aomsAttributes->addAttribute("hygro", x2String(myReal->hygro));
+    aomsAttributes->addAttribute("thermo", x2String(myReal->thermo));
+    aomsAttributes->addAttribute("baro", x2String(myReal->baro));
 }
 //#]
 

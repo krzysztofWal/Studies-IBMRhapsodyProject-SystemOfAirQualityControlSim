@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Sensor
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Sensor.h
 *********************************************************************/
 
@@ -34,9 +34,7 @@
 //## auto_generated
 #include <fstream>
 //## auto_generated
-#include <array>
-//## auto_generated
-#include <stdio.h>
+#include <climits>
 //## link itsController
 class Controller;
 

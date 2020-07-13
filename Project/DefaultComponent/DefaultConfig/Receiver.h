@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Receiver
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Receiver.h
 *********************************************************************/
 
@@ -52,7 +52,7 @@
 //## auto_generated
 #include <fstream>
 //## auto_generated
-#include <stdio.h>
+#include <climits>
 //## package Default
 
 //## class Receiver
@@ -81,7 +81,7 @@ public :
         virtual void confirmReceival();
         
         //## auto_generated
-        virtual std::vector<std::pair<long, int>> getAlertDetails();
+        virtual std::vector<std::pair<unsigned long long, int>> getAlertDetails();
         
         //## auto_generated
         iCalibrateRequest* getItsICalibrateRequest();
@@ -259,6 +259,12 @@ protected :
     //## auto_generated
     void initStatechart();
     
+    //## auto_generated
+    void cancelTimeouts();
+    
+    //## auto_generated
+    bool cancelTimeout(const IOxfTimeout* arg);
+    
     ////    Attributes    ////
     
     std::vector<std::pair<int, int>> Alert_TimeAndWhichParticulate;		//## attribute Alert_TimeAndWhichParticulate
@@ -319,6 +325,8 @@ protected :
     int rootState_subState;
     
     int rootState_active;
+    
+    IOxfTimeout* rootState_timeout;
 //#]
 };
 

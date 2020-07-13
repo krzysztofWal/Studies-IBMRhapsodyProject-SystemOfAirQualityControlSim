@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: NO2_Sensor
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\NO2_Sensor.cpp
 *********************************************************************/
 
@@ -22,6 +22,8 @@
 #define Default_NO2_Sensor_NO2_Sensor_SERIALIZE OM_NO_OP
 
 #define Default_NO2_Sensor_funcAb_SERIALIZE OM_NO_OP
+
+#define Default_NO2_Sensor_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
@@ -42,6 +44,13 @@ NO2_Sensor::~NO2_Sensor() {
 void NO2_Sensor::funcAb() {
     NOTIFY_OPERATION(funcAb, funcAb(), 0, Default_NO2_Sensor_funcAb_SERIALIZE);
     //#[ operation funcAb()
+    //#]
+}
+
+void NO2_Sensor::odczytajDane() {
+    NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_NO2_Sensor_odczytajDane_SERIALIZE);
+    //#[ operation odczytajDane()
+    recentValue= 2;
     //#]
 }
 

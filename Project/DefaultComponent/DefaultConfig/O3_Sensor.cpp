@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: O3_Sensor
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\O3_Sensor.cpp
 *********************************************************************/
 
@@ -22,6 +22,8 @@
 #define Default_O3_Sensor_O3_Sensor_SERIALIZE OM_NO_OP
 
 #define Default_O3_Sensor_funcAb_SERIALIZE OM_NO_OP
+
+#define Default_O3_Sensor_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
@@ -42,6 +44,13 @@ O3_Sensor::~O3_Sensor() {
 void O3_Sensor::funcAb() {
     NOTIFY_OPERATION(funcAb, funcAb(), 0, Default_O3_Sensor_funcAb_SERIALIZE);
     //#[ operation funcAb()
+    //#]
+}
+
+void O3_Sensor::odczytajDane() {
+    NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_O3_Sensor_odczytajDane_SERIALIZE);
+    //#[ operation odczytajDane()
+    recentValue=0.5;
     //#]
 }
 

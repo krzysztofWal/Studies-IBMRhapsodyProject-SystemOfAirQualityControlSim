@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Receiver
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Receiver.cpp
 *********************************************************************/
 
@@ -56,8 +56,8 @@ void Receiver::port_3_C::confirmReceival() {
     
 }
 
-std::vector<std::pair<long, int>> Receiver::port_3_C::getAlertDetails() {
-    std::vector<std::pair<long, int>> res;
+std::vector<std::pair<unsigned long long, int>> Receiver::port_3_C::getAlertDetails() {
+    std::vector<std::pair<unsigned long long, int>> res;
     if (itsIGetAlertDetails != NULL) {
         res = itsIGetAlertDetails->getAlertDetails();
     }
@@ -218,13 +218,14 @@ Receiver::Receiver(IOxfActive* theActiveContext) {
 
 Receiver::~Receiver() {
     NOTIFY_DESTRUCTOR(~Receiver, false);
+    cancelTimeouts();
 }
 
 void Receiver::inform() {
     NOTIFY_OPERATION(inform, inform(), 0, Default_Receiver_inform_SERIALIZE);
     //#[ operation inform()
     GEN(Inform);
-    std::cout << "contr to rec - 've got data you can have them" << std::endl;
+    //std::cout << "contr to rec - 've got data you can have them" << std::endl;
     //#]
 }
 
@@ -286,6 +287,21 @@ void Receiver::initRelations() {
 void Receiver::initStatechart() {
     rootState_subState = OMNonState;
     rootState_active = OMNonState;
+    rootState_timeout = NULL;
+}
+
+void Receiver::cancelTimeouts() {
+    cancel(rootState_timeout);
+}
+
+bool Receiver::cancelTimeout(const IOxfTimeout* arg) {
+    bool res = false;
+    if(rootState_timeout == arg)
+        {
+            rootState_timeout = NULL;
+            res = true;
+        }
+    return res;
 }
 
 void Receiver::rootState_entDef() {
@@ -329,7 +345,7 @@ IOxfReactive::TakeEventStatus Receiver::rootState_processEvent() {
                     rootState_active = alertReceival;
                     //#[ state alertReceival.(Entry) 
                     std::cout << "alertReceival_st: rec received an alert" << std::endl;
-                    OUT_PORT(port_3)->getAlertDetails();
+                    auto vec = OUT_PORT(port_3)->getAlertDetails();
                     //#]
                     NOTIFY_TRANSITION_TERMINATED("3");
                     res = eventConsumed;
@@ -344,6 +360,7 @@ IOxfReactive::TakeEventStatus Receiver::rootState_processEvent() {
                     //#[ state begin.(Entry) 
                     OUT_PORT(port_3)->initialize();
                     //#]
+                    rootState_timeout = scheduleTimeout(600, "ROOT.begin");
                     NOTIFY_TRANSITION_TERMINATED("2");
                     res = eventConsumed;
                 }
@@ -353,9 +370,28 @@ IOxfReactive::TakeEventStatus Receiver::rootState_processEvent() {
         // State begin
         case begin:
         {
-            if(IS_EVENT_TYPE_OF(Inform_Default_id))
+            if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+                {
+                    if(getCurrentEvent() == rootState_timeout)
+                        {
+                            NOTIFY_TRANSITION_STARTED("7");
+                            cancel(rootState_timeout);
+                            NOTIFY_STATE_EXITED("ROOT.begin");
+                            NOTIFY_STATE_ENTERED("ROOT.begin");
+                            rootState_subState = begin;
+                            rootState_active = begin;
+                            //#[ state begin.(Entry) 
+                            OUT_PORT(port_3)->initialize();
+                            //#]
+                            rootState_timeout = scheduleTimeout(600, "ROOT.begin");
+                            NOTIFY_TRANSITION_TERMINATED("7");
+                            res = eventConsumed;
+                        }
+                }
+            else if(IS_EVENT_TYPE_OF(Inform_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("1");
+                    cancel(rootState_timeout);
                     NOTIFY_STATE_EXITED("ROOT.begin");
                     //#[ transition 1 
                     dataReceived.emplace_back(OUT_PORT(port_3)->print());

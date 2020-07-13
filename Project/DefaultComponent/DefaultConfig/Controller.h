@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Controller
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Controller.h
 *********************************************************************/
 
@@ -68,9 +68,7 @@
 //## auto_generated
 #include <fstream>
 //## auto_generated
-#include <array>
-//## auto_generated
-#include <stdio.h>
+#include <climits>
 //## class port_35_C
 #include "iInform.h"
 //## class port_35_C
@@ -198,7 +196,7 @@ public :
         void connectController(Controller* part);
         
         //## auto_generated
-        virtual std::vector<std::pair<long, int>> getAlertDetails();
+        virtual std::vector<std::pair<unsigned long long, int>> getAlertDetails();
         
         //## auto_generated
         iCalibrateRequest* getItsICalibrateRequest();
@@ -329,14 +327,14 @@ public :
     //## operation confirmReceival()
     virtual void confirmReceival();
     
-    //## operation createPackage(long)
-    void createPackage(long time);
+    //## operation createPackage(unsigned long long)
+    void createPackage(unsigned long long time);
     
     //## operation deletePackage()
     void deletePackage();
     
     //## operation getAlertDetails()
-    virtual std::vector<std::pair<long, int>> getAlertDetails();
+    virtual std::vector<std::pair<unsigned long long, int>> getAlertDetails();
     
     //## operation getDataPackage() const
     StationData* getDataPackage() const;
@@ -416,10 +414,10 @@ protected :
     void setDataPackage(StationData* p_dataPackage);
     
     //## auto_generated
-    long getTime() const;
+    unsigned long long getTime() const;
     
     //## auto_generated
-    void setTime(long p_time);
+    void setTime(unsigned long long p_time);
     
     //## auto_generated
     bool getWhetherTimerRead() const;
@@ -454,7 +452,7 @@ protected :
     
     statusType stationStatus;		//## attribute stationStatus
     
-    long time;		//## attribute time
+    unsigned long long time;		//## attribute time
     
     bool whetherTimerRead;		//## attribute whetherTimerRead
     
@@ -510,6 +508,38 @@ public :
     //## statechart_method
     inline bool signalJoin_Timer_Server_Request_IN() const;
     
+    // sendaction_47:
+    //## statechart_method
+    inline bool sendaction_47_IN() const;
+    
+    // sendaction_44:
+    //## statechart_method
+    inline bool sendaction_44_IN() const;
+    
+    // sendaction_42:
+    //## statechart_method
+    inline bool sendaction_42_IN() const;
+    
+    // sendaction_41:
+    //## statechart_method
+    inline bool sendaction_41_IN() const;
+    
+    // sendaction_40:
+    //## statechart_method
+    inline bool sendaction_40_IN() const;
+    
+    // sendaction_39:
+    //## statechart_method
+    inline bool sendaction_39_IN() const;
+    
+    // sendaction_38:
+    //## statechart_method
+    inline bool sendaction_38_IN() const;
+    
+    // sendaction_37:
+    //## statechart_method
+    inline bool sendaction_37_IN() const;
+    
     // sendaction_14:
     //## statechart_method
     inline bool sendaction_14_IN() const;
@@ -550,14 +580,22 @@ protected :
         wysylanieAlertu = 1,
         StationStandBy = 2,
         signalJoin_Timer_Server_Request = 3,
-        sendaction_14 = 4,
-        sendaction_13 = 5,
-        sendaction_12 = 6,
-        sendaction_10 = 7,
-        packageReadyInformation = 8,
-        deletePackageState = 9,
-        checkLimits = 10,
-        callibration = 11
+        sendaction_47 = 4,
+        sendaction_44 = 5,
+        sendaction_42 = 6,
+        sendaction_41 = 7,
+        sendaction_40 = 8,
+        sendaction_39 = 9,
+        sendaction_38 = 10,
+        sendaction_37 = 11,
+        sendaction_14 = 12,
+        sendaction_13 = 13,
+        sendaction_12 = 14,
+        sendaction_10 = 15,
+        packageReadyInformation = 16,
+        deletePackageState = 17,
+        checkLimits = 18,
+        callibration = 19
     };
     
     int rootState_subState;
@@ -596,6 +634,30 @@ public :
     
     //## statechart_method
     void signalJoin_Timer_Server_Request_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void sendaction_47_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void sendaction_44_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void sendaction_42_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void sendaction_41_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void sendaction_40_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void sendaction_39_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void sendaction_38_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void sendaction_37_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
     void sendaction_14_serializeStates(AOMSState* aomsState) const;
@@ -642,6 +704,38 @@ inline bool Controller::StationStandBy_IN() const {
 
 inline bool Controller::signalJoin_Timer_Server_Request_IN() const {
     return rootState_subState == signalJoin_Timer_Server_Request;
+}
+
+inline bool Controller::sendaction_47_IN() const {
+    return rootState_subState == sendaction_47;
+}
+
+inline bool Controller::sendaction_44_IN() const {
+    return rootState_subState == sendaction_44;
+}
+
+inline bool Controller::sendaction_42_IN() const {
+    return rootState_subState == sendaction_42;
+}
+
+inline bool Controller::sendaction_41_IN() const {
+    return rootState_subState == sendaction_41;
+}
+
+inline bool Controller::sendaction_40_IN() const {
+    return rootState_subState == sendaction_40;
+}
+
+inline bool Controller::sendaction_39_IN() const {
+    return rootState_subState == sendaction_39;
+}
+
+inline bool Controller::sendaction_38_IN() const {
+    return rootState_subState == sendaction_38;
+}
+
+inline bool Controller::sendaction_37_IN() const {
+    return rootState_subState == sendaction_37;
 }
 
 inline bool Controller::sendaction_14_IN() const {

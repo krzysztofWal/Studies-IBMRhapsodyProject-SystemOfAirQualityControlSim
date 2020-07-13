@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: StationData
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\StationData.h
 *********************************************************************/
 
@@ -26,9 +26,7 @@
 //## auto_generated
 #include <fstream>
 //## auto_generated
-#include <array>
-//## auto_generated
-#include <stdio.h>
+#include <climits>
 //## package Default
 
 //## class StationData
@@ -43,8 +41,8 @@ public :
 
     ////    Constructors and destructors    ////
     
-    //## operation StationData(long)
-    StationData(long time);
+    //## operation StationData(unsigned long long)
+    StationData(unsigned long long time);
     
     //## operation StationData()
     StationData();
@@ -61,18 +59,32 @@ public :
     double get(int which);
     
     //## operation getTime()
-    long getTime();
+    unsigned long long getTime();
     
     //## operation set(int,double)
     void set(int which, double value);
     
     ////    Additional operations    ////
+
+private :
+
+    //## auto_generated
+    double getBaro() const;
+    
+    //## auto_generated
+    void setBaro(double p_baro);
     
     //## auto_generated
     double getCo() const;
     
     //## auto_generated
     void setCo(double p_co);
+    
+    //## auto_generated
+    double getHygro() const;
+    
+    //## auto_generated
+    void setHygro(double p_hygro);
     
     //## auto_generated
     double getNo2() const;
@@ -87,6 +99,24 @@ public :
     void setO3(double p_o3);
     
     //## auto_generated
+    double getPm1() const;
+    
+    //## auto_generated
+    void setPm1(double p_pm1);
+    
+    //## auto_generated
+    double getPm10() const;
+    
+    //## auto_generated
+    void setPm10(double p_pm10);
+    
+    //## auto_generated
+    double getPm2_5() const;
+    
+    //## auto_generated
+    void setPm2_5(double p_pm2_5);
+    
+    //## auto_generated
     double getSo2() const;
     
     //## auto_generated
@@ -99,23 +129,41 @@ public :
     void setStationId(int p_stationId);
     
     //## auto_generated
-    void setTime(long p_time);
+    double getThermo() const;
+    
+    //## auto_generated
+    void setThermo(double p_thermo);
+    
+    //## auto_generated
+    void setTime(unsigned long long p_time);
     
     ////    Attributes    ////
 
 protected :
 
+    double baro;		//## attribute baro
+    
     double co;		//## attribute co
+    
+    double hygro;		//## attribute hygro
     
     double no2;		//## attribute no2
     
     double o3;		//## attribute o3
     
+    double pm1;		//## attribute pm1
+    
+    double pm10;		//## attribute pm10
+    
+    double pm2_5;		//## attribute pm2_5
+    
     double so2;		//## attribute so2
     
     int stationId;		//## attribute stationId
     
-    long time;		//## attribute time
+    double thermo;		//## attribute thermo
+    
+    unsigned long long time;		//## attribute time
 };
 
 #ifdef _OMINSTRUMENT

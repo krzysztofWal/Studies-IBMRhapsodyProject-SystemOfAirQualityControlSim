@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Barometer
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Barometer.cpp
 *********************************************************************/
 
@@ -22,6 +22,8 @@
 #define Default_Barometer_Barometer_SERIALIZE OM_NO_OP
 
 #define Default_Barometer_funcAb_SERIALIZE OM_NO_OP
+
+#define Default_Barometer_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
@@ -42,6 +44,13 @@ Barometer::~Barometer() {
 void Barometer::funcAb() {
     NOTIFY_OPERATION(funcAb, funcAb(), 0, Default_Barometer_funcAb_SERIALIZE);
     //#[ operation funcAb()
+    //#]
+}
+
+void Barometer::odczytajDane() {
+    NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_Barometer_odczytajDane_SERIALIZE);
+    //#[ operation odczytajDane()
+    recentValue=2.1;
     //#]
 }
 

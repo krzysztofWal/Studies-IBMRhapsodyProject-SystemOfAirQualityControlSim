@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Default
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Default.cpp
 *********************************************************************/
 
@@ -283,11 +283,11 @@
 
 #define timer_CONSTRUCTOR timer()
 
-#define timerCzytajSensory_SERIALIZE OM_NO_OP
+#define timerCzytajSensory_SERIALIZE OMADD_SER(time, x2String(myEvent->time))
 
-#define timerCzytajSensory_UNSERIALIZE OM_NO_OP
+#define timerCzytajSensory_UNSERIALIZE OMADD_UNSER(unsigned long, time, OMDestructiveString2X)
 
-#define timerCzytajSensory_CONSTRUCTOR timerCzytajSensory()
+#define timerCzytajSensory_CONSTRUCTOR timerCzytajSensory(time)
 
 #define serwSkalibruj_SERIALIZE OM_NO_OP
 
@@ -306,6 +306,36 @@
 #define envSkalibruj_UNSERIALIZE OM_NO_OP
 
 #define envSkalibruj_CONSTRUCTOR envSkalibruj()
+
+#define requestTime_SERIALIZE OM_NO_OP
+
+#define requestTime_UNSERIALIZE OM_NO_OP
+
+#define requestTime_CONSTRUCTOR requestTime()
+
+#define provideTime_SERIALIZE OMADD_SER(time, x2String(myEvent->time))
+
+#define provideTime_UNSERIALIZE OMADD_UNSER(unsigned long, time, OMDestructiveString2X)
+
+#define provideTime_CONSTRUCTOR provideTime(time)
+
+#define inicjujOdczytTimer_SERIALIZE OM_NO_OP
+
+#define inicjujOdczytTimer_UNSERIALIZE OM_NO_OP
+
+#define inicjujOdczytTimer_CONSTRUCTOR inicjujOdczytTimer()
+
+#define callibrated_SERIALIZE OM_NO_OP
+
+#define callibrated_UNSERIALIZE OM_NO_OP
+
+#define callibrated_CONSTRUCTOR callibrated()
+
+#define potwierdzSygnalOdTimera_SERIALIZE OM_NO_OP
+
+#define potwierdzSygnalOdTimera_UNSERIALIZE OM_NO_OP
+
+#define potwierdzSygnalOdTimera_CONSTRUCTOR potwierdzSygnalOdTimera()
 //#]
 
 //## package Default
@@ -856,8 +886,13 @@ bool timer::isTypeOf(const short id) const {
 
 IMPLEMENT_META_EVENT_P(timer, Default, Default, timer())
 
-//## event timerCzytajSensory()
+//## event timerCzytajSensory(unsigned long long)
 timerCzytajSensory::timerCzytajSensory() {
+    NOTIFY_EVENT_CONSTRUCTOR(timerCzytajSensory)
+    setId(timerCzytajSensory_Default_id);
+}
+
+timerCzytajSensory::timerCzytajSensory(unsigned long long p_time) : time(p_time) {
     NOTIFY_EVENT_CONSTRUCTOR(timerCzytajSensory)
     setId(timerCzytajSensory_Default_id);
 }
@@ -866,7 +901,7 @@ bool timerCzytajSensory::isTypeOf(const short id) const {
     return (timerCzytajSensory_Default_id==id);
 }
 
-IMPLEMENT_META_EVENT_P(timerCzytajSensory, Default, Default, timerCzytajSensory())
+IMPLEMENT_META_EVENT_P(timerCzytajSensory, Default, Default, timerCzytajSensory(unsigned long long))
 
 //## event serwSkalibruj()
 serwSkalibruj::serwSkalibruj() {
@@ -903,6 +938,71 @@ bool envSkalibruj::isTypeOf(const short id) const {
 }
 
 IMPLEMENT_META_EVENT_P(envSkalibruj, Default, Default, envSkalibruj())
+
+//## event requestTime()
+requestTime::requestTime() {
+    NOTIFY_EVENT_CONSTRUCTOR(requestTime)
+    setId(requestTime_Default_id);
+}
+
+bool requestTime::isTypeOf(const short id) const {
+    return (requestTime_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(requestTime, Default, Default, requestTime())
+
+//## event provideTime(unsigned long long)
+provideTime::provideTime() {
+    NOTIFY_EVENT_CONSTRUCTOR(provideTime)
+    setId(provideTime_Default_id);
+}
+
+provideTime::provideTime(unsigned long long p_time) : time(p_time) {
+    NOTIFY_EVENT_CONSTRUCTOR(provideTime)
+    setId(provideTime_Default_id);
+}
+
+bool provideTime::isTypeOf(const short id) const {
+    return (provideTime_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(provideTime, Default, Default, provideTime(unsigned long long))
+
+//## event inicjujOdczytTimer()
+inicjujOdczytTimer::inicjujOdczytTimer() {
+    NOTIFY_EVENT_CONSTRUCTOR(inicjujOdczytTimer)
+    setId(inicjujOdczytTimer_Default_id);
+}
+
+bool inicjujOdczytTimer::isTypeOf(const short id) const {
+    return (inicjujOdczytTimer_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(inicjujOdczytTimer, Default, Default, inicjujOdczytTimer())
+
+//## event callibrated()
+callibrated::callibrated() {
+    NOTIFY_EVENT_CONSTRUCTOR(callibrated)
+    setId(callibrated_Default_id);
+}
+
+bool callibrated::isTypeOf(const short id) const {
+    return (callibrated_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(callibrated, Default, Default, callibrated())
+
+//## event potwierdzSygnalOdTimera()
+potwierdzSygnalOdTimera::potwierdzSygnalOdTimera() {
+    NOTIFY_EVENT_CONSTRUCTOR(potwierdzSygnalOdTimera)
+    setId(potwierdzSygnalOdTimera_Default_id);
+}
+
+bool potwierdzSygnalOdTimera::isTypeOf(const short id) const {
+    return (potwierdzSygnalOdTimera_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(potwierdzSygnalOdTimera, Default, Default, potwierdzSygnalOdTimera())
 
 /*********************************************************************
 	File Path	: DefaultComponent\DefaultConfig\Default.cpp

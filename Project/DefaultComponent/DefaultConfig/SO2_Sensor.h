@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: SO2_Sensor
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\SO2_Sensor.h
 *********************************************************************/
 
@@ -28,9 +28,7 @@
 //## auto_generated
 #include <fstream>
 //## auto_generated
-#include <array>
-//## auto_generated
-#include <stdio.h>
+#include <climits>
 //## auto_generated
 class Controller;
 
@@ -58,6 +56,9 @@ public :
     
     //## operation funcAb()
     virtual void funcAb();
+    
+    //## operation odczytajDane()
+    virtual void odczytajDane();
     
     ////    Additional operations    ////
     

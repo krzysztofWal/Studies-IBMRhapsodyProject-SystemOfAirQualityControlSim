@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Timer
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Timer.cpp
 *********************************************************************/
 
@@ -80,6 +80,14 @@ bool Timer::cancelTimeout(const IOxfTimeout* arg) {
     return res;
 }
 
+unsigned long long Timer::getTime() const {
+    return time;
+}
+
+void Timer::setTime(unsigned long long p_time) {
+    time = p_time;
+}
+
 void Timer::__setItsController(Controller* p_Controller) {
     itsController = p_Controller;
     if(p_Controller != NULL)
@@ -108,7 +116,7 @@ void Timer::rootState_entDef() {
         NOTIFY_STATE_ENTERED("ROOT.TimerStandByState");
         rootState_subState = TimerStandByState;
         rootState_active = TimerStandByState;
-        rootState_timeout = scheduleTimeout(3000, "ROOT.TimerStandByState");
+        rootState_timeout = scheduleTimeout(50, "ROOT.TimerStandByState");
         NOTIFY_TRANSITION_TERMINATED("0");
     }
 }
@@ -123,19 +131,58 @@ IOxfReactive::TakeEventStatus Timer::rootState_processEvent() {
                 {
                     if(getCurrentEvent() == rootState_timeout)
                         {
-                            NOTIFY_TRANSITION_STARTED("1");
+                            NOTIFY_TRANSITION_STARTED("5");
                             cancel(rootState_timeout);
                             NOTIFY_STATE_EXITED("ROOT.TimerStandByState");
-                            NOTIFY_STATE_ENTERED("ROOT.sendaction_1");
+                            NOTIFY_STATE_ENTERED("ROOT.timeIncrement");
                             pushNullTransition();
-                            rootState_subState = sendaction_1;
-                            rootState_active = sendaction_1;
-                            //#[ state sendaction_1.(Entry) 
-                            itsController->GEN(timerCzytajSensory);
+                            rootState_subState = timeIncrement;
+                            rootState_active = timeIncrement;
+                            //#[ state timeIncrement.(Entry) 
+                            if (time < ULLONG_MAX - 50) {
+                            	time += 50;
+                            	if (time%3000 ==0){
+                            		std::cout << "sending signal: " << time << std::endl;
+                            		GEN(inicjujOdczytTimer);
+                            	}
+                            }
+                             else {
+                             	time = 0;
+                            }
                             //#]
-                            NOTIFY_TRANSITION_TERMINATED("1");
+                            NOTIFY_TRANSITION_TERMINATED("5");
                             res = eventConsumed;
                         }
+                }
+            else if(IS_EVENT_TYPE_OF(inicjujOdczytTimer_Default_id))
+                {
+                    NOTIFY_TRANSITION_STARTED("4");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.TimerStandByState");
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_1");
+                    pushNullTransition();
+                    rootState_subState = sendaction_1;
+                    rootState_active = sendaction_1;
+                    //#[ state sendaction_1.(Entry) 
+                    itsController->GEN(timerCzytajSensory(time));
+                    //#]
+                    NOTIFY_TRANSITION_TERMINATED("4");
+                    res = eventConsumed;
+                }
+            else if(IS_EVENT_TYPE_OF(requestTime_Default_id))
+                {
+                    NOTIFY_TRANSITION_STARTED("2");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.TimerStandByState");
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_4");
+                    pushNullTransition();
+                    rootState_subState = sendaction_4;
+                    rootState_active = sendaction_4;
+                    //#[ state sendaction_4.(Entry) 
+                    itsController->GEN(provideTime(time));
+                    //#]
+                    NOTIFY_TRANSITION_TERMINATED("2");
+                    res = eventConsumed;
                 }
             
         }
@@ -145,14 +192,50 @@ IOxfReactive::TakeEventStatus Timer::rootState_processEvent() {
         {
             if(IS_EVENT_TYPE_OF(OMNullEventId))
                 {
-                    NOTIFY_TRANSITION_STARTED("2");
+                    NOTIFY_TRANSITION_STARTED("1");
                     popNullTransition();
                     NOTIFY_STATE_EXITED("ROOT.sendaction_1");
                     NOTIFY_STATE_ENTERED("ROOT.TimerStandByState");
                     rootState_subState = TimerStandByState;
                     rootState_active = TimerStandByState;
-                    rootState_timeout = scheduleTimeout(3000, "ROOT.TimerStandByState");
-                    NOTIFY_TRANSITION_TERMINATED("2");
+                    rootState_timeout = scheduleTimeout(50, "ROOT.TimerStandByState");
+                    NOTIFY_TRANSITION_TERMINATED("1");
+                    res = eventConsumed;
+                }
+            
+        }
+        break;
+        // State sendaction_4
+        case sendaction_4:
+        {
+            if(IS_EVENT_TYPE_OF(OMNullEventId))
+                {
+                    NOTIFY_TRANSITION_STARTED("3");
+                    popNullTransition();
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_4");
+                    NOTIFY_STATE_ENTERED("ROOT.TimerStandByState");
+                    rootState_subState = TimerStandByState;
+                    rootState_active = TimerStandByState;
+                    rootState_timeout = scheduleTimeout(50, "ROOT.TimerStandByState");
+                    NOTIFY_TRANSITION_TERMINATED("3");
+                    res = eventConsumed;
+                }
+            
+        }
+        break;
+        // State timeIncrement
+        case timeIncrement:
+        {
+            if(IS_EVENT_TYPE_OF(OMNullEventId))
+                {
+                    NOTIFY_TRANSITION_STARTED("6");
+                    popNullTransition();
+                    NOTIFY_STATE_EXITED("ROOT.timeIncrement");
+                    NOTIFY_STATE_ENTERED("ROOT.TimerStandByState");
+                    rootState_subState = TimerStandByState;
+                    rootState_active = TimerStandByState;
+                    rootState_timeout = scheduleTimeout(50, "ROOT.TimerStandByState");
+                    NOTIFY_TRANSITION_TERMINATED("6");
                     res = eventConsumed;
                 }
             
@@ -166,6 +249,10 @@ IOxfReactive::TakeEventStatus Timer::rootState_processEvent() {
 
 #ifdef _OMINSTRUMENT
 //#[ ignore
+void OMAnimatedTimer::serializeAttributes(AOMSAttributes* aomsAttributes) const {
+    aomsAttributes->addAttribute("time", x2String(myReal->time));
+}
+
 void OMAnimatedTimer::serializeRelations(AOMSRelations* aomsRelations) const {
     aomsRelations->addRelation("itsController", false, true);
     if(myReal->itsController)
@@ -187,6 +274,16 @@ void OMAnimatedTimer::rootState_serializeStates(AOMSState* aomsState) const {
             sendaction_1_serializeStates(aomsState);
         }
         break;
+        case Timer::sendaction_4:
+        {
+            sendaction_4_serializeStates(aomsState);
+        }
+        break;
+        case Timer::timeIncrement:
+        {
+            timeIncrement_serializeStates(aomsState);
+        }
+        break;
         default:
             break;
     }
@@ -194,6 +291,14 @@ void OMAnimatedTimer::rootState_serializeStates(AOMSState* aomsState) const {
 
 void OMAnimatedTimer::TimerStandByState_serializeStates(AOMSState* aomsState) const {
     aomsState->addState("ROOT.TimerStandByState");
+}
+
+void OMAnimatedTimer::timeIncrement_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.timeIncrement");
+}
+
+void OMAnimatedTimer::sendaction_4_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.sendaction_4");
 }
 
 void OMAnimatedTimer::sendaction_1_serializeStates(AOMSState* aomsState) const {

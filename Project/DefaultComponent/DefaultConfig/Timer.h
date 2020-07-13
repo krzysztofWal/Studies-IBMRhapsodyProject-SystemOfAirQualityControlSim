@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Timer
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Mon, 13, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Timer.h
 *********************************************************************/
 
@@ -34,9 +34,7 @@
 //## auto_generated
 #include <fstream>
 //## auto_generated
-#include <array>
-//## auto_generated
-#include <stdio.h>
+#include <climits>
 //## link itsController
 class Controller;
 
@@ -84,6 +82,20 @@ protected :
     
     //## auto_generated
     bool cancelTimeout(const IOxfTimeout* arg);
+
+private :
+
+    //## auto_generated
+    unsigned long long getTime() const;
+    
+    //## auto_generated
+    void setTime(unsigned long long p_time);
+    
+    ////    Attributes    ////
+
+protected :
+
+    unsigned long long time;		//## attribute time
     
     ////    Relations and components    ////
     
@@ -116,6 +128,14 @@ public :
     //## statechart_method
     inline bool TimerStandByState_IN() const;
     
+    // timeIncrement:
+    //## statechart_method
+    inline bool timeIncrement_IN() const;
+    
+    // sendaction_4:
+    //## statechart_method
+    inline bool sendaction_4_IN() const;
+    
     // sendaction_1:
     //## statechart_method
     inline bool sendaction_1_IN() const;
@@ -128,7 +148,9 @@ protected :
     enum Timer_Enum {
         OMNonState = 0,
         TimerStandByState = 1,
-        sendaction_1 = 2
+        timeIncrement = 2,
+        sendaction_4 = 3,
+        sendaction_1 = 4
     };
     
     int rootState_subState;
@@ -148,6 +170,8 @@ class OMAnimatedTimer : virtual public AOMInstance {
     
 public :
 
+    virtual void serializeAttributes(AOMSAttributes* aomsAttributes) const;
+    
     virtual void serializeRelations(AOMSRelations* aomsRelations) const;
     
     //## statechart_method
@@ -155,6 +179,12 @@ public :
     
     //## statechart_method
     void TimerStandByState_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void timeIncrement_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void sendaction_4_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
     void sendaction_1_serializeStates(AOMSState* aomsState) const;
@@ -168,6 +198,14 @@ inline bool Timer::rootState_IN() const {
 
 inline bool Timer::TimerStandByState_IN() const {
     return rootState_subState == TimerStandByState;
+}
+
+inline bool Timer::timeIncrement_IN() const {
+    return rootState_subState == timeIncrement;
+}
+
+inline bool Timer::sendaction_4_IN() const {
+    return rootState_subState == sendaction_4;
 }
 
 inline bool Timer::sendaction_1_IN() const {
