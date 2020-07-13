@@ -36,6 +36,8 @@
 //## class Controller
 #include "iCalibrateRequest.h"
 //## class Controller
+#include "iConfirmAlertReceival.h"
+//## class Controller
 #include "iConfirmDataReceival.h"
 //## class Controller
 #include "iGetAlertDetails.h"
@@ -69,18 +71,16 @@
 #include <fstream>
 //## auto_generated
 #include <climits>
+//## auto_generated
+#include <iostream>
 //## class port_35_C
 #include "iInform.h"
 //## class port_35_C
 #include "iSendAlert.h"
-//#[ ignore
-#define OMAnim_Default_Controller_setStationStatus_statusType_ARGS_DECLARATION statusType p_stationStatus;
-//#]
-
 //## package Default
 
 //## class Controller
-class Controller : public OMThread, public OMReactive, public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails, public iCalibrateRequest {
+class Controller : public OMThread, public OMReactive, public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails, public iCalibrateRequest, public iConfirmAlertReceival {
 public :
 
     ////    Friends    ////
@@ -117,14 +117,10 @@ protected :
     
     //## auto_generated
     statusType getStationStatus() const;
-
-public :
-
+    
     //## auto_generated
     void setStationStatus(statusType p_stationStatus);
-
-protected :
-
+    
     //## auto_generated
     void initRelations();
     
@@ -173,7 +169,7 @@ public :
     
 //#[ ignore
     //## package Default
-    class port_33_C : public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails, public iCalibrateRequest {
+    class port_33_C : public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails, public iCalibrateRequest, public iConfirmAlertReceival {
         ////    Constructors and destructors    ////
         
     public :
@@ -190,6 +186,9 @@ public :
         virtual void calibrateRequest();
         
         //## auto_generated
+        virtual void confirmAlert();
+        
+        //## auto_generated
         virtual void confirmReceival();
         
         //## auto_generated
@@ -200,6 +199,9 @@ public :
         
         //## auto_generated
         iCalibrateRequest* getItsICalibrateRequest();
+        
+        //## auto_generated
+        iConfirmAlertReceival* getItsIConfirmAlertReceival();
         
         //## auto_generated
         iConfirmDataReceival* getItsIConfirmDataReceival();
@@ -225,6 +227,9 @@ public :
         void setItsICalibrateRequest(iCalibrateRequest* p_iCalibrateRequest);
         
         //## auto_generated
+        void setItsIConfirmAlertReceival(iConfirmAlertReceival* p_iConfirmAlertReceival);
+        
+        //## auto_generated
         void setItsIConfirmDataReceival(iConfirmDataReceival* p_iConfirmDataReceival);
         
         //## auto_generated
@@ -248,6 +253,8 @@ public :
         ////    Relations and components    ////
         
         iCalibrateRequest* itsICalibrateRequest;		//## link itsICalibrateRequest
+        
+        iConfirmAlertReceival* itsIConfirmAlertReceival;		//## link itsIConfirmAlertReceival
         
         iConfirmDataReceival* itsIConfirmDataReceival;		//## link itsIConfirmDataReceival
         
@@ -324,6 +331,9 @@ public :
     //## operation calibrateRequest()
     virtual void calibrateRequest();
     
+    //## operation confirmAlert()
+    virtual void confirmAlert();
+    
     //## operation confirmReceival()
     virtual void confirmReceival();
     
@@ -374,6 +384,12 @@ public :
     
     //## auto_generated
     port_35_C* get_port_35() const;
+    
+    //## auto_generated
+    int getStopMeasurementFlag() const;
+    
+    //## auto_generated
+    void setStopMeasurementFlag(int p_stopMeasurementFlag);
     
     //## auto_generated
     CO_Sensor* getItsCO_Sensor() const;
@@ -452,6 +468,8 @@ protected :
     
     statusType stationStatus;		//## attribute stationStatus
     
+    int stopMeasurementFlag;		//## attribute stopMeasurementFlag
+    
     unsigned long long time;		//## attribute time
     
     bool whetherTimerRead;		//## attribute whetherTimerRead
@@ -504,13 +522,17 @@ public :
     //## statechart_method
     IOxfReactive::TakeEventStatus StationStandBy_handleEvent();
     
+    // stationSleep:
+    //## statechart_method
+    inline bool stationSleep_IN() const;
+    
+    // stationActivation:
+    //## statechart_method
+    inline bool stationActivation_IN() const;
+    
     // signalJoin_Timer_Server_Request:
     //## statechart_method
     inline bool signalJoin_Timer_Server_Request_IN() const;
-    
-    // sendaction_47:
-    //## statechart_method
-    inline bool sendaction_47_IN() const;
     
     // sendaction_44:
     //## statechart_method
@@ -556,6 +578,10 @@ public :
     //## statechart_method
     inline bool sendaction_10_IN() const;
     
+    // readLog:
+    //## statechart_method
+    inline bool readLog_IN() const;
+    
     // packageReadyInformation:
     //## statechart_method
     inline bool packageReadyInformation_IN() const;
@@ -579,23 +605,25 @@ protected :
         OMNonState = 0,
         wysylanieAlertu = 1,
         StationStandBy = 2,
-        signalJoin_Timer_Server_Request = 3,
-        sendaction_47 = 4,
-        sendaction_44 = 5,
-        sendaction_42 = 6,
-        sendaction_41 = 7,
-        sendaction_40 = 8,
-        sendaction_39 = 9,
-        sendaction_38 = 10,
-        sendaction_37 = 11,
-        sendaction_14 = 12,
-        sendaction_13 = 13,
-        sendaction_12 = 14,
-        sendaction_10 = 15,
-        packageReadyInformation = 16,
-        deletePackageState = 17,
-        checkLimits = 18,
-        callibration = 19
+        stationSleep = 3,
+        stationActivation = 4,
+        signalJoin_Timer_Server_Request = 5,
+        sendaction_44 = 6,
+        sendaction_42 = 7,
+        sendaction_41 = 8,
+        sendaction_40 = 9,
+        sendaction_39 = 10,
+        sendaction_38 = 11,
+        sendaction_37 = 12,
+        sendaction_14 = 13,
+        sendaction_13 = 14,
+        sendaction_12 = 15,
+        sendaction_10 = 16,
+        readLog = 17,
+        packageReadyInformation = 18,
+        deletePackageState = 19,
+        checkLimits = 20,
+        callibration = 21
     };
     
     int rootState_subState;
@@ -607,13 +635,9 @@ protected :
 };
 
 #ifdef _OMINSTRUMENT
-DECLARE_OPERATION_CLASS(Default_Controller_setStationStatus_statusType)
-
 //#[ ignore
-class OMAnimatedController : public OMAnimatediPrint, public OMAnimatediInitialize, public OMAnimatediConfirmDataReceival, public OMAnimatediGetAlertDetails, public OMAnimatediCalibrateRequest {
+class OMAnimatedController : public OMAnimatediPrint, public OMAnimatediInitialize, public OMAnimatediConfirmDataReceival, public OMAnimatediGetAlertDetails, public OMAnimatediCalibrateRequest, public OMAnimatediConfirmAlertReceival {
     DECLARE_REACTIVE_META(Controller, OMAnimatedController)
-    
-    DECLARE_META_OP(Default_Controller_setStationStatus_statusType)
     
     ////    Framework operations    ////
     
@@ -633,10 +657,13 @@ public :
     void StationStandBy_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
-    void signalJoin_Timer_Server_Request_serializeStates(AOMSState* aomsState) const;
+    void stationSleep_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
-    void sendaction_47_serializeStates(AOMSState* aomsState) const;
+    void stationActivation_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void signalJoin_Timer_Server_Request_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
     void sendaction_44_serializeStates(AOMSState* aomsState) const;
@@ -672,6 +699,9 @@ public :
     void sendaction_10_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
+    void readLog_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
     void packageReadyInformation_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
@@ -702,12 +732,16 @@ inline bool Controller::StationStandBy_IN() const {
     return rootState_subState == StationStandBy;
 }
 
-inline bool Controller::signalJoin_Timer_Server_Request_IN() const {
-    return rootState_subState == signalJoin_Timer_Server_Request;
+inline bool Controller::stationSleep_IN() const {
+    return rootState_subState == stationSleep;
 }
 
-inline bool Controller::sendaction_47_IN() const {
-    return rootState_subState == sendaction_47;
+inline bool Controller::stationActivation_IN() const {
+    return rootState_subState == stationActivation;
+}
+
+inline bool Controller::signalJoin_Timer_Server_Request_IN() const {
+    return rootState_subState == signalJoin_Timer_Server_Request;
 }
 
 inline bool Controller::sendaction_44_IN() const {
@@ -752,6 +786,10 @@ inline bool Controller::sendaction_12_IN() const {
 
 inline bool Controller::sendaction_10_IN() const {
     return rootState_subState == sendaction_10;
+}
+
+inline bool Controller::readLog_IN() const {
+    return rootState_subState == readLog;
 }
 
 inline bool Controller::packageReadyInformation_IN() const {

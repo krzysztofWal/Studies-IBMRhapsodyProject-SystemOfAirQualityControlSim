@@ -141,8 +141,8 @@ IOxfReactive::TakeEventStatus Timer::rootState_processEvent() {
                             //#[ state timeIncrement.(Entry) 
                             if (time < ULLONG_MAX - 50) {
                             	time += 50;
-                            	if (time%3000 ==0){
-                            		std::cout << "sending signal: " << time << std::endl;
+                            	if (time%1000 ==0){
+                            		//std::cout << "sending signal: " << time << std::endl;
                             		GEN(inicjujOdczytTimer);
                             	}
                             }

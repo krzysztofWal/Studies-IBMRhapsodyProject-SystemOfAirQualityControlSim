@@ -35,6 +35,8 @@
 #include <fstream>
 //## auto_generated
 #include <climits>
+//## auto_generated
+#include <iostream>
 //## link itsController
 class Controller;
 

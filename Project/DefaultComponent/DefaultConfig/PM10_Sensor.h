@@ -30,6 +30,8 @@
 //## auto_generated
 #include <climits>
 //## auto_generated
+#include <iostream>
+//## auto_generated
 class Controller;
 
 //## package Default

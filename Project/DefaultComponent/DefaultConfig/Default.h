@@ -66,6 +66,9 @@ class Timer;
 class iCalibrateRequest;
 
 //## auto_generated
+class iConfirmAlertReceival;
+
+//## auto_generated
 class iConfirmDataReceival;
 
 //## auto_generated
@@ -122,59 +125,73 @@ class iSendAlert;
 
 #define readO3_Default_id 18619
 
-#define eventmessage_0_Default_id 18620
+#define create_Default_id 18620
 
-#define create_Default_id 18621
+#define evSendAlert_Default_id 18621
 
-#define evSendAlert_Default_id 18622
+#define evR_Default_id 18622
 
-#define evR_Default_id 18623
+#define evInicjujWyslaniePakietu_Default_id 18623
 
-#define evInicjujWyslaniePakietu_Default_id 18624
+#define evSendToReceiver_Default_id 18624
 
-#define evSendToReceiver_Default_id 18625
+#define evKont_Default_id 18625
 
-#define evKont_Default_id 18626
+#define potwierdzOdbior_Default_id 18626
 
-#define potwierdzOdbior_Default_id 18627
+#define evGonnaSend_Default_id 18627
 
-#define evGonnaSend_Default_id 18628
+#define evBegin_Default_id 18628
 
-#define evBegin_Default_id 18629
+#define ConfirmRecival_Default_id 18629
 
-#define ConfirmRecival_Default_id 18630
+#define Inform_Default_id 18630
 
-#define Inform_Default_id 18631
+#define SendAlert_Default_id 18631
 
-#define SendAlert_Default_id 18632
+#define serwZadajPakietu_Default_id 18632
 
-#define serwZadajPakietu_Default_id 18633
+#define evWylac_Default_id 18633
 
-#define evWylac_Default_id 18634
+#define czytajCzujniki_Default_id 18634
 
-#define czytajCzujniki_Default_id 18635
+#define timerOdczy_Default_id 18635
 
-#define timerOdczy_Default_id 18636
+#define timer_Default_id 18636
 
-#define timer_Default_id 18637
+#define timerCzytajSensory_Default_id 18637
 
-#define timerCzytajSensory_Default_id 18638
+#define serwSkalibruj_Default_id 18638
 
-#define serwSkalibruj_Default_id 18639
+#define callibrateCauseRequested_Default_id 18639
 
-#define callibrateCauseRequested_Default_id 18640
+#define envSkalibruj_Default_id 18640
 
-#define envSkalibruj_Default_id 18641
+#define requestTime_Default_id 18641
 
-#define requestTime_Default_id 18642
+#define provideTime_Default_id 18642
 
-#define provideTime_Default_id 18643
+#define inicjujOdczytTimer_Default_id 18643
 
-#define inicjujOdczytTimer_Default_id 18644
+#define callibrated_Default_id 18644
 
-#define callibrated_Default_id 18645
+#define potwierdzSygnalOdTimera_Default_id 18645
 
-#define potwierdzSygnalOdTimera_Default_id 18646
+#define confirmAlertReceival_Default_id 18646
+
+#define serwUspijStacje_Default_id 18647
+
+#define envUspijStacje_Default_id 18648
+
+#define serwAktywuj_Default_id 18649
+
+#define envAktywuj_Default_id 18650
+
+#define envCzytajLog_Default_id 18651
+
+#define serwCzytajLog_Default_id 18652
+
+#define eventmessage_0_Default_id 18653
 //#]
 
 //## package Default
@@ -787,35 +804,6 @@ public :
 //#[ ignore
 class OMAnimatedreadO3 : virtual public AOMEvent {
     DECLARE_META_EVENT(readO3)
-};
-//#]
-#endif // _OMINSTRUMENT
-
-//## event eventmessage_0()
-class eventmessage_0 : public OMEvent {
-    ////    Friends    ////
-    
-public :
-
-#ifdef _OMINSTRUMENT
-    friend class OMAnimatedeventmessage_0;
-#endif // _OMINSTRUMENT
-
-    ////    Constructors and destructors    ////
-    
-    //## auto_generated
-    eventmessage_0();
-    
-    ////    Framework operations    ////
-    
-    //## statechart_method
-    virtual bool isTypeOf(const short id) const;
-};
-
-#ifdef _OMINSTRUMENT
-//#[ ignore
-class OMAnimatedeventmessage_0 : virtual public AOMEvent {
-    DECLARE_META_EVENT(eventmessage_0)
 };
 //#]
 #endif // _OMINSTRUMENT
@@ -1607,6 +1595,238 @@ public :
 //#[ ignore
 class OMAnimatedpotwierdzSygnalOdTimera : virtual public AOMEvent {
     DECLARE_META_EVENT(potwierdzSygnalOdTimera)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event confirmAlertReceival()
+class confirmAlertReceival : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedconfirmAlertReceival;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    confirmAlertReceival();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedconfirmAlertReceival : virtual public AOMEvent {
+    DECLARE_META_EVENT(confirmAlertReceival)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event serwUspijStacje()
+class serwUspijStacje : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedserwUspijStacje;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    serwUspijStacje();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedserwUspijStacje : virtual public AOMEvent {
+    DECLARE_META_EVENT(serwUspijStacje)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event envUspijStacje()
+class envUspijStacje : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedenvUspijStacje;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    envUspijStacje();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedenvUspijStacje : virtual public AOMEvent {
+    DECLARE_META_EVENT(envUspijStacje)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event serwAktywuj()
+class serwAktywuj : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedserwAktywuj;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    serwAktywuj();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedserwAktywuj : virtual public AOMEvent {
+    DECLARE_META_EVENT(serwAktywuj)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event envAktywuj()
+class envAktywuj : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedenvAktywuj;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    envAktywuj();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedenvAktywuj : virtual public AOMEvent {
+    DECLARE_META_EVENT(envAktywuj)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event envCzytajLog()
+class envCzytajLog : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedenvCzytajLog;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    envCzytajLog();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedenvCzytajLog : virtual public AOMEvent {
+    DECLARE_META_EVENT(envCzytajLog)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event serwCzytajLog()
+class serwCzytajLog : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedserwCzytajLog;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    serwCzytajLog();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedserwCzytajLog : virtual public AOMEvent {
+    DECLARE_META_EVENT(serwCzytajLog)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event eventmessage_0()
+class eventmessage_0 : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedeventmessage_0;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    eventmessage_0();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedeventmessage_0 : virtual public AOMEvent {
+    DECLARE_META_EVENT(eventmessage_0)
 };
 //#]
 #endif // _OMINSTRUMENT

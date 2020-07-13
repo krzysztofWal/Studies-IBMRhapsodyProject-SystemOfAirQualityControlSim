@@ -17,7 +17,7 @@
 //#[ ignore
 #define Default_iConfirmAlertReceival_iConfirmAlertReceival_SERIALIZE OM_NO_OP
 
-#define Default_iConfirmAlertReceival_confirmAlertReceival_SERIALIZE OM_NO_OP
+#define Default_iConfirmAlertReceival_confirmAlert_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default

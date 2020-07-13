@@ -29,6 +29,8 @@
 //## auto_generated
 #include "iCalibrateRequest.h"
 //## auto_generated
+#include "iConfirmAlertReceival.h"
+//## auto_generated
 #include "iConfirmDataReceival.h"
 //## auto_generated
 #include "iGetAlertDetails.h"
@@ -178,12 +180,6 @@
 #define readO3_UNSERIALIZE OM_NO_OP
 
 #define readO3_CONSTRUCTOR readO3()
-
-#define eventmessage_0_SERIALIZE OM_NO_OP
-
-#define eventmessage_0_UNSERIALIZE OM_NO_OP
-
-#define eventmessage_0_CONSTRUCTOR eventmessage_0()
 
 #define create_SERIALIZE OMADD_SER(time, x2String(myEvent->time))
 
@@ -336,6 +332,54 @@
 #define potwierdzSygnalOdTimera_UNSERIALIZE OM_NO_OP
 
 #define potwierdzSygnalOdTimera_CONSTRUCTOR potwierdzSygnalOdTimera()
+
+#define confirmAlertReceival_SERIALIZE OM_NO_OP
+
+#define confirmAlertReceival_UNSERIALIZE OM_NO_OP
+
+#define confirmAlertReceival_CONSTRUCTOR confirmAlertReceival()
+
+#define serwUspijStacje_SERIALIZE OM_NO_OP
+
+#define serwUspijStacje_UNSERIALIZE OM_NO_OP
+
+#define serwUspijStacje_CONSTRUCTOR serwUspijStacje()
+
+#define envUspijStacje_SERIALIZE OM_NO_OP
+
+#define envUspijStacje_UNSERIALIZE OM_NO_OP
+
+#define envUspijStacje_CONSTRUCTOR envUspijStacje()
+
+#define serwAktywuj_SERIALIZE OM_NO_OP
+
+#define serwAktywuj_UNSERIALIZE OM_NO_OP
+
+#define serwAktywuj_CONSTRUCTOR serwAktywuj()
+
+#define envAktywuj_SERIALIZE OM_NO_OP
+
+#define envAktywuj_UNSERIALIZE OM_NO_OP
+
+#define envAktywuj_CONSTRUCTOR envAktywuj()
+
+#define envCzytajLog_SERIALIZE OM_NO_OP
+
+#define envCzytajLog_UNSERIALIZE OM_NO_OP
+
+#define envCzytajLog_CONSTRUCTOR envCzytajLog()
+
+#define serwCzytajLog_SERIALIZE OM_NO_OP
+
+#define serwCzytajLog_UNSERIALIZE OM_NO_OP
+
+#define serwCzytajLog_CONSTRUCTOR serwCzytajLog()
+
+#define eventmessage_0_SERIALIZE OM_NO_OP
+
+#define eventmessage_0_UNSERIALIZE OM_NO_OP
+
+#define eventmessage_0_CONSTRUCTOR eventmessage_0()
 //#]
 
 //## package Default
@@ -375,6 +419,8 @@ void Default_initRelations() {
         itsReceiver.get_port_3()->setItsIGetAlertDetails(itsController.get_port_33()->getItsIGetAlertDetails());
         
         itsReceiver.get_port_3()->setItsICalibrateRequest(itsController.get_port_33()->getItsICalibrateRequest());
+        
+        itsReceiver.get_port_3()->setItsIConfirmAlertReceival(itsController.get_port_33()->getItsIConfirmAlertReceival());
         
     }
     {
@@ -654,18 +700,6 @@ bool readO3::isTypeOf(const short id) const {
 }
 
 IMPLEMENT_META_EVENT_P(readO3, Default, Default, readO3())
-
-//## event eventmessage_0()
-eventmessage_0::eventmessage_0() {
-    NOTIFY_EVENT_CONSTRUCTOR(eventmessage_0)
-    setId(eventmessage_0_Default_id);
-}
-
-bool eventmessage_0::isTypeOf(const short id) const {
-    return (eventmessage_0_Default_id==id);
-}
-
-IMPLEMENT_META_EVENT_P(eventmessage_0, Default, Default, eventmessage_0())
 
 //## event create(long)
 create::create() {
@@ -1003,6 +1037,102 @@ bool potwierdzSygnalOdTimera::isTypeOf(const short id) const {
 }
 
 IMPLEMENT_META_EVENT_P(potwierdzSygnalOdTimera, Default, Default, potwierdzSygnalOdTimera())
+
+//## event confirmAlertReceival()
+confirmAlertReceival::confirmAlertReceival() {
+    NOTIFY_EVENT_CONSTRUCTOR(confirmAlertReceival)
+    setId(confirmAlertReceival_Default_id);
+}
+
+bool confirmAlertReceival::isTypeOf(const short id) const {
+    return (confirmAlertReceival_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(confirmAlertReceival, Default, Default, confirmAlertReceival())
+
+//## event serwUspijStacje()
+serwUspijStacje::serwUspijStacje() {
+    NOTIFY_EVENT_CONSTRUCTOR(serwUspijStacje)
+    setId(serwUspijStacje_Default_id);
+}
+
+bool serwUspijStacje::isTypeOf(const short id) const {
+    return (serwUspijStacje_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(serwUspijStacje, Default, Default, serwUspijStacje())
+
+//## event envUspijStacje()
+envUspijStacje::envUspijStacje() {
+    NOTIFY_EVENT_CONSTRUCTOR(envUspijStacje)
+    setId(envUspijStacje_Default_id);
+}
+
+bool envUspijStacje::isTypeOf(const short id) const {
+    return (envUspijStacje_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(envUspijStacje, Default, Default, envUspijStacje())
+
+//## event serwAktywuj()
+serwAktywuj::serwAktywuj() {
+    NOTIFY_EVENT_CONSTRUCTOR(serwAktywuj)
+    setId(serwAktywuj_Default_id);
+}
+
+bool serwAktywuj::isTypeOf(const short id) const {
+    return (serwAktywuj_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(serwAktywuj, Default, Default, serwAktywuj())
+
+//## event envAktywuj()
+envAktywuj::envAktywuj() {
+    NOTIFY_EVENT_CONSTRUCTOR(envAktywuj)
+    setId(envAktywuj_Default_id);
+}
+
+bool envAktywuj::isTypeOf(const short id) const {
+    return (envAktywuj_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(envAktywuj, Default, Default, envAktywuj())
+
+//## event envCzytajLog()
+envCzytajLog::envCzytajLog() {
+    NOTIFY_EVENT_CONSTRUCTOR(envCzytajLog)
+    setId(envCzytajLog_Default_id);
+}
+
+bool envCzytajLog::isTypeOf(const short id) const {
+    return (envCzytajLog_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(envCzytajLog, Default, Default, envCzytajLog())
+
+//## event serwCzytajLog()
+serwCzytajLog::serwCzytajLog() {
+    NOTIFY_EVENT_CONSTRUCTOR(serwCzytajLog)
+    setId(serwCzytajLog_Default_id);
+}
+
+bool serwCzytajLog::isTypeOf(const short id) const {
+    return (serwCzytajLog_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(serwCzytajLog, Default, Default, serwCzytajLog())
+
+//## event eventmessage_0()
+eventmessage_0::eventmessage_0() {
+    NOTIFY_EVENT_CONSTRUCTOR(eventmessage_0)
+    setId(eventmessage_0_Default_id);
+}
+
+bool eventmessage_0::isTypeOf(const short id) const {
+    return (eventmessage_0_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(eventmessage_0, Default, Default, eventmessage_0())
 
 /*********************************************************************
 	File Path	: DefaultComponent\DefaultConfig\Default.cpp

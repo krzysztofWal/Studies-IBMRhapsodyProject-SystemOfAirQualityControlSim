@@ -1,3 +1,6 @@
 [Op Calls]
 [Events]
+itsController->GEN(serwAktywuj())`Controller
+itsController->GEN(serwUspijStacje())`Controller
+itsReceiver->GEN(serwZadajPakietu())`Receiver
 [Breakpoints]

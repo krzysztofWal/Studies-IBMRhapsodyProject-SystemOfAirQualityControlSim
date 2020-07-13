@@ -15,13 +15,6 @@
 //## auto_generated
 #include "StationData.h"
 //#[ ignore
-#define OM_Default_StationData_StationData_2_SERIALIZE \
-    aomsmethod->addAttribute("co", x2String(co));\
-    aomsmethod->addAttribute("no2", x2String(no2));\
-    aomsmethod->addAttribute("o3", x2String(o3));\
-    aomsmethod->addAttribute("so2", x2String(so2));\
-    aomsmethod->addAttribute("stationId", x2String(stationId));\
-    aomsmethod->addAttribute("time", x2String(time));
 #define Default_StationData_set_SERIALIZE \
     aomsmethod->addAttribute("which", x2String(which));\
     aomsmethod->addAttribute("value", x2String(value));
@@ -37,22 +30,16 @@
 //## package Default
 
 //## class StationData
-StationData::StationData(unsigned long long time) : baro(0), co(0), hygro(0), no2(0), o3(0.), pm1(0), pm10(0), pm2_5(0), so2(0), stationId(0), thermo(0), time(0) {
+StationData::StationData(unsigned long long time) : baro(0), co(0), hygro(0), no2(0), o3(0.), pm1(0), pm10(0), pm2_5(0), so2(0), stationId(0), thermo(0), time(time) {
     NOTIFY_CONSTRUCTOR(StationData, StationData(unsigned long long), 1, Default_StationData_StationData_SERIALIZE);
     //#[ operation StationData(unsigned long long)
-    //std::cout << "Created StationData object" << std::endl;
+    //std::cout << "Created StationData object with time: "<< getTime() << std::endl;
     //#]
 }
 
 StationData::StationData() : baro(0), co(0), hygro(0), no2(0), o3(0.), pm1(0), pm10(0), pm2_5(0), so2(0), stationId(0), thermo(0), time(0) {
     NOTIFY_CONSTRUCTOR(StationData, StationData(), 0, OM_Default_StationData_StationData_1_SERIALIZE);
     //#[ operation StationData()
-    //#]
-}
-
-StationData::StationData(double co, double no2, double o3, double so2, int stationId, long time) : baro(0), co(co), hygro(0), no2(no2), o3(o3), pm1(0), pm10(0), pm2_5(0), so2(so2), stationId(stationId), thermo(0), time(time) {
-    NOTIFY_CONSTRUCTOR(StationData, StationData(double,double,double,double,int,long), 6, OM_Default_StationData_StationData_2_SERIALIZE);
-    //#[ operation StationData(double,double,double,double,int,long)
     //#]
 }
 

@@ -42,6 +42,8 @@
 //## class port_3_C
 #include "iCalibrateRequest.h"
 //## class port_3_C
+#include "iConfirmAlertReceival.h"
+//## class port_3_C
 #include "iConfirmDataReceival.h"
 //## class port_3_C
 #include "iGetAlertDetails.h"
@@ -53,6 +55,8 @@
 #include <fstream>
 //## auto_generated
 #include <climits>
+//## auto_generated
+#include <iostream>
 //## package Default
 
 //## class Receiver
@@ -61,7 +65,7 @@ public :
 
 //#[ ignore
     //## package Default
-    class port_3_C : public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails, public iCalibrateRequest {
+    class port_3_C : public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails, public iCalibrateRequest, public iConfirmAlertReceival {
         ////    Constructors and destructors    ////
         
     public :
@@ -78,6 +82,9 @@ public :
         virtual void calibrateRequest();
         
         //## auto_generated
+        virtual void confirmAlert();
+        
+        //## auto_generated
         virtual void confirmReceival();
         
         //## auto_generated
@@ -85,6 +92,9 @@ public :
         
         //## auto_generated
         iCalibrateRequest* getItsICalibrateRequest();
+        
+        //## auto_generated
+        iConfirmAlertReceival* getItsIConfirmAlertReceival();
         
         //## auto_generated
         iConfirmDataReceival* getItsIConfirmDataReceival();
@@ -113,6 +123,9 @@ public :
         void setItsICalibrateRequest(iCalibrateRequest* p_iCalibrateRequest);
         
         //## auto_generated
+        void setItsIConfirmAlertReceival(iConfirmAlertReceival* p_iConfirmAlertReceival);
+        
+        //## auto_generated
         void setItsIConfirmDataReceival(iConfirmDataReceival* p_iConfirmDataReceival);
         
         //## auto_generated
@@ -136,6 +149,8 @@ public :
         ////    Relations and components    ////
         
         iCalibrateRequest* itsICalibrateRequest;		//## link itsICalibrateRequest
+        
+        iConfirmAlertReceival* itsIConfirmAlertReceival;		//## link itsIConfirmAlertReceival
         
         iConfirmDataReceival* itsIConfirmDataReceival;		//## link itsIConfirmDataReceival
         
@@ -254,6 +269,12 @@ protected :
     void setDataReceived(std::vector<StationData> p_dataReceived);
     
     //## auto_generated
+    int getIterator() const;
+    
+    //## auto_generated
+    void setIterator(int p_iterator);
+    
+    //## auto_generated
     void initRelations();
     
     //## auto_generated
@@ -270,6 +291,8 @@ protected :
     std::vector<std::pair<int, int>> Alert_TimeAndWhichParticulate;		//## attribute Alert_TimeAndWhichParticulate
     
     std::vector<StationData> dataReceived;		//## attribute dataReceived
+    
+    int iterator;		//## attribute iterator
     
     ////    Relations and components    ////
     

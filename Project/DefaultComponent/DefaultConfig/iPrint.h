@@ -29,6 +29,8 @@
 #include <fstream>
 //## auto_generated
 #include <climits>
+//## auto_generated
+#include <iostream>
 //## package Default
 
 //## class iPrint

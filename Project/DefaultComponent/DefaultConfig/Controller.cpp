@@ -29,6 +29,8 @@
 
 #define Default_Controller_calibrateRequest_SERIALIZE OM_NO_OP
 
+#define Default_Controller_confirmAlert_SERIALIZE OM_NO_OP
+
 #define Default_Controller_confirmReceival_SERIALIZE OM_NO_OP
 
 #define Default_Controller_createPackage_SERIALIZE aomsmethod->addAttribute("time", x2String(time));
@@ -53,10 +55,6 @@
 
 #define Default_Controller_sprawdzPoziomy_SERIALIZE OM_NO_OP
 
-#define OMAnim_Default_Controller_setStationStatus_statusType_UNSERIALIZE_ARGS OP_UNSER(OMDestructiveString2X,(int&)p_stationStatus)
-
-#define OMAnim_Default_Controller_setStationStatus_statusType_SERIALIZE_RET_VAL
-
 #define Default_object_0_object_0_SERIALIZE OM_NO_OP
 //#]
 
@@ -65,12 +63,13 @@
 //## class Controller
 #ifdef _OMINSTRUMENT
 //#[ ignore
-static AOMClass* _ControllerSuper[5] = {
+static AOMClass* _ControllerSuper[6] = {
 OMAnimatediPrint::staticGetClass(),
 OMAnimatediInitialize::staticGetClass(),
 OMAnimatediConfirmDataReceival::staticGetClass(),
 OMAnimatediGetAlertDetails::staticGetClass(),
-OMAnimatediCalibrateRequest::staticGetClass()};
+OMAnimatediCalibrateRequest::staticGetClass(),
+OMAnimatediConfirmAlertReceival::staticGetClass()};
 //#]
 #endif // _OMINSTRUMENT
 
@@ -121,7 +120,6 @@ statusType Controller::getStationStatus() const {
 
 void Controller::setStationStatus(statusType p_stationStatus) {
     stationStatus = p_stationStatus;
-    NOTIFY_SET_OPERATION;
 }
 
 void Controller::initRelations() {
@@ -156,7 +154,8 @@ void Controller::destroy() {
     OMReactive::destroy();
 }
 
-Controller::Controller(IOxfActive* theActiveContext) : stationId(1), stationStatus(standBy), whetherTimerRead(false) {
+Controller::Controller(IOxfActive* theActiveContext) : stationId(1)
+ , stationStatus(standBy), whetherTimerRead(false) {
     NOTIFY_ACTIVE_CONSTRUCTOR(Controller, Controller(), 0, Default_Controller_Controller_SERIALIZE);
     setActiveContext(this, true);
     {
@@ -197,20 +196,13 @@ Controller::Controller(IOxfActive* theActiveContext) : stationId(1), stationStat
     initRelations();
     initStatechart();
     //#[ operation Controller()
-    alert[1] = false;
-    alert[2]= false;
-    alert[3] = false;
-    alert[4] = false;
-    
-    std::cout << "Constructed controller object" << this << std::endl;
+    //std::cout << "Constructed controller object" << this << std::endl;
     //std::cout << "Station status: " << stationStatus << std::endl;
-    
     //std::cout << alert[1] << std::endl;
     //std::cout << alert[2] << std::endl;
     //std::cout << alert[3] << std::endl;
     //std::cout << alert[4] << std::endl;
-    
-    
+    //outFile = new std::ofstream("log.txt", std::ios::app);
     //#]
 }
 
@@ -226,6 +218,7 @@ Controller::object_0_C::~object_0_C() {
 //#[ ignore
 Controller::port_33_C::port_33_C() : _p_(0) {
     itsICalibrateRequest = NULL;
+    itsIConfirmAlertReceival = NULL;
     itsIConfirmDataReceival = NULL;
     itsIGetAlertDetails = NULL;
     itsIInitialize = NULL;
@@ -244,6 +237,14 @@ void Controller::port_33_C::calibrateRequest() {
     
 }
 
+void Controller::port_33_C::confirmAlert() {
+    
+    if (itsIConfirmAlertReceival != NULL) {
+        itsIConfirmAlertReceival->confirmAlert();
+    }
+    
+}
+
 void Controller::port_33_C::confirmReceival() {
     
     if (itsIConfirmDataReceival != NULL) {
@@ -258,6 +259,7 @@ void Controller::port_33_C::connectController(Controller* part) {
     setItsIConfirmDataReceival(part);
     setItsIGetAlertDetails(part);
     setItsICalibrateRequest(part);
+    setItsIConfirmAlertReceival(part);
     
 }
 
@@ -270,6 +272,10 @@ std::vector<std::pair<unsigned long long, int>> Controller::port_33_C::getAlertD
 }
 
 iCalibrateRequest* Controller::port_33_C::getItsICalibrateRequest() {
+    return this;
+}
+
+iConfirmAlertReceival* Controller::port_33_C::getItsIConfirmAlertReceival() {
     return this;
 }
 
@@ -309,6 +315,10 @@ void Controller::port_33_C::setItsICalibrateRequest(iCalibrateRequest* p_iCalibr
     itsICalibrateRequest = p_iCalibrateRequest;
 }
 
+void Controller::port_33_C::setItsIConfirmAlertReceival(iConfirmAlertReceival* p_iConfirmAlertReceival) {
+    itsIConfirmAlertReceival = p_iConfirmAlertReceival;
+}
+
 void Controller::port_33_C::setItsIConfirmDataReceival(iConfirmDataReceival* p_iConfirmDataReceival) {
     itsIConfirmDataReceival = p_iConfirmDataReceival;
 }
@@ -329,6 +339,10 @@ void Controller::port_33_C::cleanUpRelations() {
     if(itsICalibrateRequest != NULL)
         {
             itsICalibrateRequest = NULL;
+        }
+    if(itsIConfirmAlertReceival != NULL)
+        {
+            itsIConfirmAlertReceival = NULL;
         }
     if(itsIConfirmDataReceival != NULL)
         {
@@ -463,6 +477,13 @@ void Controller::calibrateRequest() {
     //#]
 }
 
+void Controller::confirmAlert() {
+    NOTIFY_OPERATION(confirmAlert, confirmAlert(), 0, Default_Controller_confirmAlert_SERIALIZE);
+    //#[ operation confirmAlert()
+    GEN(confirmAlertReceival);
+    //#]
+}
+
 void Controller::confirmReceival() {
     NOTIFY_OPERATION(confirmReceival, confirmReceival(), 0, Default_Controller_confirmReceival_SERIALIZE);
     //#[ operation confirmReceival()
@@ -493,6 +514,7 @@ std::vector<std::pair<unsigned long long, int>> Controller::getAlertDetails() {
     for (iterator++; iterator <= static_cast<int>(alert.size()); iterator++) {
     	if (alert[iterator]== true) 
     		temp.emplace_back(std::make_pair(dataPackage->getTime(),iterator));
+    		//std::cout << "getAlertDetails(): " << dataPackage->getTime() << std::endl;
     }
     iterator = 0;
     return temp;
@@ -518,7 +540,7 @@ bool Controller::isAnyAlert() {
     NOTIFY_OPERATION(isAnyAlert, isAnyAlert(), 0, Default_Controller_isAnyAlert_SERIALIZE);
     //#[ operation isAnyAlert()
     bool temp = false;
-    for (iterator++; iterator <=4; iterator++) {
+    for (iterator++; iterator <=static_cast<int>(alert.size()); iterator++) {
     	if (alert[iterator] == true)
     		temp = true; 
     }          
@@ -556,7 +578,7 @@ StationData Controller::print() {
 void Controller::printPackage() {
     NOTIFY_OPERATION(printPackage, printPackage(), 0, Default_Controller_printPackage_SERIALIZE);
     //#[ operation printPackage()
-    std::cout << "========data package time: "<< time << "========" << std::endl
+    std::cout << "========data package time: "<<dataPackage->getTime() << "========" << std::endl
     		<< "O3: " << dataPackage->get(1) << std::endl
     		<< "CO: " << dataPackage->get(2) << std::endl
     		<< "SO2: " << dataPackage->get(3) << std::endl
@@ -600,6 +622,9 @@ void Controller::sprawdzPoziomy() {
     setWhenDue(2,0.2);  // limit co
     setWhenDue(3,0.3);  // limit so2
     setWhenDue(4,0.5);  //limit no2
+    setWhenDue(5,1);
+    setWhenDue(6,1);
+    setWhenDue(7,1);
     //#]
 }
 
@@ -617,6 +642,14 @@ Controller::port_35_C* Controller::getPort_35() const {
 
 Controller::port_35_C* Controller::get_port_35() const {
     return (Controller::port_35_C*) &port_35;
+}
+
+int Controller::getStopMeasurementFlag() const {
+    return stopMeasurementFlag;
+}
+
+void Controller::setStopMeasurementFlag(int p_stopMeasurementFlag) {
+    stopMeasurementFlag = p_stopMeasurementFlag;
 }
 
 CO_Sensor* Controller::getItsCO_Sensor() const {
@@ -916,10 +949,9 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
         // State wysylanieAlertu
         case wysylanieAlertu:
         {
-            if(IS_EVENT_TYPE_OF(OMNullEventId))
+            if(IS_EVENT_TYPE_OF(confirmAlertReceival_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("17");
-                    popNullTransition();
                     NOTIFY_STATE_EXITED("ROOT.wysylanieAlertu");
                     NOTIFY_STATE_ENTERED("ROOT.deletePackageState");
                     pushNullTransition();
@@ -1006,7 +1038,6 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                             popNullTransition();
                             NOTIFY_STATE_EXITED("ROOT.checkLimits");
                             NOTIFY_STATE_ENTERED("ROOT.wysylanieAlertu");
-                            pushNullTransition();
                             rootState_subState = wysylanieAlertu;
                             rootState_active = wysylanieAlertu;
                             //#[ state wysylanieAlertu.(Entry) 
@@ -1392,22 +1423,61 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
             
         }
         break;
-        // State sendaction_47
-        case sendaction_47:
+        // State stationSleep
+        case stationSleep:
         {
             if(IS_EVENT_TYPE_OF(OMNullEventId))
                 {
-                    NOTIFY_TRANSITION_STARTED("38");
+                    NOTIFY_TRANSITION_STARTED("40");
                     popNullTransition();
-                    NOTIFY_STATE_EXITED("ROOT.sendaction_47");
-                    NOTIFY_STATE_ENTERED("ROOT.sendaction_10");
-                    rootState_subState = sendaction_10;
-                    rootState_active = sendaction_10;
-                    //#[ state sendaction_10.(Entry) 
-                    itsCO_Sensor.GEN(czytajCzujniki);
+                    NOTIFY_STATE_EXITED("ROOT.stationSleep");
+                    NOTIFY_STATE_ENTERED("ROOT.StationStandBy");
+                    rootState_subState = StationStandBy;
+                    rootState_active = StationStandBy;
+                    //#[ state StationStandBy.(Entry) 
+                    obsluzTrybOszczedzaniaEnergii();
                     //#]
-                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_10");
-                    NOTIFY_TRANSITION_TERMINATED("38");
+                    NOTIFY_TRANSITION_TERMINATED("40");
+                    res = eventConsumed;
+                }
+            
+        }
+        break;
+        // State stationActivation
+        case stationActivation:
+        {
+            if(IS_EVENT_TYPE_OF(OMNullEventId))
+                {
+                    NOTIFY_TRANSITION_STARTED("43");
+                    popNullTransition();
+                    NOTIFY_STATE_EXITED("ROOT.stationActivation");
+                    NOTIFY_STATE_ENTERED("ROOT.StationStandBy");
+                    rootState_subState = StationStandBy;
+                    rootState_active = StationStandBy;
+                    //#[ state StationStandBy.(Entry) 
+                    obsluzTrybOszczedzaniaEnergii();
+                    //#]
+                    NOTIFY_TRANSITION_TERMINATED("43");
+                    res = eventConsumed;
+                }
+            
+        }
+        break;
+        // State readLog
+        case readLog:
+        {
+            if(IS_EVENT_TYPE_OF(OMNullEventId))
+                {
+                    NOTIFY_TRANSITION_STARTED("45");
+                    popNullTransition();
+                    NOTIFY_STATE_EXITED("ROOT.readLog");
+                    NOTIFY_STATE_ENTERED("ROOT.StationStandBy");
+                    rootState_subState = StationStandBy;
+                    rootState_active = StationStandBy;
+                    //#[ state StationStandBy.(Entry) 
+                    obsluzTrybOszczedzaniaEnergii();
+                    //#]
+                    NOTIFY_TRANSITION_TERMINATED("45");
                     res = eventConsumed;
                 }
             
@@ -1421,72 +1491,180 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
 
 IOxfReactive::TakeEventStatus Controller::StationStandBy_handleEvent() {
     IOxfReactive::TakeEventStatus res = eventNotConsumed;
-    if(IS_EVENT_TYPE_OF(callibrateCauseRequested_Default_id))
+    if(IS_EVENT_TYPE_OF(envCzytajLog_Default_id))
         {
-            NOTIFY_TRANSITION_STARTED("21");
+            NOTIFY_TRANSITION_STARTED("44");
             NOTIFY_STATE_EXITED("ROOT.StationStandBy");
-            //#[ transition 21 
-            obsluzTrybOszczedzaniaEnergii();
+            NOTIFY_STATE_ENTERED("ROOT.readLog");
+            pushNullTransition();
+            rootState_subState = readLog;
+            rootState_active = readLog;
+            //#[ state readLog.(Entry) 
+            //readInfo();
             //#]
-            NOTIFY_STATE_ENTERED("ROOT.callibration");
-            rootState_subState = callibration;
-            rootState_active = callibration;
-            //#[ state callibration.(Entry) 
-            calibrate();
-            //#]
-            rootState_timeout = scheduleTimeout(1000, "ROOT.callibration");
-            NOTIFY_TRANSITION_TERMINATED("21");
+            NOTIFY_TRANSITION_TERMINATED("44");
             res = eventConsumed;
+        }
+    else if(IS_EVENT_TYPE_OF(serwAktywuj_Default_id))
+        {
+            NOTIFY_TRANSITION_STARTED("42");
+            NOTIFY_STATE_EXITED("ROOT.StationStandBy");
+            NOTIFY_STATE_ENTERED("ROOT.stationActivation");
+            pushNullTransition();
+            rootState_subState = stationActivation;
+            rootState_active = stationActivation;
+            //#[ state stationActivation.(Entry) 
+            if (stopMeasurementFlag)
+            	stopMeasurementFlag = false;
+            //std::cout << stopMeasurementFlag << " in activation" << std::endl;
+            //#]
+            NOTIFY_TRANSITION_TERMINATED("42");
+            res = eventConsumed;
+        }
+    else if(IS_EVENT_TYPE_OF(callibrateCauseRequested_Default_id))
+        {
+            //## transition 21 
+            if(!stopMeasurementFlag)
+                {
+                    NOTIFY_TRANSITION_STARTED("21");
+                    NOTIFY_STATE_EXITED("ROOT.StationStandBy");
+                    //#[ transition 21 
+                    obsluzTrybOszczedzaniaEnergii();
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.callibration");
+                    rootState_subState = callibration;
+                    rootState_active = callibration;
+                    //#[ state callibration.(Entry) 
+                    calibrate();
+                    //#]
+                    rootState_timeout = scheduleTimeout(1000, "ROOT.callibration");
+                    NOTIFY_TRANSITION_TERMINATED("21");
+                    res = eventConsumed;
+                }
         }
     else if(IS_EVENT_TYPE_OF(Initialize_Default_id))
         {
-            NOTIFY_TRANSITION_STARTED("0");
+            //## transition 0 
+            if(!stopMeasurementFlag)
+                {
+                    NOTIFY_TRANSITION_STARTED("0");
+                    NOTIFY_STATE_EXITED("ROOT.StationStandBy");
+                    //#[ transition 0 
+                    obsluzTrybOszczedzaniaEnergii();
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_44");
+                    rootState_subState = sendaction_44;
+                    rootState_active = sendaction_44;
+                    //#[ state sendaction_44.(Entry) 
+                    itsTimer.GEN(requestTime);
+                    //#]
+                    NOTIFY_TRANSITION_TERMINATED("0");
+                    res = eventConsumed;
+                }
+        }
+    else if(IS_EVENT_TYPE_OF(serwCzytajLog_Default_id))
+        {
+            NOTIFY_TRANSITION_STARTED("46");
             NOTIFY_STATE_EXITED("ROOT.StationStandBy");
-            //#[ transition 0 
-            obsluzTrybOszczedzaniaEnergii();
+            NOTIFY_STATE_ENTERED("ROOT.readLog");
+            pushNullTransition();
+            rootState_subState = readLog;
+            rootState_active = readLog;
+            //#[ state readLog.(Entry) 
+            //readInfo();
             //#]
-            NOTIFY_STATE_ENTERED("ROOT.sendaction_44");
-            rootState_subState = sendaction_44;
-            rootState_active = sendaction_44;
-            //#[ state sendaction_44.(Entry) 
-            itsTimer.GEN(requestTime);
-            //#]
-            NOTIFY_TRANSITION_TERMINATED("0");
+            NOTIFY_TRANSITION_TERMINATED("46");
             res = eventConsumed;
         }
     else if(IS_EVENT_TYPE_OF(timerCzytajSensory_Default_id))
         {
             OMSETPARAMS(timerCzytajSensory);
-            NOTIFY_TRANSITION_STARTED("11");
+            //## transition 11 
+            if(!stopMeasurementFlag)
+                {
+                    NOTIFY_TRANSITION_STARTED("11");
+                    NOTIFY_STATE_EXITED("ROOT.StationStandBy");
+                    //#[ transition 11 
+                    obsluzTrybOszczedzaniaEnergii();whetherTimerRead=true;createPackage(params->time);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_10");
+                    rootState_subState = sendaction_10;
+                    rootState_active = sendaction_10;
+                    //#[ state sendaction_10.(Entry) 
+                    itsCO_Sensor.GEN(czytajCzujniki);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_10");
+                    NOTIFY_TRANSITION_TERMINATED("11");
+                    res = eventConsumed;
+                }
+        }
+    else if(IS_EVENT_TYPE_OF(envUspijStacje_Default_id))
+        {
+            NOTIFY_TRANSITION_STARTED("38");
             NOTIFY_STATE_EXITED("ROOT.StationStandBy");
-            //#[ transition 11 
-            obsluzTrybOszczedzaniaEnergii();whetherTimerRead=true;createPackage(params->time);std::cout << params->time;
-            //#]
-            NOTIFY_STATE_ENTERED("ROOT.sendaction_47");
+            NOTIFY_STATE_ENTERED("ROOT.stationSleep");
             pushNullTransition();
-            rootState_subState = sendaction_47;
-            rootState_active = sendaction_47;
-            //#[ state sendaction_47.(Entry) 
-            itsTimer.GEN(potwierdzSygnalOdTimera);
+            rootState_subState = stationSleep;
+            rootState_active = stationSleep;
+            //#[ state stationSleep.(Entry) 
+            if (!stopMeasurementFlag)
+            	stopMeasurementFlag = true;
+            //std::cout << stopMeasurementFlag << " in sleep" << std::endl;
             //#]
-            NOTIFY_TRANSITION_TERMINATED("11");
+            NOTIFY_TRANSITION_TERMINATED("38");
+            res = eventConsumed;
+        }
+    else if(IS_EVENT_TYPE_OF(envAktywuj_Default_id))
+        {
+            NOTIFY_TRANSITION_STARTED("41");
+            NOTIFY_STATE_EXITED("ROOT.StationStandBy");
+            NOTIFY_STATE_ENTERED("ROOT.stationActivation");
+            pushNullTransition();
+            rootState_subState = stationActivation;
+            rootState_active = stationActivation;
+            //#[ state stationActivation.(Entry) 
+            if (stopMeasurementFlag)
+            	stopMeasurementFlag = false;
+            //std::cout << stopMeasurementFlag << " in activation" << std::endl;
+            //#]
+            NOTIFY_TRANSITION_TERMINATED("41");
             res = eventConsumed;
         }
     else if(IS_EVENT_TYPE_OF(envSkalibruj_Default_id))
         {
-            NOTIFY_TRANSITION_STARTED("22");
+            //## transition 22 
+            if(!stopMeasurementFlag)
+                {
+                    NOTIFY_TRANSITION_STARTED("22");
+                    NOTIFY_STATE_EXITED("ROOT.StationStandBy");
+                    //#[ transition 22 
+                    obsluzTrybOszczedzaniaEnergii();
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.callibration");
+                    rootState_subState = callibration;
+                    rootState_active = callibration;
+                    //#[ state callibration.(Entry) 
+                    calibrate();
+                    //#]
+                    rootState_timeout = scheduleTimeout(1000, "ROOT.callibration");
+                    NOTIFY_TRANSITION_TERMINATED("22");
+                    res = eventConsumed;
+                }
+        }
+    else if(IS_EVENT_TYPE_OF(serwUspijStacje_Default_id))
+        {
+            NOTIFY_TRANSITION_STARTED("39");
             NOTIFY_STATE_EXITED("ROOT.StationStandBy");
-            //#[ transition 22 
-            obsluzTrybOszczedzaniaEnergii();
+            NOTIFY_STATE_ENTERED("ROOT.stationSleep");
+            pushNullTransition();
+            rootState_subState = stationSleep;
+            rootState_active = stationSleep;
+            //#[ state stationSleep.(Entry) 
+            if (!stopMeasurementFlag)
+            	stopMeasurementFlag = true;
+            //std::cout << stopMeasurementFlag << " in sleep" << std::endl;
             //#]
-            NOTIFY_STATE_ENTERED("ROOT.callibration");
-            rootState_subState = callibration;
-            rootState_active = callibration;
-            //#[ state callibration.(Entry) 
-            calibrate();
-            //#]
-            rootState_timeout = scheduleTimeout(1000, "ROOT.callibration");
-            NOTIFY_TRANSITION_TERMINATED("22");
+            NOTIFY_TRANSITION_TERMINATED("39");
             res = eventConsumed;
         }
     
@@ -1503,11 +1681,13 @@ void OMAnimatedController::serializeAttributes(AOMSAttributes* aomsAttributes) c
     aomsAttributes->addAttribute("alert", UNKNOWN2STRING(myReal->alert));
     aomsAttributes->addAttribute("iterator", x2String(myReal->iterator));
     aomsAttributes->addAttribute("whetherTimerRead", x2String(myReal->whetherTimerRead));
+    aomsAttributes->addAttribute("stopMeasurementFlag", x2String(myReal->stopMeasurementFlag));
     OMAnimatediPrint::serializeAttributes(aomsAttributes);
     OMAnimatediInitialize::serializeAttributes(aomsAttributes);
     OMAnimatediConfirmDataReceival::serializeAttributes(aomsAttributes);
     OMAnimatediGetAlertDetails::serializeAttributes(aomsAttributes);
     OMAnimatediCalibrateRequest::serializeAttributes(aomsAttributes);
+    OMAnimatediConfirmAlertReceival::serializeAttributes(aomsAttributes);
 }
 
 void OMAnimatedController::serializeRelations(AOMSRelations* aomsRelations) const {
@@ -1540,6 +1720,7 @@ void OMAnimatedController::serializeRelations(AOMSRelations* aomsRelations) cons
     OMAnimatediConfirmDataReceival::serializeRelations(aomsRelations);
     OMAnimatediGetAlertDetails::serializeRelations(aomsRelations);
     OMAnimatediCalibrateRequest::serializeRelations(aomsRelations);
+    OMAnimatediConfirmAlertReceival::serializeRelations(aomsRelations);
 }
 
 void OMAnimatedController::rootState_serializeStates(AOMSState* aomsState) const {
@@ -1635,9 +1816,19 @@ void OMAnimatedController::rootState_serializeStates(AOMSState* aomsState) const
             sendaction_44_serializeStates(aomsState);
         }
         break;
-        case Controller::sendaction_47:
+        case Controller::stationSleep:
         {
-            sendaction_47_serializeStates(aomsState);
+            stationSleep_serializeStates(aomsState);
+        }
+        break;
+        case Controller::stationActivation:
+        {
+            stationActivation_serializeStates(aomsState);
+        }
+        break;
+        case Controller::readLog:
+        {
+            readLog_serializeStates(aomsState);
         }
         break;
         default:
@@ -1653,12 +1844,16 @@ void OMAnimatedController::StationStandBy_serializeStates(AOMSState* aomsState) 
     aomsState->addState("ROOT.StationStandBy");
 }
 
-void OMAnimatedController::signalJoin_Timer_Server_Request_serializeStates(AOMSState* aomsState) const {
-    aomsState->addState("ROOT.signalJoin_Timer_Server_Request");
+void OMAnimatedController::stationSleep_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.stationSleep");
 }
 
-void OMAnimatedController::sendaction_47_serializeStates(AOMSState* aomsState) const {
-    aomsState->addState("ROOT.sendaction_47");
+void OMAnimatedController::stationActivation_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.stationActivation");
+}
+
+void OMAnimatedController::signalJoin_Timer_Server_Request_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.signalJoin_Timer_Server_Request");
 }
 
 void OMAnimatedController::sendaction_44_serializeStates(AOMSState* aomsState) const {
@@ -1705,6 +1900,10 @@ void OMAnimatedController::sendaction_10_serializeStates(AOMSState* aomsState) c
     aomsState->addState("ROOT.sendaction_10");
 }
 
+void OMAnimatedController::readLog_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.readLog");
+}
+
 void OMAnimatedController::packageReadyInformation_serializeStates(AOMSState* aomsState) const {
     aomsState->addState("ROOT.packageReadyInformation");
 }
@@ -1722,7 +1921,7 @@ void OMAnimatedController::callibration_serializeStates(AOMSState* aomsState) co
 }
 //#]
 
-IMPLEMENT_REACTIVE_META_M_P(Controller, Default, false, _ControllerSuper, 5, OMAnimatedController)
+IMPLEMENT_REACTIVE_META_M_P(Controller, Default, false, _ControllerSuper, 6, OMAnimatedController)
 
 OMINIT_SUPERCLASS(iPrint, OMAnimatediPrint)
 
@@ -1734,11 +1933,9 @@ OMINIT_SUPERCLASS(iGetAlertDetails, OMAnimatediGetAlertDetails)
 
 OMINIT_SUPERCLASS(iCalibrateRequest, OMAnimatediCalibrateRequest)
 
+OMINIT_SUPERCLASS(iConfirmAlertReceival, OMAnimatediConfirmAlertReceival)
+
 OMREGISTER_REACTIVE_CLASS
-
-IMPLEMENT_META_OP(OMAnimatedController, Default_Controller_setStationStatus_statusType, "setStationStatus", FALSE, "setStationStatus(statusType)", 1)
-
-IMPLEMENT_OP_CALL(Default_Controller_setStationStatus_statusType, Controller, setStationStatus(p_stationStatus), NO_OP())
 
 IMPLEMENT_META_OBJECT_P(Controller::object_0, Controller::object_0_C, Default, Default, false, OMAnimatedobject_0_C)
 #endif // _OMINSTRUMENT

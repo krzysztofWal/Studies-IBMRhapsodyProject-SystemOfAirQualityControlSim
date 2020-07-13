@@ -27,6 +27,8 @@
 #include <fstream>
 //## auto_generated
 #include <climits>
+//## auto_generated
+#include <iostream>
 //## package Default
 
 //## class StationData
@@ -46,9 +48,6 @@ public :
     
     //## operation StationData()
     StationData();
-    
-    //## operation StationData(double,double,double,double,int,long)
-    StationData(double co, double no2, double o3, double so2, int stationId, long time);
     
     //## auto_generated
     ~StationData();

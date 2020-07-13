@@ -30,6 +30,7 @@
 //#[ ignore
 Receiver::port_3_C::port_3_C() : _p_(0) {
     itsICalibrateRequest = NULL;
+    itsIConfirmAlertReceival = NULL;
     itsIConfirmDataReceival = NULL;
     itsIGetAlertDetails = NULL;
     itsIInitialize = NULL;
@@ -44,6 +45,14 @@ void Receiver::port_3_C::calibrateRequest() {
     
     if (itsICalibrateRequest != NULL) {
         itsICalibrateRequest->calibrateRequest();
+    }
+    
+}
+
+void Receiver::port_3_C::confirmAlert() {
+    
+    if (itsIConfirmAlertReceival != NULL) {
+        itsIConfirmAlertReceival->confirmAlert();
     }
     
 }
@@ -65,6 +74,10 @@ std::vector<std::pair<unsigned long long, int>> Receiver::port_3_C::getAlertDeta
 }
 
 iCalibrateRequest* Receiver::port_3_C::getItsICalibrateRequest() {
+    return this;
+}
+
+iConfirmAlertReceival* Receiver::port_3_C::getItsIConfirmAlertReceival() {
     return this;
 }
 
@@ -108,6 +121,10 @@ void Receiver::port_3_C::setItsICalibrateRequest(iCalibrateRequest* p_iCalibrate
     itsICalibrateRequest = p_iCalibrateRequest;
 }
 
+void Receiver::port_3_C::setItsIConfirmAlertReceival(iConfirmAlertReceival* p_iConfirmAlertReceival) {
+    itsIConfirmAlertReceival = p_iConfirmAlertReceival;
+}
+
 void Receiver::port_3_C::setItsIConfirmDataReceival(iConfirmDataReceival* p_iConfirmDataReceival) {
     itsIConfirmDataReceival = p_iConfirmDataReceival;
 }
@@ -128,6 +145,10 @@ void Receiver::port_3_C::cleanUpRelations() {
     if(itsICalibrateRequest != NULL)
         {
             itsICalibrateRequest = NULL;
+        }
+    if(itsIConfirmAlertReceival != NULL)
+        {
+            itsIConfirmAlertReceival = NULL;
         }
     if(itsIConfirmDataReceival != NULL)
         {
@@ -206,7 +227,7 @@ void Receiver::port_5_C::cleanUpRelations() {
 }
 //#]
 
-Receiver::Receiver(IOxfActive* theActiveContext) {
+Receiver::Receiver(IOxfActive* theActiveContext) : iterator(0) {
     NOTIFY_ACTIVE_CONSTRUCTOR(Receiver, Receiver(), 0, Default_Receiver_Receiver_SERIALIZE);
     setActiveContext(this, true);
     initRelations();
@@ -278,6 +299,14 @@ void Receiver::setDataReceived(std::vector<StationData> p_dataReceived) {
     dataReceived = p_dataReceived;
 }
 
+int Receiver::getIterator() const {
+    return iterator;
+}
+
+void Receiver::setIterator(int p_iterator) {
+    iterator = p_iterator;
+}
+
 void Receiver::initRelations() {
     if (get_port_5() != NULL) {
         get_port_5()->connectReceiver(this);
@@ -344,8 +373,14 @@ IOxfReactive::TakeEventStatus Receiver::rootState_processEvent() {
                     rootState_subState = alertReceival;
                     rootState_active = alertReceival;
                     //#[ state alertReceival.(Entry) 
-                    std::cout << "alertReceival_st: rec received an alert" << std::endl;
                     auto vec = OUT_PORT(port_3)->getAlertDetails();
+                    std::cout << "======received alert=======" << std::endl;
+                    for (; iterator < static_cast<int>(vec.size()) ;iterator++) {
+                    	std::cout << "time: " << vec.at(iterator).first << " measured pollutant: " << vec.at(iterator).second << std::endl; 
+                    	Alert_TimeAndWhichParticulate.emplace_back(vec.at(iterator));
+                    }                                                                                                                    
+                    std::cout << "=============================" << std::endl;
+                    iterator = 0;
                     //#]
                     NOTIFY_TRANSITION_TERMINATED("3");
                     res = eventConsumed;
@@ -414,6 +449,9 @@ IOxfReactive::TakeEventStatus Receiver::rootState_processEvent() {
                     NOTIFY_TRANSITION_STARTED("4");
                     popNullTransition();
                     NOTIFY_STATE_EXITED("ROOT.alertReceival");
+                    //#[ transition 4 
+                    OUT_PORT(port_3)->confirmAlert();
+                    //#]
                     NOTIFY_STATE_ENTERED("ROOT.receiverStandby");
                     rootState_subState = receiverStandby;
                     rootState_active = receiverStandby;
@@ -451,6 +489,7 @@ IOxfReactive::TakeEventStatus Receiver::rootState_processEvent() {
 void OMAnimatedReceiver::serializeAttributes(AOMSAttributes* aomsAttributes) const {
     aomsAttributes->addAttribute("dataReceived", UNKNOWN2STRING(myReal->dataReceived));
     aomsAttributes->addAttribute("Alert_TimeAndWhichParticulate", UNKNOWN2STRING(myReal->Alert_TimeAndWhichParticulate));
+    aomsAttributes->addAttribute("iterator", x2String(myReal->iterator));
     OMAnimatediInform::serializeAttributes(aomsAttributes);
     OMAnimatediSendAlert::serializeAttributes(aomsAttributes);
 }

@@ -27,6 +27,8 @@
 #include <fstream>
 //## auto_generated
 #include <climits>
+//## auto_generated
+#include <iostream>
 //## package Default
 
 //## class iConfirmAlertReceival
@@ -49,8 +51,8 @@ public :
     
     ////    Operations    ////
     
-    //## operation confirmAlertReceival()
-    virtual void confirmAlertReceival() = 0;
+    //## operation confirmAlert()
+    virtual void confirmAlert() = 0;
 };
 
 #ifdef _OMINSTRUMENT
