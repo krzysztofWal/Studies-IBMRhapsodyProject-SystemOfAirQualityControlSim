@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Default
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Default.cpp
 *********************************************************************/
 
@@ -27,6 +27,8 @@
 //## auto_generated
 #include "Hygrometer.h"
 //## auto_generated
+#include "iAktywujStacje.h"
+//## auto_generated
 #include "iCalibrateRequest.h"
 //## auto_generated
 #include "iConfirmAlertReceival.h"
@@ -42,6 +44,8 @@
 #include "iPrint.h"
 //## auto_generated
 #include "iSendAlert.h"
+//## auto_generated
+#include "iUspijStacje.h"
 //## auto_generated
 #include "NO2_Sensor.h"
 //## auto_generated
@@ -380,6 +384,36 @@
 #define eventmessage_0_UNSERIALIZE OM_NO_OP
 
 #define eventmessage_0_CONSTRUCTOR eventmessage_0()
+
+#define envCzytaj_SERIALIZE OM_NO_OP
+
+#define envCzytaj_UNSERIALIZE OM_NO_OP
+
+#define envCzytaj_CONSTRUCTOR envCzytaj()
+
+#define envCzytajInfo_SERIALIZE OM_NO_OP
+
+#define envCzytajInfo_UNSERIALIZE OM_NO_OP
+
+#define envCzytajInfo_CONSTRUCTOR envCzytajInfo()
+
+#define serwCzytajInfo_SERIALIZE OM_NO_OP
+
+#define serwCzytajInfo_UNSERIALIZE OM_NO_OP
+
+#define serwCzytajInfo_CONSTRUCTOR serwCzytajInfo()
+
+#define UspijStacje_SERIALIZE OM_NO_OP
+
+#define UspijStacje_UNSERIALIZE OM_NO_OP
+
+#define UspijStacje_CONSTRUCTOR UspijStacje()
+
+#define AktywujStacje_SERIALIZE OM_NO_OP
+
+#define AktywujStacje_UNSERIALIZE OM_NO_OP
+
+#define AktywujStacje_CONSTRUCTOR AktywujStacje()
 //#]
 
 //## package Default
@@ -421,6 +455,10 @@ void Default_initRelations() {
         itsReceiver.get_port_3()->setItsICalibrateRequest(itsController.get_port_33()->getItsICalibrateRequest());
         
         itsReceiver.get_port_3()->setItsIConfirmAlertReceival(itsController.get_port_33()->getItsIConfirmAlertReceival());
+        
+        itsReceiver.get_port_3()->setItsIUspijStacje(itsController.get_port_33()->getItsIUspijStacje());
+        
+        itsReceiver.get_port_3()->setItsIAktywujStacje(itsController.get_port_33()->getItsIAktywujStacje());
         
     }
     {
@@ -1133,6 +1171,66 @@ bool eventmessage_0::isTypeOf(const short id) const {
 }
 
 IMPLEMENT_META_EVENT_P(eventmessage_0, Default, Default, eventmessage_0())
+
+//## event envCzytaj()
+envCzytaj::envCzytaj() {
+    NOTIFY_EVENT_CONSTRUCTOR(envCzytaj)
+    setId(envCzytaj_Default_id);
+}
+
+bool envCzytaj::isTypeOf(const short id) const {
+    return (envCzytaj_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(envCzytaj, Default, Default, envCzytaj())
+
+//## event envCzytajInfo()
+envCzytajInfo::envCzytajInfo() {
+    NOTIFY_EVENT_CONSTRUCTOR(envCzytajInfo)
+    setId(envCzytajInfo_Default_id);
+}
+
+bool envCzytajInfo::isTypeOf(const short id) const {
+    return (envCzytajInfo_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(envCzytajInfo, Default, Default, envCzytajInfo())
+
+//## event serwCzytajInfo()
+serwCzytajInfo::serwCzytajInfo() {
+    NOTIFY_EVENT_CONSTRUCTOR(serwCzytajInfo)
+    setId(serwCzytajInfo_Default_id);
+}
+
+bool serwCzytajInfo::isTypeOf(const short id) const {
+    return (serwCzytajInfo_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(serwCzytajInfo, Default, Default, serwCzytajInfo())
+
+//## event UspijStacje()
+UspijStacje::UspijStacje() {
+    NOTIFY_EVENT_CONSTRUCTOR(UspijStacje)
+    setId(UspijStacje_Default_id);
+}
+
+bool UspijStacje::isTypeOf(const short id) const {
+    return (UspijStacje_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(UspijStacje, Default, Default, UspijStacje())
+
+//## event AktywujStacje()
+AktywujStacje::AktywujStacje() {
+    NOTIFY_EVENT_CONSTRUCTOR(AktywujStacje)
+    setId(AktywujStacje_Default_id);
+}
+
+bool AktywujStacje::isTypeOf(const short id) const {
+    return (AktywujStacje_Default_id==id);
+}
+
+IMPLEMENT_META_EVENT_P(AktywujStacje, Default, Default, AktywujStacje())
 
 /*********************************************************************
 	File Path	: DefaultComponent\DefaultConfig\Default.cpp

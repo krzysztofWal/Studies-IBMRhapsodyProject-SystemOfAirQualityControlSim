@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Default
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Default.h
 *********************************************************************/
 
@@ -63,6 +63,9 @@ class Thermometer;
 class Timer;
 
 //## auto_generated
+class iAktywujStacje;
+
+//## auto_generated
 class iCalibrateRequest;
 
 //## auto_generated
@@ -85,6 +88,9 @@ class iPrint;
 
 //## auto_generated
 class iSendAlert;
+
+//## auto_generated
+class iUspijStacje;
 
 //#[ ignore
 #define inicjalizujWyslaniePakietu_Default_id 18601
@@ -192,6 +198,16 @@ class iSendAlert;
 #define serwCzytajLog_Default_id 18652
 
 #define eventmessage_0_Default_id 18653
+
+#define envCzytaj_Default_id 18654
+
+#define envCzytajInfo_Default_id 18655
+
+#define serwCzytajInfo_Default_id 18656
+
+#define UspijStacje_Default_id 18657
+
+#define AktywujStacje_Default_id 18658
 //#]
 
 //## package Default
@@ -1827,6 +1843,151 @@ public :
 //#[ ignore
 class OMAnimatedeventmessage_0 : virtual public AOMEvent {
     DECLARE_META_EVENT(eventmessage_0)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event envCzytaj()
+class envCzytaj : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedenvCzytaj;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    envCzytaj();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedenvCzytaj : virtual public AOMEvent {
+    DECLARE_META_EVENT(envCzytaj)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event envCzytajInfo()
+class envCzytajInfo : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedenvCzytajInfo;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    envCzytajInfo();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedenvCzytajInfo : virtual public AOMEvent {
+    DECLARE_META_EVENT(envCzytajInfo)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event serwCzytajInfo()
+class serwCzytajInfo : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedserwCzytajInfo;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    serwCzytajInfo();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedserwCzytajInfo : virtual public AOMEvent {
+    DECLARE_META_EVENT(serwCzytajInfo)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event UspijStacje()
+class UspijStacje : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedUspijStacje;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    UspijStacje();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedUspijStacje : virtual public AOMEvent {
+    DECLARE_META_EVENT(UspijStacje)
+};
+//#]
+#endif // _OMINSTRUMENT
+
+//## event AktywujStacje()
+class AktywujStacje : public OMEvent {
+    ////    Friends    ////
+    
+public :
+
+#ifdef _OMINSTRUMENT
+    friend class OMAnimatedAktywujStacje;
+#endif // _OMINSTRUMENT
+
+    ////    Constructors and destructors    ////
+    
+    //## auto_generated
+    AktywujStacje();
+    
+    ////    Framework operations    ////
+    
+    //## statechart_method
+    virtual bool isTypeOf(const short id) const;
+};
+
+#ifdef _OMINSTRUMENT
+//#[ ignore
+class OMAnimatedAktywujStacje : virtual public AOMEvent {
+    DECLARE_META_EVENT(AktywujStacje)
 };
 //#]
 #endif // _OMINSTRUMENT

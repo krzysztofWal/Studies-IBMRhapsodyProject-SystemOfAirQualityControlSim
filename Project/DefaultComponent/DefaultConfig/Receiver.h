@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Receiver
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Receiver.h
 *********************************************************************/
 
@@ -40,6 +40,8 @@
 //## auto_generated
 #include <array>
 //## class port_3_C
+#include "iAktywujStacje.h"
+//## class port_3_C
 #include "iCalibrateRequest.h"
 //## class port_3_C
 #include "iConfirmAlertReceival.h"
@@ -51,12 +53,18 @@
 #include "iInitialize.h"
 //## class port_3_C
 #include "iPrint.h"
+//## class port_3_C
+#include "iUspijStacje.h"
 //## auto_generated
 #include <fstream>
 //## auto_generated
 #include <climits>
 //## auto_generated
-#include <iostream>
+#include <string>
+//## auto_generated
+#include <cstdlib>
+//## auto_generated
+#include <ctime>
 //## package Default
 
 //## class Receiver
@@ -65,7 +73,7 @@ public :
 
 //#[ ignore
     //## package Default
-    class port_3_C : public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails, public iCalibrateRequest, public iConfirmAlertReceival {
+    class port_3_C : public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails, public iCalibrateRequest, public iConfirmAlertReceival, public iUspijStacje, public iAktywujStacje {
         ////    Constructors and destructors    ////
         
     public :
@@ -79,6 +87,9 @@ public :
         ////    Operations    ////
         
         //## auto_generated
+        virtual void aktywujStacje();
+        
+        //## auto_generated
         virtual void calibrateRequest();
         
         //## auto_generated
@@ -89,6 +100,9 @@ public :
         
         //## auto_generated
         virtual std::vector<std::pair<unsigned long long, int>> getAlertDetails();
+        
+        //## auto_generated
+        iAktywujStacje* getItsIAktywujStacje();
         
         //## auto_generated
         iCalibrateRequest* getItsICalibrateRequest();
@@ -109,6 +123,9 @@ public :
         iPrint* getItsIPrint();
         
         //## auto_generated
+        iUspijStacje* getItsIUspijStacje();
+        
+        //## auto_generated
         Receiver::port_3_C* getOutBound();
         
         //## auto_generated
@@ -117,7 +134,13 @@ public :
         //## auto_generated
         virtual StationData print();
         
+        //## auto_generated
+        virtual void uspijStacje();
+        
         ////    Additional operations    ////
+        
+        //## auto_generated
+        void setItsIAktywujStacje(iAktywujStacje* p_iAktywujStacje);
         
         //## auto_generated
         void setItsICalibrateRequest(iCalibrateRequest* p_iCalibrateRequest);
@@ -136,6 +159,9 @@ public :
         
         //## auto_generated
         void setItsIPrint(iPrint* p_iPrint);
+        
+        //## auto_generated
+        void setItsIUspijStacje(iUspijStacje* p_iUspijStacje);
     
     protected :
     
@@ -148,6 +174,8 @@ public :
         
         ////    Relations and components    ////
         
+        iAktywujStacje* itsIAktywujStacje;		//## link itsIAktywujStacje
+        
         iCalibrateRequest* itsICalibrateRequest;		//## link itsICalibrateRequest
         
         iConfirmAlertReceival* itsIConfirmAlertReceival;		//## link itsIConfirmAlertReceival
@@ -159,6 +187,8 @@ public :
         iInitialize* itsIInitialize;		//## link itsIInitialize
         
         iPrint* itsIPrint;		//## link itsIPrint
+        
+        iUspijStacje* itsIUspijStacje;		//## link itsIUspijStacje
     };
     
     //## package Default
@@ -316,6 +346,14 @@ public :
     //## statechart_method
     virtual IOxfReactive::TakeEventStatus rootState_processEvent();
     
+    // state_9:
+    //## statechart_method
+    inline bool state_9_IN() const;
+    
+    // state_8:
+    //## statechart_method
+    inline bool state_8_IN() const;
+    
     // sendCallibrationRequest:
     //## statechart_method
     inline bool sendCallibrationRequest_IN() const;
@@ -323,6 +361,9 @@ public :
     // receiverStandby:
     //## statechart_method
     inline bool receiverStandby_IN() const;
+    
+    //## statechart_method
+    IOxfReactive::TakeEventStatus receiverStandby_handleEvent();
     
     // begin:
     //## statechart_method
@@ -339,10 +380,12 @@ protected :
 //#[ ignore
     enum Receiver_Enum {
         OMNonState = 0,
-        sendCallibrationRequest = 1,
-        receiverStandby = 2,
-        begin = 3,
-        alertReceival = 4
+        state_9 = 1,
+        state_8 = 2,
+        sendCallibrationRequest = 3,
+        receiverStandby = 4,
+        begin = 5,
+        alertReceival = 6
     };
     
     int rootState_subState;
@@ -370,6 +413,12 @@ public :
     void rootState_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
+    void state_9_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
+    void state_8_serializeStates(AOMSState* aomsState) const;
+    
+    //## statechart_method
     void sendCallibrationRequest_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
@@ -386,6 +435,14 @@ public :
 
 inline bool Receiver::rootState_IN() const {
     return true;
+}
+
+inline bool Receiver::state_9_IN() const {
+    return rootState_subState == state_9;
+}
+
+inline bool Receiver::state_8_IN() const {
+    return rootState_subState == state_8;
 }
 
 inline bool Receiver::sendCallibrationRequest_IN() const {

@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Timer
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Timer.cpp
 *********************************************************************/
 
@@ -20,14 +20,16 @@
 #include "Controller.h"
 //#[ ignore
 #define Default_Timer_Timer_SERIALIZE OM_NO_OP
+
+#define Default_Timer_getTime_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class Timer
 Timer::Timer(IOxfActive* theActiveContext) {
-    NOTIFY_REACTIVE_CONSTRUCTOR(Timer, Timer(), 0, Default_Timer_Timer_SERIALIZE);
-    setActiveContext(theActiveContext, false);
+    NOTIFY_ACTIVE_CONSTRUCTOR(Timer, Timer(), 0, Default_Timer_Timer_SERIALIZE);
+    setActiveContext(this, true);
     itsController = NULL;
     initStatechart();
 }
@@ -36,6 +38,13 @@ Timer::~Timer() {
     NOTIFY_DESTRUCTOR(~Timer, true);
     cleanUpRelations();
     cancelTimeouts();
+}
+
+unsigned long long Timer::getTime() {
+    NOTIFY_OPERATION(getTime, getTime(), 0, Default_Timer_getTime_SERIALIZE);
+    //#[ operation getTime()
+    return time;
+    //#]
 }
 
 Controller* Timer::getItsController() const {
@@ -49,6 +58,10 @@ void Timer::setItsController(Controller* p_Controller) {
 bool Timer::startBehavior() {
     bool done = false;
     done = OMReactive::startBehavior();
+    if(done)
+        {
+            startDispatching();
+        }
     return done;
 }
 
@@ -78,10 +91,6 @@ bool Timer::cancelTimeout(const IOxfTimeout* arg) {
             res = true;
         }
     return res;
-}
-
-unsigned long long Timer::getTime() const {
-    return time;
 }
 
 void Timer::setTime(unsigned long long p_time) {
@@ -141,7 +150,7 @@ IOxfReactive::TakeEventStatus Timer::rootState_processEvent() {
                             //#[ state timeIncrement.(Entry) 
                             if (time < ULLONG_MAX - 50) {
                             	time += 50;
-                            	if (time%1000 ==0){
+                            	if (time%5000 ==0){
                             		//std::cout << "sending signal: " << time << std::endl;
                             		GEN(inicjujOdczytTimer);
                             	}

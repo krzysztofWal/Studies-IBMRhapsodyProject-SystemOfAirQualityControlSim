@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: iPrint
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\iPrint.h
 *********************************************************************/
 
@@ -30,7 +30,11 @@
 //## auto_generated
 #include <climits>
 //## auto_generated
-#include <iostream>
+#include <string>
+//## auto_generated
+#include <cstdlib>
+//## auto_generated
+#include <ctime>
 //## package Default
 
 //## class iPrint

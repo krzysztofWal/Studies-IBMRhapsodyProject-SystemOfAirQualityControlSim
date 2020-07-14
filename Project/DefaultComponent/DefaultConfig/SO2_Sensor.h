@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: SO2_Sensor
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\SO2_Sensor.h
 *********************************************************************/
 
@@ -30,7 +30,11 @@
 //## auto_generated
 #include <climits>
 //## auto_generated
-#include <iostream>
+#include <string>
+//## auto_generated
+#include <cstdlib>
+//## auto_generated
+#include <ctime>
 //## auto_generated
 class Controller;
 
@@ -59,6 +63,12 @@ public :
     //## operation funcAb()
     virtual void funcAb();
     
+    //## operation getDescription()
+    virtual std::string getDescription();
+    
+    //## operation getId()
+    virtual int getId();
+    
     //## operation odczytajDane()
     virtual void odczytajDane();
     
@@ -76,10 +86,30 @@ public :
 protected :
 
     //## auto_generated
+    void setDescription(std::string p_description);
+    
+    //## auto_generated
+    void setId(int p_id);
+    
+    //## auto_generated
+    double getRecentValue() const;
+    
+    //## auto_generated
+    void setRecentValue(double p_recentValue);
+    
+    //## auto_generated
     void initStatechart();
     
     //## auto_generated
     void cleanUpRelations();
+    
+    ////    Attributes    ////
+    
+    std::string description;		//## attribute description
+    
+    int id;		//## attribute id
+    
+    double recentValue;		//## attribute recentValue
     
     ////    Relations and components    ////
     

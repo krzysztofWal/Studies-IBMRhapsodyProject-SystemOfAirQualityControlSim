@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: CO_Sensor
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\CO_Sensor.cpp
 *********************************************************************/
 
@@ -23,13 +23,17 @@
 
 #define Default_CO_Sensor_funcAb_SERIALIZE OM_NO_OP
 
+#define Default_CO_Sensor_getDescription_SERIALIZE OM_NO_OP
+
+#define Default_CO_Sensor_getId_SERIALIZE OM_NO_OP
+
 #define Default_CO_Sensor_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class CO_Sensor
-CO_Sensor::CO_Sensor(IOxfActive* theActiveContext) {
+CO_Sensor::CO_Sensor(IOxfActive* theActiveContext) : description("CO sensor"), id(2) {
     NOTIFY_ACTIVE_CONSTRUCTOR(CO_Sensor, CO_Sensor(), 0, Default_CO_Sensor_CO_Sensor_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
@@ -47,10 +51,24 @@ void CO_Sensor::funcAb() {
     //#]
 }
 
+std::string CO_Sensor::getDescription() {
+    NOTIFY_OPERATION(getDescription, getDescription(), 0, Default_CO_Sensor_getDescription_SERIALIZE);
+    //#[ operation getDescription()
+    return description;
+    //#]
+}
+
+int CO_Sensor::getId() {
+    NOTIFY_OPERATION(getId, getId(), 0, Default_CO_Sensor_getId_SERIALIZE);
+    //#[ operation getId()
+    return id;
+    //#]
+}
+
 void CO_Sensor::odczytajDane() {
     NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_CO_Sensor_odczytajDane_SERIALIZE);
     //#[ operation odczytajDane()
-    recentValue=1;
+    recentValue = Sensor::gen(50.5,70,80.9,98.5,itsController->giveGenTime());
     //#]
 }
 
@@ -66,6 +84,14 @@ bool CO_Sensor::startBehavior() {
     bool done = false;
     done = Sensor::startBehavior();
     return done;
+}
+
+void CO_Sensor::setDescription(std::string p_description) {
+    description = p_description;
+}
+
+void CO_Sensor::setId(int p_id) {
+    id = p_id;
 }
 
 void CO_Sensor::initStatechart() {
@@ -165,6 +191,8 @@ IOxfReactive::TakeEventStatus CO_Sensor::rootState_processEvent() {
 #ifdef _OMINSTRUMENT
 //#[ ignore
 void OMAnimatedCO_Sensor::serializeAttributes(AOMSAttributes* aomsAttributes) const {
+    aomsAttributes->addAttribute("id", x2String(myReal->id));
+    aomsAttributes->addAttribute("description", UNKNOWN2STRING(myReal->description));
     OMAnimatedSensor::serializeAttributes(aomsAttributes);
 }
 

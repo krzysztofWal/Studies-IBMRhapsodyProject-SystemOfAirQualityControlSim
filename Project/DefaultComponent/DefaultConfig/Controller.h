@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Controller
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Controller.h
 *********************************************************************/
 
@@ -71,16 +71,24 @@
 #include <fstream>
 //## auto_generated
 #include <climits>
-//## auto_generated
-#include <iostream>
 //## class port_35_C
 #include "iInform.h"
 //## class port_35_C
 #include "iSendAlert.h"
+//## class Controller
+#include "iAktywujStacje.h"
+//## class Controller
+#include "iUspijStacje.h"
+//## auto_generated
+#include <string>
+//## auto_generated
+#include <cstdlib>
+//## auto_generated
+#include <ctime>
 //## package Default
 
 //## class Controller
-class Controller : public OMThread, public OMReactive, public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails, public iCalibrateRequest, public iConfirmAlertReceival {
+class Controller : public OMThread, public OMReactive, public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails, public iCalibrateRequest, public iConfirmAlertReceival, public iAktywujStacje, public iUspijStacje {
 public :
 
     ////    Friends    ////
@@ -169,7 +177,7 @@ public :
     
 //#[ ignore
     //## package Default
-    class port_33_C : public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails, public iCalibrateRequest, public iConfirmAlertReceival {
+    class port_33_C : public iPrint, public iInitialize, public iConfirmDataReceival, public iGetAlertDetails, public iCalibrateRequest, public iConfirmAlertReceival, public iAktywujStacje, public iUspijStacje {
         ////    Constructors and destructors    ////
         
     public :
@@ -181,6 +189,9 @@ public :
         virtual ~port_33_C();
         
         ////    Operations    ////
+        
+        //## auto_generated
+        virtual void aktywujStacje();
         
         //## auto_generated
         virtual void calibrateRequest();
@@ -196,6 +207,9 @@ public :
         
         //## auto_generated
         virtual std::vector<std::pair<unsigned long long, int>> getAlertDetails();
+        
+        //## auto_generated
+        iAktywujStacje* getItsIAktywujStacje();
         
         //## auto_generated
         iCalibrateRequest* getItsICalibrateRequest();
@@ -216,12 +230,21 @@ public :
         iPrint* getItsIPrint();
         
         //## auto_generated
+        iUspijStacje* getItsIUspijStacje();
+        
+        //## auto_generated
         virtual void initialize();
         
         //## auto_generated
         virtual StationData print();
         
+        //## auto_generated
+        virtual void uspijStacje();
+        
         ////    Additional operations    ////
+        
+        //## auto_generated
+        void setItsIAktywujStacje(iAktywujStacje* p_iAktywujStacje);
         
         //## auto_generated
         void setItsICalibrateRequest(iCalibrateRequest* p_iCalibrateRequest);
@@ -240,6 +263,9 @@ public :
         
         //## auto_generated
         void setItsIPrint(iPrint* p_iPrint);
+        
+        //## auto_generated
+        void setItsIUspijStacje(iUspijStacje* p_iUspijStacje);
     
     protected :
     
@@ -252,6 +278,8 @@ public :
         
         ////    Relations and components    ////
         
+        iAktywujStacje* itsIAktywujStacje;		//## link itsIAktywujStacje
+        
         iCalibrateRequest* itsICalibrateRequest;		//## link itsICalibrateRequest
         
         iConfirmAlertReceival* itsIConfirmAlertReceival;		//## link itsIConfirmAlertReceival
@@ -263,6 +291,8 @@ public :
         iInitialize* itsIInitialize;		//## link itsIInitialize
         
         iPrint* itsIPrint;		//## link itsIPrint
+        
+        iUspijStacje* itsIUspijStacje;		//## link itsIUspijStacje
     };
     
     //## package Default
@@ -344,7 +374,7 @@ public :
     void deletePackage();
     
     //## operation getAlertDetails()
-    virtual std::vector<std::pair<unsigned long long, int>> getAlertDetails();
+    virtual std::vector<std::pair<unsigned long long,int>> getAlertDetails();
     
     //## operation getDataPackage() const
     StationData* getDataPackage() const;
@@ -363,6 +393,9 @@ public :
     
     //## operation printPackage()
     void printPackage();
+    
+    //## operation readInfo()
+    void readInfo();
     
     //## operation resetAlert()
     void resetAlert();
@@ -427,9 +460,6 @@ protected :
     void setAlert(std::map<int, bool> p_alert);
     
     //## auto_generated
-    void setDataPackage(StationData* p_dataPackage);
-    
-    //## auto_generated
     unsigned long long getTime() const;
     
     //## auto_generated
@@ -474,12 +504,6 @@ protected :
     
     bool whetherTimerRead;		//## attribute whetherTimerRead
     
-//#[ ignore
-    port_33_C port_33;
-    
-    port_35_C port_35;
-//#]
-
     CO_Sensor itsCO_Sensor;		//## link itsCO_Sensor
     
     NO2_Sensor itsNO2_Sensor;		//## link itsNO2_Sensor
@@ -493,14 +517,39 @@ protected :
     SO2_Sensor itsSO2_Sensor;		//## link itsSO2_Sensor
     
     Timer itsTimer;		//## link itsTimer
+
+public :
+
+    //## operation aktywujStacje()
+    virtual void aktywujStacje();
     
+    //## operation giveGenTime()
+    unsigned long long giveGenTime();
+    
+    //## operation stacjaAktywna()
+    void stacjaAktywna();
+    
+    //## operation stacjaUspiona()
+    void stacjaUspiona();
+    
+    //## operation uspijStacje()
+    virtual void uspijStacje();
+
+protected :
+
+    //## auto_generated
+    void setDataPackage(StationData* p_dataPackage);
+    
+//#[ ignore
+    port_33_C port_33;
+    
+    port_35_C port_35;
+//#]
+
     object_0_C object_0;		//## classInstance object_0
 
 public :
 
-    //## auto_generated
-    void setActiveContext(IOxfActive* theActiveContext, bool activeInstance);
-    
     // rootState:
     //## statechart_method
     inline bool rootState_IN() const;
@@ -578,9 +627,9 @@ public :
     //## statechart_method
     inline bool sendaction_10_IN() const;
     
-    // readLog:
+    // readInfoState:
     //## statechart_method
-    inline bool readLog_IN() const;
+    inline bool readInfoState_IN() const;
     
     // packageReadyInformation:
     //## statechart_method
@@ -619,7 +668,7 @@ protected :
         sendaction_13 = 14,
         sendaction_12 = 15,
         sendaction_10 = 16,
-        readLog = 17,
+        readInfoState = 17,
         packageReadyInformation = 18,
         deletePackageState = 19,
         checkLimits = 20,
@@ -636,7 +685,7 @@ protected :
 
 #ifdef _OMINSTRUMENT
 //#[ ignore
-class OMAnimatedController : public OMAnimatediPrint, public OMAnimatediInitialize, public OMAnimatediConfirmDataReceival, public OMAnimatediGetAlertDetails, public OMAnimatediCalibrateRequest, public OMAnimatediConfirmAlertReceival {
+class OMAnimatedController : public OMAnimatediPrint, public OMAnimatediInitialize, public OMAnimatediConfirmDataReceival, public OMAnimatediGetAlertDetails, public OMAnimatediCalibrateRequest, public OMAnimatediConfirmAlertReceival, public OMAnimatediAktywujStacje, public OMAnimatediUspijStacje {
     DECLARE_REACTIVE_META(Controller, OMAnimatedController)
     
     ////    Framework operations    ////
@@ -699,7 +748,7 @@ public :
     void sendaction_10_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
-    void readLog_serializeStates(AOMSState* aomsState) const;
+    void readInfoState_serializeStates(AOMSState* aomsState) const;
     
     //## statechart_method
     void packageReadyInformation_serializeStates(AOMSState* aomsState) const;
@@ -788,8 +837,8 @@ inline bool Controller::sendaction_10_IN() const {
     return rootState_subState == sendaction_10;
 }
 
-inline bool Controller::readLog_IN() const {
-    return rootState_subState == readLog;
+inline bool Controller::readInfoState_IN() const {
+    return rootState_subState == readInfoState;
 }
 
 inline bool Controller::packageReadyInformation_IN() const {

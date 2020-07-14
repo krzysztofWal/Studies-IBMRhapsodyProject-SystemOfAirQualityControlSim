@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Hygrometer
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Hygrometer.cpp
 *********************************************************************/
 
@@ -23,13 +23,17 @@
 
 #define Default_Hygrometer_funcAb_SERIALIZE OM_NO_OP
 
+#define Default_Hygrometer_getDescription_SERIALIZE OM_NO_OP
+
+#define Default_Hygrometer_getId_SERIALIZE OM_NO_OP
+
 #define Default_Hygrometer_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class Hygrometer
-Hygrometer::Hygrometer(IOxfActive* theActiveContext) {
+Hygrometer::Hygrometer(IOxfActive* theActiveContext) : description("hygrometer"), id(9) {
     NOTIFY_ACTIVE_CONSTRUCTOR(Hygrometer, Hygrometer(), 0, Default_Hygrometer_Hygrometer_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
@@ -44,6 +48,20 @@ Hygrometer::~Hygrometer() {
 void Hygrometer::funcAb() {
     NOTIFY_OPERATION(funcAb, funcAb(), 0, Default_Hygrometer_funcAb_SERIALIZE);
     //#[ operation funcAb()
+    //#]
+}
+
+std::string Hygrometer::getDescription() {
+    NOTIFY_OPERATION(getDescription, getDescription(), 0, Default_Hygrometer_getDescription_SERIALIZE);
+    //#[ operation getDescription()
+    return description;
+    //#]
+}
+
+int Hygrometer::getId() {
+    NOTIFY_OPERATION(getId, getId(), 0, Default_Hygrometer_getId_SERIALIZE);
+    //#[ operation getId()
+    return id;
     //#]
 }
 
@@ -66,6 +84,14 @@ bool Hygrometer::startBehavior() {
     bool done = false;
     done = Sensor::startBehavior();
     return done;
+}
+
+void Hygrometer::setDescription(std::string p_description) {
+    description = p_description;
+}
+
+void Hygrometer::setId(int p_id) {
+    id = p_id;
 }
 
 void Hygrometer::initStatechart() {
@@ -165,6 +191,8 @@ IOxfReactive::TakeEventStatus Hygrometer::rootState_processEvent() {
 #ifdef _OMINSTRUMENT
 //#[ ignore
 void OMAnimatedHygrometer::serializeAttributes(AOMSAttributes* aomsAttributes) const {
+    aomsAttributes->addAttribute("description", UNKNOWN2STRING(myReal->description));
+    aomsAttributes->addAttribute("id", x2String(myReal->id));
     OMAnimatedSensor::serializeAttributes(aomsAttributes);
 }
 

@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Timer
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Timer.h
 *********************************************************************/
 
@@ -36,14 +36,18 @@
 //## auto_generated
 #include <climits>
 //## auto_generated
-#include <iostream>
+#include <string>
+//## auto_generated
+#include <cstdlib>
+//## auto_generated
+#include <ctime>
 //## link itsController
 class Controller;
 
 //## package Default
 
 //## class Timer
-class Timer : public OMReactive {
+class Timer : public OMThread, public OMReactive {
     ////    Friends    ////
     
 public :
@@ -59,6 +63,11 @@ public :
     
     //## auto_generated
     ~Timer();
+    
+    ////    Operations    ////
+    
+    //## operation getTime()
+    unsigned long long getTime();
     
     ////    Additional operations    ////
     
@@ -87,9 +96,6 @@ protected :
 
 private :
 
-    //## auto_generated
-    unsigned long long getTime() const;
-    
     //## auto_generated
     void setTime(unsigned long long p_time);
     

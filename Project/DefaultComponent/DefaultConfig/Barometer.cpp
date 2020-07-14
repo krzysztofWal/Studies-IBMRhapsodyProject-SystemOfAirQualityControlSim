@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Barometer
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Barometer.cpp
 *********************************************************************/
 
@@ -23,13 +23,17 @@
 
 #define Default_Barometer_funcAb_SERIALIZE OM_NO_OP
 
+#define Default_Barometer_getDescription_SERIALIZE OM_NO_OP
+
+#define Default_Barometer_getId_SERIALIZE OM_NO_OP
+
 #define Default_Barometer_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class Barometer
-Barometer::Barometer(IOxfActive* theActiveContext) {
+Barometer::Barometer(IOxfActive* theActiveContext) : description("barometer"), id(10) {
     NOTIFY_ACTIVE_CONSTRUCTOR(Barometer, Barometer(), 0, Default_Barometer_Barometer_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
@@ -44,6 +48,20 @@ Barometer::~Barometer() {
 void Barometer::funcAb() {
     NOTIFY_OPERATION(funcAb, funcAb(), 0, Default_Barometer_funcAb_SERIALIZE);
     //#[ operation funcAb()
+    //#]
+}
+
+std::string Barometer::getDescription() {
+    NOTIFY_OPERATION(getDescription, getDescription(), 0, Default_Barometer_getDescription_SERIALIZE);
+    //#[ operation getDescription()
+    return description;
+    //#]
+}
+
+int Barometer::getId() {
+    NOTIFY_OPERATION(getId, getId(), 0, Default_Barometer_getId_SERIALIZE);
+    //#[ operation getId()
+    return id;
     //#]
 }
 
@@ -66,6 +84,14 @@ bool Barometer::startBehavior() {
     bool done = false;
     done = Sensor::startBehavior();
     return done;
+}
+
+void Barometer::setDescription(std::string p_description) {
+    description = p_description;
+}
+
+void Barometer::setId(int p_id) {
+    id = p_id;
 }
 
 void Barometer::initStatechart() {
@@ -165,6 +191,8 @@ IOxfReactive::TakeEventStatus Barometer::rootState_processEvent() {
 #ifdef _OMINSTRUMENT
 //#[ ignore
 void OMAnimatedBarometer::serializeAttributes(AOMSAttributes* aomsAttributes) const {
+    aomsAttributes->addAttribute("id", x2String(myReal->id));
+    aomsAttributes->addAttribute("description", UNKNOWN2STRING(myReal->description));
     OMAnimatedSensor::serializeAttributes(aomsAttributes);
 }
 

@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Thermometer
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Thermometer.cpp
 *********************************************************************/
 
@@ -23,13 +23,17 @@
 
 #define Default_Thermometer_funcAb_SERIALIZE OM_NO_OP
 
+#define Default_Thermometer_getDescription_SERIALIZE OM_NO_OP
+
+#define Default_Thermometer_getId_SERIALIZE OM_NO_OP
+
 #define Default_Thermometer_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class Thermometer
-Thermometer::Thermometer(IOxfActive* theActiveContext) {
+Thermometer::Thermometer(IOxfActive* theActiveContext) : description("thermometer"), id(8) {
     NOTIFY_ACTIVE_CONSTRUCTOR(Thermometer, Thermometer(), 0, Default_Thermometer_Thermometer_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
@@ -44,6 +48,20 @@ Thermometer::~Thermometer() {
 void Thermometer::funcAb() {
     NOTIFY_OPERATION(funcAb, funcAb(), 0, Default_Thermometer_funcAb_SERIALIZE);
     //#[ operation funcAb()
+    //#]
+}
+
+std::string Thermometer::getDescription() {
+    NOTIFY_OPERATION(getDescription, getDescription(), 0, Default_Thermometer_getDescription_SERIALIZE);
+    //#[ operation getDescription()
+    return description;
+    //#]
+}
+
+int Thermometer::getId() {
+    NOTIFY_OPERATION(getId, getId(), 0, Default_Thermometer_getId_SERIALIZE);
+    //#[ operation getId()
+    return id;
     //#]
 }
 
@@ -66,6 +84,14 @@ bool Thermometer::startBehavior() {
     bool done = false;
     done = Sensor::startBehavior();
     return done;
+}
+
+void Thermometer::setDescription(std::string p_description) {
+    description = p_description;
+}
+
+void Thermometer::setId(int p_id) {
+    id = p_id;
 }
 
 void Thermometer::initStatechart() {
@@ -165,6 +191,8 @@ IOxfReactive::TakeEventStatus Thermometer::rootState_processEvent() {
 #ifdef _OMINSTRUMENT
 //#[ ignore
 void OMAnimatedThermometer::serializeAttributes(AOMSAttributes* aomsAttributes) const {
+    aomsAttributes->addAttribute("id", x2String(myReal->id));
+    aomsAttributes->addAttribute("description", UNKNOWN2STRING(myReal->description));
     OMAnimatedSensor::serializeAttributes(aomsAttributes);
 }
 

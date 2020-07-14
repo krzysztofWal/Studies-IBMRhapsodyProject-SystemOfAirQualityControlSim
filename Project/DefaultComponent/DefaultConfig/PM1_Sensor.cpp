@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: PM1_Sensor
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\PM1_Sensor.cpp
 *********************************************************************/
 
@@ -23,13 +23,17 @@
 
 #define Default_PM1_Sensor_funcAb_SERIALIZE OM_NO_OP
 
+#define Default_PM1_Sensor_getDescription_SERIALIZE OM_NO_OP
+
+#define Default_PM1_Sensor_getId_SERIALIZE OM_NO_OP
+
 #define Default_PM1_Sensor_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class PM1_Sensor
-PM1_Sensor::PM1_Sensor(IOxfActive* theActiveContext) {
+PM1_Sensor::PM1_Sensor(IOxfActive* theActiveContext) : description("PM1 sensor"), id(4) {
     NOTIFY_ACTIVE_CONSTRUCTOR(PM1_Sensor, PM1_Sensor(), 0, Default_PM1_Sensor_PM1_Sensor_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
@@ -50,10 +54,24 @@ void PM1_Sensor::funcAb() {
     //#]
 }
 
+std::string PM1_Sensor::getDescription() {
+    NOTIFY_OPERATION(getDescription, getDescription(), 0, Default_PM1_Sensor_getDescription_SERIALIZE);
+    //#[ operation getDescription()
+    return description;
+    //#]
+}
+
+int PM1_Sensor::getId() {
+    NOTIFY_OPERATION(getId, getId(), 0, Default_PM1_Sensor_getId_SERIALIZE);
+    //#[ operation getId()
+    return id;
+    //#]
+}
+
 void PM1_Sensor::odczytajDane() {
     NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_PM1_Sensor_odczytajDane_SERIALIZE);
     //#[ operation odczytajDane()
-    recentValue=0.6;
+    recentValue = Sensor::gen(2.1,4.4,5.4,7,itsController->giveGenTime());
     //#]
 }
 
@@ -69,6 +87,14 @@ bool PM1_Sensor::startBehavior() {
     bool done = false;
     done = Sensor::startBehavior();
     return done;
+}
+
+void PM1_Sensor::setDescription(std::string p_description) {
+    description = p_description;
+}
+
+void PM1_Sensor::setId(int p_id) {
+    id = p_id;
 }
 
 void PM1_Sensor::initStatechart() {
@@ -168,6 +194,8 @@ IOxfReactive::TakeEventStatus PM1_Sensor::rootState_processEvent() {
 #ifdef _OMINSTRUMENT
 //#[ ignore
 void OMAnimatedPM1_Sensor::serializeAttributes(AOMSAttributes* aomsAttributes) const {
+    aomsAttributes->addAttribute("id", x2String(myReal->id));
+    aomsAttributes->addAttribute("description", UNKNOWN2STRING(myReal->description));
     OMAnimatedSensor::serializeAttributes(aomsAttributes);
 }
 

@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: SO2_Sensor
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\SO2_Sensor.cpp
 *********************************************************************/
 
@@ -23,13 +23,17 @@
 
 #define Default_SO2_Sensor_funcAb_SERIALIZE OM_NO_OP
 
+#define Default_SO2_Sensor_getDescription_SERIALIZE OM_NO_OP
+
+#define Default_SO2_Sensor_getId_SERIALIZE OM_NO_OP
+
 #define Default_SO2_Sensor_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class SO2_Sensor
-SO2_Sensor::SO2_Sensor(IOxfActive* theActiveContext) {
+SO2_Sensor::SO2_Sensor(IOxfActive* theActiveContext) : description("CO sensor"), id(3), recentValue(0.0) {
     NOTIFY_ACTIVE_CONSTRUCTOR(SO2_Sensor, SO2_Sensor(), 0, Default_SO2_Sensor_SO2_Sensor_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
@@ -47,10 +51,24 @@ void SO2_Sensor::funcAb() {
     //#]
 }
 
+std::string SO2_Sensor::getDescription() {
+    NOTIFY_OPERATION(getDescription, getDescription(), 0, Default_SO2_Sensor_getDescription_SERIALIZE);
+    //#[ operation getDescription()
+    return description;
+    //#]
+}
+
+int SO2_Sensor::getId() {
+    NOTIFY_OPERATION(getId, getId(), 0, Default_SO2_Sensor_getId_SERIALIZE);
+    //#[ operation getId()
+    return id;
+    //#]
+}
+
 void SO2_Sensor::odczytajDane() {
     NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_SO2_Sensor_odczytajDane_SERIALIZE);
     //#[ operation odczytajDane()
-    recentValue=1.5;
+    recentValue = Sensor::gen(250,400,550.1,559.3,itsController->giveGenTime());
     //#]
 }
 
@@ -66,6 +84,22 @@ bool SO2_Sensor::startBehavior() {
     bool done = false;
     done = Sensor::startBehavior();
     return done;
+}
+
+void SO2_Sensor::setDescription(std::string p_description) {
+    description = p_description;
+}
+
+void SO2_Sensor::setId(int p_id) {
+    id = p_id;
+}
+
+double SO2_Sensor::getRecentValue() const {
+    return recentValue;
+}
+
+void SO2_Sensor::setRecentValue(double p_recentValue) {
+    recentValue = p_recentValue;
 }
 
 void SO2_Sensor::initStatechart() {
@@ -165,6 +199,9 @@ IOxfReactive::TakeEventStatus SO2_Sensor::rootState_processEvent() {
 #ifdef _OMINSTRUMENT
 //#[ ignore
 void OMAnimatedSO2_Sensor::serializeAttributes(AOMSAttributes* aomsAttributes) const {
+    aomsAttributes->addAttribute("id", x2String(myReal->id));
+    aomsAttributes->addAttribute("description", UNKNOWN2STRING(myReal->description));
+    aomsAttributes->addAttribute("recentValue", x2String(myReal->recentValue));
     OMAnimatedSensor::serializeAttributes(aomsAttributes);
 }
 

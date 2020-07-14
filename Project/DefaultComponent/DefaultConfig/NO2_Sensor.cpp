@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: NO2_Sensor
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\NO2_Sensor.cpp
 *********************************************************************/
 
@@ -23,13 +23,17 @@
 
 #define Default_NO2_Sensor_funcAb_SERIALIZE OM_NO_OP
 
+#define Default_NO2_Sensor_getDescription_SERIALIZE OM_NO_OP
+
+#define Default_NO2_Sensor_getId_SERIALIZE OM_NO_OP
+
 #define Default_NO2_Sensor_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class NO2_Sensor
-NO2_Sensor::NO2_Sensor(IOxfActive* theActiveContext) {
+NO2_Sensor::NO2_Sensor(IOxfActive* theActiveContext) : description("NO2 sensor"), id(4) {
     NOTIFY_ACTIVE_CONSTRUCTOR(NO2_Sensor, NO2_Sensor(), 0, Default_NO2_Sensor_NO2_Sensor_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
@@ -47,10 +51,24 @@ void NO2_Sensor::funcAb() {
     //#]
 }
 
+std::string NO2_Sensor::getDescription() {
+    NOTIFY_OPERATION(getDescription, getDescription(), 0, Default_NO2_Sensor_getDescription_SERIALIZE);
+    //#[ operation getDescription()
+    return description;
+    //#]
+}
+
+int NO2_Sensor::getId() {
+    NOTIFY_OPERATION(getId, getId(), 0, Default_NO2_Sensor_getId_SERIALIZE);
+    //#[ operation getId()
+    return id;
+    //#]
+}
+
 void NO2_Sensor::odczytajDane() {
     NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_NO2_Sensor_odczytajDane_SERIALIZE);
     //#[ operation odczytajDane()
-    recentValue= 2;
+    recentValue = Sensor::gen(10,250.7,455.1,500,itsController->giveGenTime());
     //#]
 }
 
@@ -66,6 +84,14 @@ bool NO2_Sensor::startBehavior() {
     bool done = false;
     done = Sensor::startBehavior();
     return done;
+}
+
+void NO2_Sensor::setDescription(std::string p_description) {
+    description = p_description;
+}
+
+void NO2_Sensor::setId(int p_id) {
+    id = p_id;
 }
 
 void NO2_Sensor::initStatechart() {
@@ -165,6 +191,8 @@ IOxfReactive::TakeEventStatus NO2_Sensor::rootState_processEvent() {
 #ifdef _OMINSTRUMENT
 //#[ ignore
 void OMAnimatedNO2_Sensor::serializeAttributes(AOMSAttributes* aomsAttributes) const {
+    aomsAttributes->addAttribute("id", x2String(myReal->id));
+    aomsAttributes->addAttribute("description", UNKNOWN2STRING(myReal->description));
     OMAnimatedSensor::serializeAttributes(aomsAttributes);
 }
 

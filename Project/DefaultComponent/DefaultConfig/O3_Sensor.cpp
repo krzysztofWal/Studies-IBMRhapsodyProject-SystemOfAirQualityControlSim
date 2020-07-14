@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: O3_Sensor
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\O3_Sensor.cpp
 *********************************************************************/
 
@@ -23,17 +23,23 @@
 
 #define Default_O3_Sensor_funcAb_SERIALIZE OM_NO_OP
 
+#define Default_O3_Sensor_getDescription_SERIALIZE OM_NO_OP
+
+#define Default_O3_Sensor_getId_SERIALIZE OM_NO_OP
+
 #define Default_O3_Sensor_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class O3_Sensor
-O3_Sensor::O3_Sensor(IOxfActive* theActiveContext) {
+O3_Sensor::O3_Sensor(IOxfActive* theActiveContext) : description("O3 sensor"), id(1) {
     NOTIFY_ACTIVE_CONSTRUCTOR(O3_Sensor, O3_Sensor(), 0, Default_O3_Sensor_O3_Sensor_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
     initStatechart();
+    //#[ operation O3_Sensor()
+    //#]
 }
 
 O3_Sensor::~O3_Sensor() {
@@ -47,10 +53,24 @@ void O3_Sensor::funcAb() {
     //#]
 }
 
+std::string O3_Sensor::getDescription() {
+    NOTIFY_OPERATION(getDescription, getDescription(), 0, Default_O3_Sensor_getDescription_SERIALIZE);
+    //#[ operation getDescription()
+    return description;
+    //#]
+}
+
+int O3_Sensor::getId() {
+    NOTIFY_OPERATION(getId, getId(), 0, Default_O3_Sensor_getId_SERIALIZE);
+    //#[ operation getId()
+    return id;
+    //#]
+}
+
 void O3_Sensor::odczytajDane() {
     NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_O3_Sensor_odczytajDane_SERIALIZE);
     //#[ operation odczytajDane()
-    recentValue=0.5;
+    recentValue = Sensor::gen(50.5,25.7,260.1,290,itsController->giveGenTime());
     //#]
 }
 
@@ -66,6 +86,14 @@ bool O3_Sensor::startBehavior() {
     bool done = false;
     done = Sensor::startBehavior();
     return done;
+}
+
+void O3_Sensor::setDescription(std::string p_description) {
+    description = p_description;
+}
+
+void O3_Sensor::setId(int p_id) {
+    id = p_id;
 }
 
 void O3_Sensor::initStatechart() {
@@ -165,6 +193,8 @@ IOxfReactive::TakeEventStatus O3_Sensor::rootState_processEvent() {
 #ifdef _OMINSTRUMENT
 //#[ ignore
 void OMAnimatedO3_Sensor::serializeAttributes(AOMSAttributes* aomsAttributes) const {
+    aomsAttributes->addAttribute("id", x2String(myReal->id));
+    aomsAttributes->addAttribute("description", UNKNOWN2STRING(myReal->description));
     OMAnimatedSensor::serializeAttributes(aomsAttributes);
 }
 

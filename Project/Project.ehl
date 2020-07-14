@@ -2,5 +2,6 @@
 [Events]
 itsController->GEN(serwAktywuj())`Controller
 itsController->GEN(serwUspijStacje())`Controller
+itsController->GEN(envCzytajInfo())`Controller
 itsReceiver->GEN(serwZadajPakietu())`Receiver
 [Breakpoints]

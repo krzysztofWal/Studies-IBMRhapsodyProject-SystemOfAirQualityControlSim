@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: PM2_5Sensor
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\PM2_5Sensor.cpp
 *********************************************************************/
 
@@ -23,13 +23,17 @@
 
 #define Default_PM2_5Sensor_funcAb_SERIALIZE OM_NO_OP
 
+#define Default_PM2_5Sensor_getDescription_SERIALIZE OM_NO_OP
+
+#define Default_PM2_5Sensor_getId_SERIALIZE OM_NO_OP
+
 #define Default_PM2_5Sensor_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class PM2_5Sensor
-PM2_5Sensor::PM2_5Sensor(IOxfActive* theActiveContext) {
+PM2_5Sensor::PM2_5Sensor(IOxfActive* theActiveContext) : description("PM2.5 sensor"), id(5) {
     NOTIFY_ACTIVE_CONSTRUCTOR(PM2_5Sensor, PM2_5Sensor(), 0, Default_PM2_5Sensor_PM2_5Sensor_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
@@ -50,10 +54,24 @@ void PM2_5Sensor::funcAb() {
     //#]
 }
 
+std::string PM2_5Sensor::getDescription() {
+    NOTIFY_OPERATION(getDescription, getDescription(), 0, Default_PM2_5Sensor_getDescription_SERIALIZE);
+    //#[ operation getDescription()
+    return description;
+    //#]
+}
+
+int PM2_5Sensor::getId() {
+    NOTIFY_OPERATION(getId, getId(), 0, Default_PM2_5Sensor_getId_SERIALIZE);
+    //#[ operation getId()
+    return id;
+    //#]
+}
+
 void PM2_5Sensor::odczytajDane() {
     NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_PM2_5Sensor_odczytajDane_SERIALIZE);
     //#[ operation odczytajDane()
-    recentValue=1.2;
+    recentValue = Sensor::gen(15.5,25.7,27.1,40,itsController->giveGenTime());
     //#]
 }
 
@@ -69,6 +87,14 @@ bool PM2_5Sensor::startBehavior() {
     bool done = false;
     done = Sensor::startBehavior();
     return done;
+}
+
+void PM2_5Sensor::setDescription(std::string p_description) {
+    description = p_description;
+}
+
+void PM2_5Sensor::setId(int p_id) {
+    id = p_id;
 }
 
 void PM2_5Sensor::initStatechart() {
@@ -168,6 +194,8 @@ IOxfReactive::TakeEventStatus PM2_5Sensor::rootState_processEvent() {
 #ifdef _OMINSTRUMENT
 //#[ ignore
 void OMAnimatedPM2_5Sensor::serializeAttributes(AOMSAttributes* aomsAttributes) const {
+    aomsAttributes->addAttribute("id", x2String(myReal->id));
+    aomsAttributes->addAttribute("description", UNKNOWN2STRING(myReal->description));
     OMAnimatedSensor::serializeAttributes(aomsAttributes);
 }
 

@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Sensor
-//!	Generated Date	: Sat, 11, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Sensor.cpp
 *********************************************************************/
 
@@ -19,9 +19,19 @@
 //## link itsController
 #include "Controller.h"
 //#[ ignore
+#define Default_Sensor_gen_SERIALIZE \
+    aomsmethod->addAttribute("val1", x2String(val1));\
+    aomsmethod->addAttribute("val2", x2String(val2));\
+    aomsmethod->addAttribute("val3", x2String(val3));\
+    aomsmethod->addAttribute("val4", x2String(val4));\
+    aomsmethod->addAttribute("seed", x2String(seed));
 #define Default_Sensor_Sensor_SERIALIZE OM_NO_OP
 
 #define Default_Sensor_funcAb_SERIALIZE OM_NO_OP
+
+#define Default_Sensor_getDescription_SERIALIZE OM_NO_OP
+
+#define Default_Sensor_getId_SERIALIZE OM_NO_OP
 
 #define Default_Sensor_odczytajDane_SERIALIZE OM_NO_OP
 //#]
@@ -39,6 +49,38 @@ Sensor::Sensor(IOxfActive* theActiveContext) : recentValue(0.0) {
 Sensor::~Sensor() {
     NOTIFY_DESTRUCTOR(~Sensor, true);
     cleanUpRelations();
+}
+
+double Sensor::gen(double val1, double val2, double val3, double val4, unsigned long long seed) {
+    NOTIFY_OPERATION(gen, gen(double,double,double,double,unsigned long long), 5, Default_Sensor_gen_SERIALIZE);
+    //#[ operation gen(double,double,double,double,unsigned long long)
+    srand(seed);
+    num = rand() / (RAND_MAX + 1.0)*100.0;
+    //std::cout << "rand: " << num <<std::endl;
+    if (num < 25) {
+    return val1;
+    } else if (num < 50) {
+    return val2;
+    } else if (num < 75) {
+    return val3;
+    } else {
+    return val4;
+    }
+    //#]
+}
+
+std::string Sensor::getDescription() {
+    NOTIFY_OPERATION(getDescription, getDescription(), 0, Default_Sensor_getDescription_SERIALIZE);
+    //#[ operation getDescription()
+    return description;
+    //#]
+}
+
+int Sensor::getId() {
+    NOTIFY_OPERATION(getId, getId(), 0, Default_Sensor_getId_SERIALIZE);
+    //#[ operation getId()
+    return id;
+    //#]
 }
 
 void Sensor::odczytajDane() {
@@ -73,20 +115,20 @@ bool Sensor::startBehavior() {
     return done;
 }
 
-std::string Sensor::getDescription() const {
-    return description;
-}
-
 void Sensor::setDescription(std::string p_description) {
     description = p_description;
 }
 
-int Sensor::getId() const {
-    return id;
-}
-
 void Sensor::setId(int p_id) {
     id = p_id;
+}
+
+int Sensor::getNum() const {
+    return num;
+}
+
+void Sensor::setNum(int p_num) {
+    num = p_num;
 }
 
 double Sensor::getRecentValue() const {
@@ -95,14 +137,6 @@ double Sensor::getRecentValue() const {
 
 void Sensor::setRecentValue(double p_recentValue) {
     recentValue = p_recentValue;
-}
-
-bool Sensor::getStatus() const {
-    return status;
-}
-
-void Sensor::setStatus(bool p_status) {
-    status = p_status;
 }
 
 void Sensor::initStatechart() {
@@ -183,8 +217,8 @@ IOxfReactive::TakeEventStatus Sensor::rootState_processEvent() {
 void OMAnimatedSensor::serializeAttributes(AOMSAttributes* aomsAttributes) const {
     aomsAttributes->addAttribute("id", x2String(myReal->id));
     aomsAttributes->addAttribute("description", UNKNOWN2STRING(myReal->description));
-    aomsAttributes->addAttribute("status", x2String(myReal->status));
     aomsAttributes->addAttribute("recentValue", x2String(myReal->recentValue));
+    aomsAttributes->addAttribute("num", x2String(myReal->num));
 }
 
 void OMAnimatedSensor::serializeRelations(AOMSRelations* aomsRelations) const {

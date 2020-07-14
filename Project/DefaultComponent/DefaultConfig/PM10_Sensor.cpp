@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: PM10_Sensor
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\PM10_Sensor.cpp
 *********************************************************************/
 
@@ -23,13 +23,17 @@
 
 #define Default_PM10_Sensor_funcAb_SERIALIZE OM_NO_OP
 
+#define Default_PM10_Sensor_getDescription_SERIALIZE OM_NO_OP
+
+#define Default_PM10_Sensor_getId_SERIALIZE OM_NO_OP
+
 #define Default_PM10_Sensor_odczytajDane_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class PM10_Sensor
-PM10_Sensor::PM10_Sensor(IOxfActive* theActiveContext) {
+PM10_Sensor::PM10_Sensor(IOxfActive* theActiveContext) : description("PM10 sensor") {
     NOTIFY_ACTIVE_CONSTRUCTOR(PM10_Sensor, PM10_Sensor(), 0, Default_PM10_Sensor_PM10_Sensor_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
@@ -50,10 +54,24 @@ void PM10_Sensor::funcAb() {
     //#]
 }
 
+std::string PM10_Sensor::getDescription() {
+    NOTIFY_OPERATION(getDescription, getDescription(), 0, Default_PM10_Sensor_getDescription_SERIALIZE);
+    //#[ operation getDescription()
+    return description;
+    //#]
+}
+
+int PM10_Sensor::getId() {
+    NOTIFY_OPERATION(getId, getId(), 0, Default_PM10_Sensor_getId_SERIALIZE);
+    //#[ operation getId()
+    return id;
+    //#]
+}
+
 void PM10_Sensor::odczytajDane() {
     NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_PM10_Sensor_odczytajDane_SERIALIZE);
     //#[ operation odczytajDane()
-    recentValue=1.8;
+    recentValue = Sensor::gen(14.6,25.7,53.1,60,itsController->giveGenTime());
     //#]
 }
 
@@ -69,6 +87,14 @@ bool PM10_Sensor::startBehavior() {
     bool done = false;
     done = Sensor::startBehavior();
     return done;
+}
+
+void PM10_Sensor::setDescription(std::string p_description) {
+    description = p_description;
+}
+
+void PM10_Sensor::setId(int p_id) {
+    id = p_id;
 }
 
 void PM10_Sensor::initStatechart() {
@@ -168,6 +194,8 @@ IOxfReactive::TakeEventStatus PM10_Sensor::rootState_processEvent() {
 #ifdef _OMINSTRUMENT
 //#[ ignore
 void OMAnimatedPM10_Sensor::serializeAttributes(AOMSAttributes* aomsAttributes) const {
+    aomsAttributes->addAttribute("id", x2String(myReal->id));
+    aomsAttributes->addAttribute("description", UNKNOWN2STRING(myReal->description));
     OMAnimatedSensor::serializeAttributes(aomsAttributes);
 }
 

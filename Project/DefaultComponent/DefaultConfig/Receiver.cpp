@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Receiver
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Receiver.cpp
 *********************************************************************/
 
@@ -29,16 +29,26 @@
 //## class Receiver
 //#[ ignore
 Receiver::port_3_C::port_3_C() : _p_(0) {
+    itsIAktywujStacje = NULL;
     itsICalibrateRequest = NULL;
     itsIConfirmAlertReceival = NULL;
     itsIConfirmDataReceival = NULL;
     itsIGetAlertDetails = NULL;
     itsIInitialize = NULL;
     itsIPrint = NULL;
+    itsIUspijStacje = NULL;
 }
 
 Receiver::port_3_C::~port_3_C() {
     cleanUpRelations();
+}
+
+void Receiver::port_3_C::aktywujStacje() {
+    
+    if (itsIAktywujStacje != NULL) {
+        itsIAktywujStacje->aktywujStacje();
+    }
+    
 }
 
 void Receiver::port_3_C::calibrateRequest() {
@@ -73,6 +83,10 @@ std::vector<std::pair<unsigned long long, int>> Receiver::port_3_C::getAlertDeta
     return res;
 }
 
+iAktywujStacje* Receiver::port_3_C::getItsIAktywujStacje() {
+    return this;
+}
+
 iCalibrateRequest* Receiver::port_3_C::getItsICalibrateRequest() {
     return this;
 }
@@ -97,6 +111,10 @@ iPrint* Receiver::port_3_C::getItsIPrint() {
     return this;
 }
 
+iUspijStacje* Receiver::port_3_C::getItsIUspijStacje() {
+    return this;
+}
+
 Receiver::port_3_C* Receiver::port_3_C::getOutBound() {
     return this;
 }
@@ -115,6 +133,18 @@ StationData Receiver::port_3_C::print() {
         res = itsIPrint->print();
     }
     return res;
+}
+
+void Receiver::port_3_C::uspijStacje() {
+    
+    if (itsIUspijStacje != NULL) {
+        itsIUspijStacje->uspijStacje();
+    }
+    
+}
+
+void Receiver::port_3_C::setItsIAktywujStacje(iAktywujStacje* p_iAktywujStacje) {
+    itsIAktywujStacje = p_iAktywujStacje;
 }
 
 void Receiver::port_3_C::setItsICalibrateRequest(iCalibrateRequest* p_iCalibrateRequest) {
@@ -141,7 +171,15 @@ void Receiver::port_3_C::setItsIPrint(iPrint* p_iPrint) {
     itsIPrint = p_iPrint;
 }
 
+void Receiver::port_3_C::setItsIUspijStacje(iUspijStacje* p_iUspijStacje) {
+    itsIUspijStacje = p_iUspijStacje;
+}
+
 void Receiver::port_3_C::cleanUpRelations() {
+    if(itsIAktywujStacje != NULL)
+        {
+            itsIAktywujStacje = NULL;
+        }
     if(itsICalibrateRequest != NULL)
         {
             itsICalibrateRequest = NULL;
@@ -165,6 +203,10 @@ void Receiver::port_3_C::cleanUpRelations() {
     if(itsIPrint != NULL)
         {
             itsIPrint = NULL;
+        }
+    if(itsIUspijStacje != NULL)
+        {
+            itsIUspijStacje = NULL;
         }
 }
 
@@ -350,56 +392,7 @@ IOxfReactive::TakeEventStatus Receiver::rootState_processEvent() {
         // State receiverStandby
         case receiverStandby:
         {
-            if(IS_EVENT_TYPE_OF(serwSkalibruj_Default_id))
-                {
-                    NOTIFY_TRANSITION_STARTED("5");
-                    NOTIFY_STATE_EXITED("ROOT.receiverStandby");
-                    NOTIFY_STATE_ENTERED("ROOT.sendCallibrationRequest");
-                    pushNullTransition();
-                    rootState_subState = sendCallibrationRequest;
-                    rootState_active = sendCallibrationRequest;
-                    //#[ state sendCallibrationRequest.(Entry) 
-                    OUT_PORT(port_3)->calibrateRequest();
-                    //#]
-                    NOTIFY_TRANSITION_TERMINATED("5");
-                    res = eventConsumed;
-                }
-            else if(IS_EVENT_TYPE_OF(SendAlert_Default_id))
-                {
-                    NOTIFY_TRANSITION_STARTED("3");
-                    NOTIFY_STATE_EXITED("ROOT.receiverStandby");
-                    NOTIFY_STATE_ENTERED("ROOT.alertReceival");
-                    pushNullTransition();
-                    rootState_subState = alertReceival;
-                    rootState_active = alertReceival;
-                    //#[ state alertReceival.(Entry) 
-                    auto vec = OUT_PORT(port_3)->getAlertDetails();
-                    std::cout << "======received alert=======" << std::endl;
-                    for (; iterator < static_cast<int>(vec.size()) ;iterator++) {
-                    	std::cout << "time: " << vec.at(iterator).first << " measured pollutant: " << vec.at(iterator).second << std::endl; 
-                    	Alert_TimeAndWhichParticulate.emplace_back(vec.at(iterator));
-                    }                                                                                                                    
-                    std::cout << "=============================" << std::endl;
-                    iterator = 0;
-                    //#]
-                    NOTIFY_TRANSITION_TERMINATED("3");
-                    res = eventConsumed;
-                }
-            else if(IS_EVENT_TYPE_OF(serwZadajPakietu_Default_id))
-                {
-                    NOTIFY_TRANSITION_STARTED("2");
-                    NOTIFY_STATE_EXITED("ROOT.receiverStandby");
-                    NOTIFY_STATE_ENTERED("ROOT.begin");
-                    rootState_subState = begin;
-                    rootState_active = begin;
-                    //#[ state begin.(Entry) 
-                    OUT_PORT(port_3)->initialize();
-                    //#]
-                    rootState_timeout = scheduleTimeout(600, "ROOT.begin");
-                    NOTIFY_TRANSITION_TERMINATED("2");
-                    res = eventConsumed;
-                }
-            
+            res = receiverStandby_handleEvent();
         }
         break;
         // State begin
@@ -478,9 +471,126 @@ IOxfReactive::TakeEventStatus Receiver::rootState_processEvent() {
             
         }
         break;
+        // State state_8
+        case state_8:
+        {
+            if(IS_EVENT_TYPE_OF(OMNullEventId))
+                {
+                    NOTIFY_TRANSITION_STARTED("9");
+                    popNullTransition();
+                    NOTIFY_STATE_EXITED("ROOT.state_8");
+                    NOTIFY_STATE_ENTERED("ROOT.receiverStandby");
+                    rootState_subState = receiverStandby;
+                    rootState_active = receiverStandby;
+                    NOTIFY_TRANSITION_TERMINATED("9");
+                    res = eventConsumed;
+                }
+            
+        }
+        break;
+        // State state_9
+        case state_9:
+        {
+            if(IS_EVENT_TYPE_OF(OMNullEventId))
+                {
+                    NOTIFY_TRANSITION_STARTED("11");
+                    popNullTransition();
+                    NOTIFY_STATE_EXITED("ROOT.state_9");
+                    NOTIFY_STATE_ENTERED("ROOT.receiverStandby");
+                    rootState_subState = receiverStandby;
+                    rootState_active = receiverStandby;
+                    NOTIFY_TRANSITION_TERMINATED("11");
+                    res = eventConsumed;
+                }
+            
+        }
+        break;
         default:
             break;
     }
+    return res;
+}
+
+IOxfReactive::TakeEventStatus Receiver::receiverStandby_handleEvent() {
+    IOxfReactive::TakeEventStatus res = eventNotConsumed;
+    if(IS_EVENT_TYPE_OF(serwAktywuj_Default_id))
+        {
+            NOTIFY_TRANSITION_STARTED("10");
+            NOTIFY_STATE_EXITED("ROOT.receiverStandby");
+            NOTIFY_STATE_ENTERED("ROOT.state_9");
+            pushNullTransition();
+            rootState_subState = state_9;
+            rootState_active = state_9;
+            //#[ state state_9.(Entry) 
+            OUT_PORT(port_3)->aktywujStacje();
+            //#]
+            NOTIFY_TRANSITION_TERMINATED("10");
+            res = eventConsumed;
+        }
+    else if(IS_EVENT_TYPE_OF(serwSkalibruj_Default_id))
+        {
+            NOTIFY_TRANSITION_STARTED("5");
+            NOTIFY_STATE_EXITED("ROOT.receiverStandby");
+            NOTIFY_STATE_ENTERED("ROOT.sendCallibrationRequest");
+            pushNullTransition();
+            rootState_subState = sendCallibrationRequest;
+            rootState_active = sendCallibrationRequest;
+            //#[ state sendCallibrationRequest.(Entry) 
+            OUT_PORT(port_3)->calibrateRequest();
+            //#]
+            NOTIFY_TRANSITION_TERMINATED("5");
+            res = eventConsumed;
+        }
+    else if(IS_EVENT_TYPE_OF(SendAlert_Default_id))
+        {
+            NOTIFY_TRANSITION_STARTED("3");
+            NOTIFY_STATE_EXITED("ROOT.receiverStandby");
+            NOTIFY_STATE_ENTERED("ROOT.alertReceival");
+            pushNullTransition();
+            rootState_subState = alertReceival;
+            rootState_active = alertReceival;
+            //#[ state alertReceival.(Entry) 
+            auto vec = OUT_PORT(port_3)->getAlertDetails();
+            std::cout << "======received alert=======" << std::endl;
+            for (; iterator < static_cast<int>(vec.size()) ;iterator++) {
+            	std::cout << "time: " << vec.at(iterator).first << " measured pollutant: " << vec.at(iterator).second << std::endl; 
+            	Alert_TimeAndWhichParticulate.emplace_back(vec.at(iterator));
+            }                                                                                                                    
+            std::cout << "=============================" << std::endl;
+            iterator = 0;
+            //#]
+            NOTIFY_TRANSITION_TERMINATED("3");
+            res = eventConsumed;
+        }
+    else if(IS_EVENT_TYPE_OF(serwZadajPakietu_Default_id))
+        {
+            NOTIFY_TRANSITION_STARTED("2");
+            NOTIFY_STATE_EXITED("ROOT.receiverStandby");
+            NOTIFY_STATE_ENTERED("ROOT.begin");
+            rootState_subState = begin;
+            rootState_active = begin;
+            //#[ state begin.(Entry) 
+            OUT_PORT(port_3)->initialize();
+            //#]
+            rootState_timeout = scheduleTimeout(600, "ROOT.begin");
+            NOTIFY_TRANSITION_TERMINATED("2");
+            res = eventConsumed;
+        }
+    else if(IS_EVENT_TYPE_OF(serwUspijStacje_Default_id))
+        {
+            NOTIFY_TRANSITION_STARTED("8");
+            NOTIFY_STATE_EXITED("ROOT.receiverStandby");
+            NOTIFY_STATE_ENTERED("ROOT.state_8");
+            pushNullTransition();
+            rootState_subState = state_8;
+            rootState_active = state_8;
+            //#[ state state_8.(Entry) 
+            OUT_PORT(port_3)->uspijStacje();
+            //#]
+            NOTIFY_TRANSITION_TERMINATED("8");
+            res = eventConsumed;
+        }
+    
     return res;
 }
 
@@ -522,9 +632,27 @@ void OMAnimatedReceiver::rootState_serializeStates(AOMSState* aomsState) const {
             sendCallibrationRequest_serializeStates(aomsState);
         }
         break;
+        case Receiver::state_8:
+        {
+            state_8_serializeStates(aomsState);
+        }
+        break;
+        case Receiver::state_9:
+        {
+            state_9_serializeStates(aomsState);
+        }
+        break;
         default:
             break;
     }
+}
+
+void OMAnimatedReceiver::state_9_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.state_9");
+}
+
+void OMAnimatedReceiver::state_8_serializeStates(AOMSState* aomsState) const {
+    aomsState->addState("ROOT.state_8");
 }
 
 void OMAnimatedReceiver::sendCallibrationRequest_serializeStates(AOMSState* aomsState) const {

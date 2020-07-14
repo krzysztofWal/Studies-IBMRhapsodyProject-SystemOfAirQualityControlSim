@@ -4,7 +4,7 @@
 	Component	: DefaultComponent 
 	Configuration 	: DefaultConfig
 	Model Element	: Sensor
-//!	Generated Date	: Mon, 13, Jul 2020  
+//!	Generated Date	: Tue, 14, Jul 2020  
 	File Path	: DefaultComponent\DefaultConfig\Sensor.h
 *********************************************************************/
 
@@ -36,7 +36,11 @@
 //## auto_generated
 #include <climits>
 //## auto_generated
-#include <iostream>
+#include <string>
+//## auto_generated
+#include <cstdlib>
+//## auto_generated
+#include <ctime>
 //## link itsController
 class Controller;
 
@@ -65,6 +69,15 @@ public :
     //## operation funcAb()
     virtual void funcAb() = 0;
     
+    //## operation gen(double,double,double,double,unsigned long long)
+    double gen(double val1, double val2, double val3, double val4, unsigned long long seed);
+    
+    //## operation getDescription()
+    virtual std::string getDescription();
+    
+    //## operation getId()
+    virtual int getId();
+    
     //## operation odczytajDane()
     virtual void odczytajDane();
     
@@ -82,28 +95,22 @@ public :
 protected :
 
     //## auto_generated
-    std::string getDescription() const;
-    
-    //## auto_generated
     void setDescription(std::string p_description);
     
     //## auto_generated
-    int getId() const;
+    void setId(int p_id);
     
     //## auto_generated
-    void setId(int p_id);
+    int getNum() const;
+    
+    //## auto_generated
+    void setNum(int p_num);
     
     //## auto_generated
     double getRecentValue() const;
     
     //## auto_generated
     void setRecentValue(double p_recentValue);
-    
-    //## auto_generated
-    bool getStatus() const;
-    
-    //## auto_generated
-    void setStatus(bool p_status);
     
     //## auto_generated
     void initStatechart();
@@ -117,9 +124,9 @@ protected :
     
     int id;		//## attribute id
     
-    double recentValue;		//## attribute recentValue
+    int num;		//## attribute num
     
-    bool status;		//## attribute status
+    double recentValue;		//## attribute recentValue
     
     ////    Relations and components    ////
     
