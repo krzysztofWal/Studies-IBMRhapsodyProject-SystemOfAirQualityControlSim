@@ -27,13 +27,13 @@
 
 #define Default_Hygrometer_getId_SERIALIZE OM_NO_OP
 
-#define Default_Hygrometer_odczytajDane_SERIALIZE OM_NO_OP
+#define Default_Hygrometer_readSensorFunc_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class Hygrometer
-Hygrometer::Hygrometer(IOxfActive* theActiveContext) : description("hygrometer"), id(9) {
+Hygrometer::Hygrometer(IOxfActive* theActiveContext) : description("hygrometer units: %"), id(9) {
     NOTIFY_ACTIVE_CONSTRUCTOR(Hygrometer, Hygrometer(), 0, Default_Hygrometer_Hygrometer_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
@@ -65,10 +65,10 @@ int Hygrometer::getId() {
     //#]
 }
 
-void Hygrometer::odczytajDane() {
-    NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_Hygrometer_odczytajDane_SERIALIZE);
-    //#[ operation odczytajDane()
-    recentValue=1.4;
+void Hygrometer::readSensorFunc() {
+    NOTIFY_OPERATION(readSensorFunc, readSensorFunc(), 0, Default_Hygrometer_readSensorFunc_SERIALIZE);
+    //#[ operation readSensorFunc()
+    recentValue=Sensor::gen(40,70,itsController->giveGenTime());
     //#]
 }
 
@@ -145,19 +145,19 @@ IOxfReactive::TakeEventStatus Hygrometer::rootState_processEvent() {
         // State OczekiwanieSensor
         case OczekiwanieSensor:
         {
-            if(IS_EVENT_TYPE_OF(czytajCzujniki_Default_id))
+            if(IS_EVENT_TYPE_OF(readSensor_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("1");
                     NOTIFY_STATE_EXITED("ROOT.OczekiwanieSensor");
                     //#[ transition 1 
-                    odczytajDane();
+                    readSensorFunc();
                     //#]
                     NOTIFY_STATE_ENTERED("ROOT.sendaction_7");
                     pushNullTransition();
                     rootState_subState = sendaction_7;
                     rootState_active = sendaction_7;
                     //#[ state sendaction_7.(Entry) 
-                    itsController->GEN(wyslijDane(recentValue));
+                    itsController->GEN(sendReadFromSensor(recentValue));
                     //#]
                     NOTIFY_TRANSITION_TERMINATED("1");
                     res = eventConsumed;

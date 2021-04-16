@@ -11,8 +11,8 @@
 			<_id type="a">GUID 7bf625e0-3d46-47f8-9462-e94b23961623</_id>
 			<_myState type="a">139264</_myState>
 			<_name type="a">DefaultComponent</_name>
-			<_modifiedTimeWeak type="a">7.13.2020::23:45:16</_modifiedTimeWeak>
-			<_modifiedTime type="a">7.14.2020::0:16:51</_modifiedTime>
+			<_modifiedTimeWeak type="a">7.14.2020::9:22:40</_modifiedTimeWeak>
+			<_modifiedTime type="a">7.14.2020::10:19:41</_modifiedTime>
 			<m_buildType type="a">Executable</m_buildType>
 			<m_configActive type="r">
 				<ICodeGenConfigInfoHandle type="e">
@@ -51,7 +51,7 @@
 					<size type="a">0</size>
 				</IRPYRawContainer>
 			</SelectedVariants>
-			<weakCGTime type="a">7.13.2020::23:45:16</weakCGTime>
+			<weakCGTime type="a">7.14.2020::9:22:40</weakCGTime>
 			<strongCGTime type="a">7.13.2020::23:34:1</strongCGTime>
 			<AggregatesList type="e">
 				<value>GUID a0968cb9-081c-4fbe-910b-921f1f814ac0</value>
@@ -168,7 +168,7 @@
 												<size type="a">1</size>
 												<IProperty type="e">
 													<_Name type="a">SpecIncludes</_Name>
-													<_Value type="a">&lt;map&gt;,&lt;utility&gt;,&lt;vector&gt;,&lt;fstream&gt;,&lt;climits&gt;, &lt;string&gt;,&lt;cstdlib&gt;,&lt;ctime&gt;</_Value>
+													<_Value type="a">&lt;map&gt;,&lt;utility&gt;,&lt;vector&gt;,&lt;fstream&gt;,&lt;climits&gt;, &lt;string&gt;,&lt;cstdlib&gt;,&lt;ctime&gt;,&lt;math.h&gt;</_Value>
 													<_Type type="a">String</_Type>
 												</IProperty>
 												
@@ -224,8 +224,8 @@
 			</IPropertyContainer>
 			</_properties>
 			<_name type="a">DefaultConfig</_name>
-			<_modifiedTimeWeak type="a">7.13.2020::23:45:55</_modifiedTimeWeak>
-			<_modifiedTime type="a">7.13.2020::23:45:55</_modifiedTime>
+			<_modifiedTimeWeak type="a">7.14.2020::9:22:40</_modifiedTimeWeak>
+			<_modifiedTime type="a">7.14.2020::9:22:40</_modifiedTime>
 			<_scopeType type="a">Explicit</_scopeType>
 			<_instrumentation type="a">Animation</_instrumentation>
 			<_timeModel type="a">RealTime</_timeModel>
@@ -242,8 +242,8 @@
 					<size type="a">0</size>
 				</IRPYRawContainer>
 			</InitialInstances>
-			<weakCGTime type="a">7.13.2020::23:45:55</weakCGTime>
-			<strongCGTime type="a">7.13.2020::23:45:55</strongCGTime>
+			<weakCGTime type="a">7.14.2020::9:22:40</weakCGTime>
+			<strongCGTime type="a">7.14.2020::9:22:40</strongCGTime>
 			<AnimScopeElements type="c">
 				<IRPYRawContainer type="e">
 					<size type="a">0</size>

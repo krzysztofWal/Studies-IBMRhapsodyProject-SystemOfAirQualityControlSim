@@ -85,6 +85,8 @@
 #include <cstdlib>
 //## auto_generated
 #include <ctime>
+//## auto_generated
+#include <math.h>
 //## package Default
 
 //## class Controller
@@ -115,7 +117,7 @@ public :
     //## auto_generated
     virtual bool startBehavior();
 
-protected :
+private :
 
     //## auto_generated
     int getStationId() const;
@@ -128,7 +130,9 @@ protected :
     
     //## auto_generated
     void setStationStatus(statusType p_stationStatus);
-    
+
+protected :
+
     //## auto_generated
     void initRelations();
     
@@ -206,7 +210,7 @@ public :
         void connectController(Controller* part);
         
         //## auto_generated
-        virtual std::vector<std::pair<unsigned long long, int>> getAlertDetails();
+        virtual std::vector<std::pair<unsigned long long,std::pair<int,int>>> getAlertDetails();
         
         //## auto_generated
         iAktywujStacje* getItsIAktywujStacje();
@@ -374,7 +378,7 @@ public :
     void deletePackage();
     
     //## operation getAlertDetails()
-    virtual std::vector<std::pair<unsigned long long,int>> getAlertDetails();
+    virtual std::vector<std::pair<unsigned long long, std::pair<int,int>  >> getAlertDetails();
     
     //## operation getDataPackage() const
     StationData* getDataPackage() const;
@@ -385,8 +389,8 @@ public :
     //## operation isAnyAlert()
     bool isAnyAlert();
     
-    //## operation obsluzTrybOszczedzaniaEnergii()
-    void obsluzTrybOszczedzaniaEnergii();
+    //## operation handleEnergySavingSystem()
+    void handleEnergySavingSystem();
     
     //## operation print()
     virtual StationData print();
@@ -403,8 +407,8 @@ public :
     //## operation setWhenDue(int,double)
     void setWhenDue(int which, double limit);
     
-    //## operation sprawdzPoziomy()
-    void sprawdzPoziomy();
+    //## operation checkLevels()
+    void checkLevels();
     
     //## auto_generated
     port_33_C* getPort_33() const;
@@ -417,10 +421,14 @@ public :
     
     //## auto_generated
     port_35_C* get_port_35() const;
-    
+
+private :
+
     //## auto_generated
     int getStopMeasurementFlag() const;
-    
+
+public :
+
     //## auto_generated
     void setStopMeasurementFlag(int p_stopMeasurementFlag);
     
@@ -451,7 +459,7 @@ public :
     //## auto_generated
     object_0_C* getObject_0() const;
 
-protected :
+private :
 
     //## auto_generated
     std::map<int, bool> getAlert() const;
@@ -470,7 +478,9 @@ protected :
     
     //## auto_generated
     void setWhetherTimerRead(bool p_whetherTimerRead);
-    
+
+protected :
+
     //## auto_generated
     void initStatechart();
     
@@ -523,6 +533,9 @@ public :
     //## operation aktywujStacje()
     virtual void aktywujStacje();
     
+    //## operation getGivenPercentage(int) const
+    double getGivenPercentage(int position) const;
+    
     //## operation giveGenTime()
     unsigned long long giveGenTime();
     
@@ -535,11 +548,13 @@ public :
     //## operation uspijStacje()
     virtual void uspijStacje();
 
-protected :
+private :
 
     //## auto_generated
     void setDataPackage(StationData* p_dataPackage);
-    
+
+protected :
+
 //#[ ignore
     port_33_C port_33;
     

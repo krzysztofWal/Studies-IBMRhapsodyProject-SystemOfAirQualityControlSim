@@ -27,20 +27,17 @@
 
 #define Default_PM2_5Sensor_getId_SERIALIZE OM_NO_OP
 
-#define Default_PM2_5Sensor_odczytajDane_SERIALIZE OM_NO_OP
+#define Default_PM2_5Sensor_readSensorFunc_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class PM2_5Sensor
-PM2_5Sensor::PM2_5Sensor(IOxfActive* theActiveContext) : description("PM2.5 sensor"), id(5) {
+PM2_5Sensor::PM2_5Sensor(IOxfActive* theActiveContext) : description("PM2.5 sensor units: micrograms/m3"), id(5) {
     NOTIFY_ACTIVE_CONSTRUCTOR(PM2_5Sensor, PM2_5Sensor(), 0, Default_PM2_5Sensor_PM2_5Sensor_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
     initStatechart();
-    //#[ operation PM2_5Sensor()
-    std::cout << "Constructed PM2.5 sensor" << this << std::endl;
-    //#]
 }
 
 PM2_5Sensor::~PM2_5Sensor() {
@@ -68,10 +65,10 @@ int PM2_5Sensor::getId() {
     //#]
 }
 
-void PM2_5Sensor::odczytajDane() {
-    NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_PM2_5Sensor_odczytajDane_SERIALIZE);
-    //#[ operation odczytajDane()
-    recentValue = Sensor::gen(15.5,25.7,27.1,40,itsController->giveGenTime());
+void PM2_5Sensor::readSensorFunc() {
+    NOTIFY_OPERATION(readSensorFunc, readSensorFunc(), 0, Default_PM2_5Sensor_readSensorFunc_SERIALIZE);
+    //#[ operation readSensorFunc()
+    recentValue = Sensor::gen(15.5,27.1,itsController->giveGenTime());
     //#]
 }
 
@@ -148,19 +145,19 @@ IOxfReactive::TakeEventStatus PM2_5Sensor::rootState_processEvent() {
         // State OczekiwanieSensor
         case OczekiwanieSensor:
         {
-            if(IS_EVENT_TYPE_OF(czytajCzujniki_Default_id))
+            if(IS_EVENT_TYPE_OF(readSensor_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("1");
                     NOTIFY_STATE_EXITED("ROOT.OczekiwanieSensor");
                     //#[ transition 1 
-                    odczytajDane();
+                    readSensorFunc();
                     //#]
                     NOTIFY_STATE_ENTERED("ROOT.sendaction_7");
                     pushNullTransition();
                     rootState_subState = sendaction_7;
                     rootState_active = sendaction_7;
                     //#[ state sendaction_7.(Entry) 
-                    itsController->GEN(wyslijDane(recentValue));
+                    itsController->GEN(sendReadFromSensor(recentValue));
                     //#]
                     NOTIFY_TRANSITION_TERMINATED("1");
                     res = eventConsumed;

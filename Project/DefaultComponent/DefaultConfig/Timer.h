@@ -41,6 +41,8 @@
 #include <cstdlib>
 //## auto_generated
 #include <ctime>
+//## auto_generated
+#include <math.h>
 //## link itsController
 class Controller;
 

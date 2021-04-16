@@ -33,6 +33,8 @@
 #include <cstdlib>
 //## auto_generated
 #include <ctime>
+//## auto_generated
+#include <math.h>
 //## package Default
 
 //## class iSendAlert

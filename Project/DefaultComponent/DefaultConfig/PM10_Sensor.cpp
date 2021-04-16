@@ -27,20 +27,17 @@
 
 #define Default_PM10_Sensor_getId_SERIALIZE OM_NO_OP
 
-#define Default_PM10_Sensor_odczytajDane_SERIALIZE OM_NO_OP
+#define Default_PM10_Sensor_readSensorFunc_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class PM10_Sensor
-PM10_Sensor::PM10_Sensor(IOxfActive* theActiveContext) : description("PM10 sensor") {
+PM10_Sensor::PM10_Sensor(IOxfActive* theActiveContext) : description("PM10 sensor units: micrograms/m3") {
     NOTIFY_ACTIVE_CONSTRUCTOR(PM10_Sensor, PM10_Sensor(), 0, Default_PM10_Sensor_PM10_Sensor_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
     initStatechart();
-    //#[ operation PM10_Sensor()
-    std::cout << "Created PM10Sensor: " << this << std::endl ;
-    //#]
 }
 
 PM10_Sensor::~PM10_Sensor() {
@@ -68,10 +65,10 @@ int PM10_Sensor::getId() {
     //#]
 }
 
-void PM10_Sensor::odczytajDane() {
-    NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_PM10_Sensor_odczytajDane_SERIALIZE);
-    //#[ operation odczytajDane()
-    recentValue = Sensor::gen(14.6,25.7,53.1,60,itsController->giveGenTime());
+void PM10_Sensor::readSensorFunc() {
+    NOTIFY_OPERATION(readSensorFunc, readSensorFunc(), 0, Default_PM10_Sensor_readSensorFunc_SERIALIZE);
+    //#[ operation readSensorFunc()
+    recentValue = Sensor::gen(61.6,25.7,53.1,60,itsController->giveGenTime());
     //#]
 }
 
@@ -148,19 +145,19 @@ IOxfReactive::TakeEventStatus PM10_Sensor::rootState_processEvent() {
         // State OczekiwanieSensor
         case OczekiwanieSensor:
         {
-            if(IS_EVENT_TYPE_OF(czytajCzujniki_Default_id))
+            if(IS_EVENT_TYPE_OF(readSensor_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("1");
                     NOTIFY_STATE_EXITED("ROOT.OczekiwanieSensor");
                     //#[ transition 1 
-                    odczytajDane();
+                    readSensorFunc();
                     //#]
                     NOTIFY_STATE_ENTERED("ROOT.sendaction_7");
                     pushNullTransition();
                     rootState_subState = sendaction_7;
                     rootState_active = sendaction_7;
                     //#[ state sendaction_7.(Entry) 
-                    itsController->GEN(wyslijDane(recentValue));
+                    itsController->GEN(sendReadFromSensor(recentValue));
                     //#]
                     NOTIFY_TRANSITION_TERMINATED("1");
                     res = eventConsumed;

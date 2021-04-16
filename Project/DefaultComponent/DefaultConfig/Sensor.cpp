@@ -25,6 +25,10 @@
     aomsmethod->addAttribute("val3", x2String(val3));\
     aomsmethod->addAttribute("val4", x2String(val4));\
     aomsmethod->addAttribute("seed", x2String(seed));
+#define OM_Default_Sensor_gen_1_SERIALIZE \
+    aomsmethod->addAttribute("a", x2String(a));\
+    aomsmethod->addAttribute("b", x2String(b));\
+    aomsmethod->addAttribute("seed", x2String(seed));
 #define Default_Sensor_Sensor_SERIALIZE OM_NO_OP
 
 #define Default_Sensor_funcAb_SERIALIZE OM_NO_OP
@@ -33,7 +37,7 @@
 
 #define Default_Sensor_getId_SERIALIZE OM_NO_OP
 
-#define Default_Sensor_odczytajDane_SERIALIZE OM_NO_OP
+#define Default_Sensor_readSensorFunc_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
@@ -69,6 +73,19 @@ double Sensor::gen(double val1, double val2, double val3, double val4, unsigned 
     //#]
 }
 
+double Sensor::gen(double a, double b, unsigned long long seed) {
+    NOTIFY_OPERATION(gen, gen(double,double,unsigned long long), 3, OM_Default_Sensor_gen_1_SERIALIZE);
+    //#[ operation gen(double,double,unsigned long long)
+    srand(seed+recentValue*10);
+    num = rand() / (RAND_MAX + 1.0)*100.0; 
+    //std::cout << "gen() num: " << num << "\n";
+    num = static_cast<double>(static_cast<int>(((num/100)*(b-a)+a)*10))/10;
+    return num;
+    
+    
+    //#]
+}
+
 std::string Sensor::getDescription() {
     NOTIFY_OPERATION(getDescription, getDescription(), 0, Default_Sensor_getDescription_SERIALIZE);
     //#[ operation getDescription()
@@ -83,9 +100,9 @@ int Sensor::getId() {
     //#]
 }
 
-void Sensor::odczytajDane() {
-    NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_Sensor_odczytajDane_SERIALIZE);
-    //#[ operation odczytajDane()
+void Sensor::readSensorFunc() {
+    NOTIFY_OPERATION(readSensorFunc, readSensorFunc(), 0, Default_Sensor_readSensorFunc_SERIALIZE);
+    //#[ operation readSensorFunc()
     //#]
 }
 
@@ -123,11 +140,11 @@ void Sensor::setId(int p_id) {
     id = p_id;
 }
 
-int Sensor::getNum() const {
+double Sensor::getNum() const {
     return num;
 }
 
-void Sensor::setNum(int p_num) {
+void Sensor::setNum(double p_num) {
     num = p_num;
 }
 
@@ -169,19 +186,19 @@ IOxfReactive::TakeEventStatus Sensor::rootState_processEvent() {
         // State OczekiwanieSensor
         case OczekiwanieSensor:
         {
-            if(IS_EVENT_TYPE_OF(czytajCzujniki_Default_id))
+            if(IS_EVENT_TYPE_OF(readSensor_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("1");
                     NOTIFY_STATE_EXITED("ROOT.OczekiwanieSensor");
                     //#[ transition 1 
-                    odczytajDane();
+                    readSensorFunc();
                     //#]
                     NOTIFY_STATE_ENTERED("ROOT.sendaction_7");
                     pushNullTransition();
                     rootState_subState = sendaction_7;
                     rootState_active = sendaction_7;
                     //#[ state sendaction_7.(Entry) 
-                    itsController->GEN(wyslijDane(recentValue));
+                    itsController->GEN(sendReadFromSensor(recentValue));
                     //#]
                     NOTIFY_TRANSITION_TERMINATED("1");
                     res = eventConsumed;

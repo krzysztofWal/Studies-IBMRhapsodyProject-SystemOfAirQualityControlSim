@@ -27,13 +27,13 @@
 
 #define Default_O3_Sensor_getId_SERIALIZE OM_NO_OP
 
-#define Default_O3_Sensor_odczytajDane_SERIALIZE OM_NO_OP
+#define Default_O3_Sensor_readSensorFunc_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class O3_Sensor
-O3_Sensor::O3_Sensor(IOxfActive* theActiveContext) : description("O3 sensor"), id(1) {
+O3_Sensor::O3_Sensor(IOxfActive* theActiveContext) : description("O3 sensor units: micrograms/m3"), id(1) {
     NOTIFY_ACTIVE_CONSTRUCTOR(O3_Sensor, O3_Sensor(), 0, Default_O3_Sensor_O3_Sensor_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
@@ -67,10 +67,10 @@ int O3_Sensor::getId() {
     //#]
 }
 
-void O3_Sensor::odczytajDane() {
-    NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_O3_Sensor_odczytajDane_SERIALIZE);
-    //#[ operation odczytajDane()
-    recentValue = Sensor::gen(50.5,25.7,260.1,290,itsController->giveGenTime());
+void O3_Sensor::readSensorFunc() {
+    NOTIFY_OPERATION(readSensorFunc, readSensorFunc(), 0, Default_O3_Sensor_readSensorFunc_SERIALIZE);
+    //#[ operation readSensorFunc()
+    recentValue = Sensor::gen(50.5,290,itsController->giveGenTime());
     //#]
 }
 
@@ -147,19 +147,19 @@ IOxfReactive::TakeEventStatus O3_Sensor::rootState_processEvent() {
         // State OczekiwanieSensor
         case OczekiwanieSensor:
         {
-            if(IS_EVENT_TYPE_OF(czytajCzujniki_Default_id))
+            if(IS_EVENT_TYPE_OF(readSensor_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("1");
                     NOTIFY_STATE_EXITED("ROOT.OczekiwanieSensor");
                     //#[ transition 1 
-                    odczytajDane();
+                    readSensorFunc();
                     //#]
                     NOTIFY_STATE_ENTERED("ROOT.sendaction_7");
                     pushNullTransition();
                     rootState_subState = sendaction_7;
                     rootState_active = sendaction_7;
                     //#[ state sendaction_7.(Entry) 
-                    itsController->GEN(wyslijDane(recentValue));
+                    itsController->GEN(sendReadFromSensor(recentValue));
                     //#]
                     NOTIFY_TRANSITION_TERMINATED("1");
                     res = eventConsumed;

@@ -27,13 +27,13 @@
 
 #define Default_Barometer_getId_SERIALIZE OM_NO_OP
 
-#define Default_Barometer_odczytajDane_SERIALIZE OM_NO_OP
+#define Default_Barometer_readSensorFunc_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class Barometer
-Barometer::Barometer(IOxfActive* theActiveContext) : description("barometer"), id(10) {
+Barometer::Barometer(IOxfActive* theActiveContext) : description("barometer units: hectopascals"), id(10) {
     NOTIFY_ACTIVE_CONSTRUCTOR(Barometer, Barometer(), 0, Default_Barometer_Barometer_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
@@ -65,10 +65,10 @@ int Barometer::getId() {
     //#]
 }
 
-void Barometer::odczytajDane() {
-    NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_Barometer_odczytajDane_SERIALIZE);
-    //#[ operation odczytajDane()
-    recentValue=2.1;
+void Barometer::readSensorFunc() {
+    NOTIFY_OPERATION(readSensorFunc, readSensorFunc(), 0, Default_Barometer_readSensorFunc_SERIALIZE);
+    //#[ operation readSensorFunc()
+    recentValue=Sensor::gen(985,1015,itsController->giveGenTime());
     //#]
 }
 
@@ -145,19 +145,19 @@ IOxfReactive::TakeEventStatus Barometer::rootState_processEvent() {
         // State OczekiwanieSensor
         case OczekiwanieSensor:
         {
-            if(IS_EVENT_TYPE_OF(czytajCzujniki_Default_id))
+            if(IS_EVENT_TYPE_OF(readSensor_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("1");
                     NOTIFY_STATE_EXITED("ROOT.OczekiwanieSensor");
                     //#[ transition 1 
-                    odczytajDane();
+                    readSensorFunc();
                     //#]
                     NOTIFY_STATE_ENTERED("ROOT.sendaction_7");
                     pushNullTransition();
                     rootState_subState = sendaction_7;
                     rootState_active = sendaction_7;
                     //#[ state sendaction_7.(Entry) 
-                    itsController->GEN(wyslijDane(recentValue));
+                    itsController->GEN(sendReadFromSensor(recentValue));
                     //#]
                     NOTIFY_TRANSITION_TERMINATED("1");
                     res = eventConsumed;

@@ -36,6 +36,8 @@
 //## auto_generated
 #include <ctime>
 //## auto_generated
+#include <math.h>
+//## auto_generated
 class Controller;
 
 //## package Default
@@ -52,7 +54,7 @@ public :
 
     ////    Constructors and destructors    ////
     
-    //## operation PM10_Sensor()
+    //## auto_generated
     PM10_Sensor(IOxfActive* theActiveContext = 0);
     
     //## auto_generated
@@ -69,8 +71,8 @@ public :
     //## operation getId()
     virtual int getId();
     
-    //## operation odczytajDane()
-    virtual void odczytajDane();
+    //## operation readSensorFunc()
+    virtual void readSensorFunc();
     
     ////    Additional operations    ////
     

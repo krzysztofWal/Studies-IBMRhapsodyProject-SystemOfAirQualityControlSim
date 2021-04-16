@@ -33,6 +33,8 @@
 #include <cstdlib>
 //## auto_generated
 #include <ctime>
+//## auto_generated
+#include <math.h>
 //## package Default
 
 //## class iGetAlertDetails
@@ -56,7 +58,7 @@ public :
     ////    Operations    ////
     
     //## operation getAlertDetails()
-    virtual std::vector<std::pair<unsigned long long, int>> getAlertDetails() = 0;
+    virtual std::vector<std::pair<unsigned long long,std::pair<int,int>>> getAlertDetails() = 0;
 };
 
 #ifdef _OMINSTRUMENT

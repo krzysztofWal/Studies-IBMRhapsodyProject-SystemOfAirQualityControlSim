@@ -65,6 +65,8 @@
 #include <cstdlib>
 //## auto_generated
 #include <ctime>
+//## auto_generated
+#include <math.h>
 //## package Default
 
 //## class Receiver
@@ -99,7 +101,7 @@ public :
         virtual void confirmReceival();
         
         //## auto_generated
-        virtual std::vector<std::pair<unsigned long long, int>> getAlertDetails();
+        virtual std::vector<std::pair<unsigned long long,std::pair<int,int>>> getAlertDetails();
         
         //## auto_generated
         iAktywujStacje* getItsIAktywujStacje();
@@ -253,7 +255,7 @@ public :
 
     ////    Constructors and destructors    ////
     
-    //## operation Receiver()
+    //## auto_generated
     Receiver(IOxfActive* theActiveContext = 0);
     
     //## auto_generated
@@ -287,10 +289,10 @@ public :
 protected :
 
     //## auto_generated
-    std::vector<std::pair<int, int>> getAlert_TimeAndWhichParticulate() const;
+    std::vector<std::pair<unsigned long long, std::pair<int,int>>> getAlert_TimeAndWhichParticulate() const;
     
     //## auto_generated
-    void setAlert_TimeAndWhichParticulate(std::vector<std::pair<int, int>> p_Alert_TimeAndWhichParticulate);
+    void setAlert_TimeAndWhichParticulate(std::vector<std::pair<unsigned long long, std::pair<int,int>>> p_Alert_TimeAndWhichParticulate);
     
     //## auto_generated
     std::vector<StationData> getDataReceived() const;
@@ -318,7 +320,7 @@ protected :
     
     ////    Attributes    ////
     
-    std::vector<std::pair<int, int>> Alert_TimeAndWhichParticulate;		//## attribute Alert_TimeAndWhichParticulate
+    std::vector<std::pair<unsigned long long, std::pair<int,int>>> Alert_TimeAndWhichParticulate;		//## attribute Alert_TimeAndWhichParticulate
     
     std::vector<StationData> dataReceived;		//## attribute dataReceived
     

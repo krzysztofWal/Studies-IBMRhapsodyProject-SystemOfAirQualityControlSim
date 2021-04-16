@@ -75,8 +75,8 @@ void Receiver::port_3_C::confirmReceival() {
     
 }
 
-std::vector<std::pair<unsigned long long, int>> Receiver::port_3_C::getAlertDetails() {
-    std::vector<std::pair<unsigned long long, int>> res;
+std::vector<std::pair<unsigned long long,std::pair<int,int>>> Receiver::port_3_C::getAlertDetails() {
+    std::vector<std::pair<unsigned long long,std::pair<int,int>>> res;
     if (itsIGetAlertDetails != NULL) {
         res = itsIGetAlertDetails->getAlertDetails();
     }
@@ -274,9 +274,6 @@ Receiver::Receiver(IOxfActive* theActiveContext) : iterator(0) {
     setActiveContext(this, true);
     initRelations();
     initStatechart();
-    //#[ operation Receiver()
-    std::cout << "Constructed transmitter object" << this << std::endl;
-    //#]
 }
 
 Receiver::~Receiver() {
@@ -325,11 +322,11 @@ bool Receiver::startBehavior() {
     return done;
 }
 
-std::vector<std::pair<int, int>> Receiver::getAlert_TimeAndWhichParticulate() const {
+std::vector<std::pair<unsigned long long, std::pair<int,int>>> Receiver::getAlert_TimeAndWhichParticulate() const {
     return Alert_TimeAndWhichParticulate;
 }
 
-void Receiver::setAlert_TimeAndWhichParticulate(std::vector<std::pair<int, int>> p_Alert_TimeAndWhichParticulate) {
+void Receiver::setAlert_TimeAndWhichParticulate(std::vector<std::pair<unsigned long long, std::pair<int,int>>> p_Alert_TimeAndWhichParticulate) {
     Alert_TimeAndWhichParticulate = p_Alert_TimeAndWhichParticulate;
 }
 
@@ -553,7 +550,7 @@ IOxfReactive::TakeEventStatus Receiver::receiverStandby_handleEvent() {
             auto vec = OUT_PORT(port_3)->getAlertDetails();
             std::cout << "======received alert=======" << std::endl;
             for (; iterator < static_cast<int>(vec.size()) ;iterator++) {
-            	std::cout << "time: " << vec.at(iterator).first << " measured pollutant: " << vec.at(iterator).second << std::endl; 
+            	std::cout << "time: " << vec.at(iterator).first << " measured pollutant: " << vec.at(iterator).second.first << " level: " << vec.at(iterator).second.second << "%" << std::endl; 
             	Alert_TimeAndWhichParticulate.emplace_back(vec.at(iterator));
             }                                                                                                                    
             std::cout << "=============================" << std::endl;

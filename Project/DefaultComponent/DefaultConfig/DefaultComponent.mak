@@ -342,7 +342,7 @@ iUspijStacje.obj : iUspijStacje.cpp iUspijStacje.h    Default.h
 
 
 
-Default.obj : Default.cpp Default.h    StationData.h Sensor.h O3_Sensor.h Controller.h Thermometer.h Hygrometer.h Barometer.h Receiver.h CO_Sensor.h SO2_Sensor.h NO2_Sensor.h PM1_Sensor.h PM2_5Sensor.h PM10_Sensor.h iPrint.h iInitialize.h iInform.h iConfirmDataReceival.h iSendAlert.h iGetAlertDetails.h iCalibrateRequest.h Timer.h iConfirmAlertReceival.h iAktywujStacje.h iUspijStacje.h 
+Default.obj : Default.cpp Default.h    Sensor.h O3_Sensor.h Controller.h Thermometer.h Hygrometer.h Barometer.h StationData.h Receiver.h CO_Sensor.h SO2_Sensor.h NO2_Sensor.h PM1_Sensor.h PM2_5Sensor.h PM10_Sensor.h iPrint.h iInitialize.h iInform.h iConfirmDataReceival.h iSendAlert.h iGetAlertDetails.h iCalibrateRequest.h Timer.h iConfirmAlertReceival.h iAktywujStacje.h iUspijStacje.h 
 	$(CREATE_OBJ_DIR)
 	$(CPP) $(ConfigurationCPPCompileSwitches)  /Fo"Default.obj" "Default.cpp" 
 

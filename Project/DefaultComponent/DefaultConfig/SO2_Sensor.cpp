@@ -27,13 +27,13 @@
 
 #define Default_SO2_Sensor_getId_SERIALIZE OM_NO_OP
 
-#define Default_SO2_Sensor_odczytajDane_SERIALIZE OM_NO_OP
+#define Default_SO2_Sensor_readSensorFunc_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class SO2_Sensor
-SO2_Sensor::SO2_Sensor(IOxfActive* theActiveContext) : description("CO sensor"), id(3), recentValue(0.0) {
+SO2_Sensor::SO2_Sensor(IOxfActive* theActiveContext) : description("CO sensor units: micrograms/m3"), id(3), recentValue(0.0) {
     NOTIFY_ACTIVE_CONSTRUCTOR(SO2_Sensor, SO2_Sensor(), 0, Default_SO2_Sensor_SO2_Sensor_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
@@ -65,10 +65,10 @@ int SO2_Sensor::getId() {
     //#]
 }
 
-void SO2_Sensor::odczytajDane() {
-    NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_SO2_Sensor_odczytajDane_SERIALIZE);
-    //#[ operation odczytajDane()
-    recentValue = Sensor::gen(250,400,550.1,559.3,itsController->giveGenTime());
+void SO2_Sensor::readSensorFunc() {
+    NOTIFY_OPERATION(readSensorFunc, readSensorFunc(), 0, Default_SO2_Sensor_readSensorFunc_SERIALIZE);
+    //#[ operation readSensorFunc()
+    recentValue = Sensor::gen(500,559.3,itsController->giveGenTime());
     //#]
 }
 
@@ -153,19 +153,19 @@ IOxfReactive::TakeEventStatus SO2_Sensor::rootState_processEvent() {
         // State OczekiwanieSensor
         case OczekiwanieSensor:
         {
-            if(IS_EVENT_TYPE_OF(czytajCzujniki_Default_id))
+            if(IS_EVENT_TYPE_OF(readSensor_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("1");
                     NOTIFY_STATE_EXITED("ROOT.OczekiwanieSensor");
                     //#[ transition 1 
-                    odczytajDane();
+                    readSensorFunc();
                     //#]
                     NOTIFY_STATE_ENTERED("ROOT.sendaction_7");
                     pushNullTransition();
                     rootState_subState = sendaction_7;
                     rootState_active = sendaction_7;
                     //#[ state sendaction_7.(Entry) 
-                    itsController->GEN(wyslijDane(recentValue));
+                    itsController->GEN(sendReadFromSensor(recentValue));
                     //#]
                     NOTIFY_TRANSITION_TERMINATED("1");
                     res = eventConsumed;

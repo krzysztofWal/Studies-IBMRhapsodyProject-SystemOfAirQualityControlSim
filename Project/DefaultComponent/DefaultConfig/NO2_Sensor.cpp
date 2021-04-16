@@ -27,13 +27,13 @@
 
 #define Default_NO2_Sensor_getId_SERIALIZE OM_NO_OP
 
-#define Default_NO2_Sensor_odczytajDane_SERIALIZE OM_NO_OP
+#define Default_NO2_Sensor_readSensorFunc_SERIALIZE OM_NO_OP
 //#]
 
 //## package Default
 
 //## class NO2_Sensor
-NO2_Sensor::NO2_Sensor(IOxfActive* theActiveContext) : description("NO2 sensor"), id(4) {
+NO2_Sensor::NO2_Sensor(IOxfActive* theActiveContext) : description("NO2 sensor units: micrograms/m3"), id(4) {
     NOTIFY_ACTIVE_CONSTRUCTOR(NO2_Sensor, NO2_Sensor(), 0, Default_NO2_Sensor_NO2_Sensor_SERIALIZE);
     setActiveContext(this, true);
     itsController = NULL;
@@ -65,10 +65,10 @@ int NO2_Sensor::getId() {
     //#]
 }
 
-void NO2_Sensor::odczytajDane() {
-    NOTIFY_OPERATION(odczytajDane, odczytajDane(), 0, Default_NO2_Sensor_odczytajDane_SERIALIZE);
-    //#[ operation odczytajDane()
-    recentValue = Sensor::gen(10,250.7,455.1,500,itsController->giveGenTime());
+void NO2_Sensor::readSensorFunc() {
+    NOTIFY_OPERATION(readSensorFunc, readSensorFunc(), 0, Default_NO2_Sensor_readSensorFunc_SERIALIZE);
+    //#[ operation readSensorFunc()
+    recentValue = Sensor::gen(250.7,455.1,itsController->giveGenTime());
     //#]
 }
 
@@ -145,19 +145,19 @@ IOxfReactive::TakeEventStatus NO2_Sensor::rootState_processEvent() {
         // State OczekiwanieSensor
         case OczekiwanieSensor:
         {
-            if(IS_EVENT_TYPE_OF(czytajCzujniki_Default_id))
+            if(IS_EVENT_TYPE_OF(readSensor_Default_id))
                 {
                     NOTIFY_TRANSITION_STARTED("1");
                     NOTIFY_STATE_EXITED("ROOT.OczekiwanieSensor");
                     //#[ transition 1 
-                    odczytajDane();
+                    readSensorFunc();
                     //#]
                     NOTIFY_STATE_ENTERED("ROOT.sendaction_7");
                     pushNullTransition();
                     rootState_subState = sendaction_7;
                     rootState_active = sendaction_7;
                     //#[ state sendaction_7.(Entry) 
-                    itsController->GEN(wyslijDane(recentValue));
+                    itsController->GEN(sendReadFromSensor(recentValue));
                     //#]
                     NOTIFY_TRANSITION_TERMINATED("1");
                     res = eventConsumed;

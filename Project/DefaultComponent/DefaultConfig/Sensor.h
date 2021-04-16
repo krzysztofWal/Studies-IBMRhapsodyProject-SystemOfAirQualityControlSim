@@ -40,7 +40,7 @@
 //## auto_generated
 #include <cstdlib>
 //## auto_generated
-#include <ctime>
+#include <math.h>
 //## link itsController
 class Controller;
 
@@ -72,14 +72,17 @@ public :
     //## operation gen(double,double,double,double,unsigned long long)
     double gen(double val1, double val2, double val3, double val4, unsigned long long seed);
     
+    //## operation gen(double,double,unsigned long long)
+    double gen(double a, double b, unsigned long long seed);
+    
     //## operation getDescription()
     virtual std::string getDescription();
     
     //## operation getId()
     virtual int getId();
     
-    //## operation odczytajDane()
-    virtual void odczytajDane();
+    //## operation readSensorFunc()
+    virtual void readSensorFunc();
     
     ////    Additional operations    ////
     
@@ -101,10 +104,10 @@ protected :
     void setId(int p_id);
     
     //## auto_generated
-    int getNum() const;
+    double getNum() const;
     
     //## auto_generated
-    void setNum(int p_num);
+    void setNum(double p_num);
     
     //## auto_generated
     double getRecentValue() const;
@@ -124,7 +127,7 @@ protected :
     
     int id;		//## attribute id
     
-    int num;		//## attribute num
+    double num;		//## attribute num
     
     double recentValue;		//## attribute recentValue
     

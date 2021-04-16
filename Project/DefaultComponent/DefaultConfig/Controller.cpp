@@ -31,6 +31,8 @@
 
 #define Default_Controller_calibrateRequest_SERIALIZE OM_NO_OP
 
+#define Default_Controller_checkLevels_SERIALIZE OM_NO_OP
+
 #define Default_Controller_confirmAlert_SERIALIZE OM_NO_OP
 
 #define Default_Controller_confirmReceival_SERIALIZE OM_NO_OP
@@ -43,13 +45,15 @@
 
 #define Default_Controller_getDataPackage_SERIALIZE OM_NO_OP
 
+#define Default_Controller_getGivenPercentage_SERIALIZE aomsmethod->addAttribute("position", x2String(position));
+
 #define Default_Controller_giveGenTime_SERIALIZE OM_NO_OP
+
+#define Default_Controller_handleEnergySavingSystem_SERIALIZE OM_NO_OP
 
 #define Default_Controller_initialize_SERIALIZE OM_NO_OP
 
 #define Default_Controller_isAnyAlert_SERIALIZE OM_NO_OP
-
-#define Default_Controller_obsluzTrybOszczedzaniaEnergii_SERIALIZE OM_NO_OP
 
 #define Default_Controller_print_SERIALIZE OM_NO_OP
 
@@ -58,8 +62,6 @@
 #define Default_Controller_readInfo_SERIALIZE OM_NO_OP
 
 #define Default_Controller_resetAlert_SERIALIZE OM_NO_OP
-
-#define Default_Controller_sprawdzPoziomy_SERIALIZE OM_NO_OP
 
 #define Default_Controller_stacjaAktywna_SERIALIZE OM_NO_OP
 
@@ -237,8 +239,8 @@ void Controller::port_33_C::connectController(Controller* part) {
     
 }
 
-std::vector<std::pair<unsigned long long, int>> Controller::port_33_C::getAlertDetails() {
-    std::vector<std::pair<unsigned long long, int>> res;
+std::vector<std::pair<unsigned long long,std::pair<int,int>>> Controller::port_33_C::getAlertDetails() {
+    std::vector<std::pair<unsigned long long,std::pair<int,int>>> res;
     if (itsIGetAlertDetails != NULL) {
         res = itsIGetAlertDetails->getAlertDetails();
     }
@@ -565,13 +567,13 @@ void Controller::deletePackage() {
     //#]
 }
 
-std::vector<std::pair<unsigned long long,int>> Controller::getAlertDetails() {
+std::vector<std::pair<unsigned long long, std::pair<int,int>  >> Controller::getAlertDetails() {
     NOTIFY_OPERATION(getAlertDetails, getAlertDetails(), 0, Default_Controller_getAlertDetails_SERIALIZE);
     //#[ operation getAlertDetails()
-    std::vector<std::pair<unsigned long long, int>> temp;
+    std::vector<std::pair<unsigned long long, std::pair<int,int>>> temp;
     for (iterator++; iterator <= static_cast<int>(alert.size()); iterator++) {
     	if (alert[iterator]== true) 
-    		temp.emplace_back(std::make_pair(dataPackage->getTime(),iterator));
+    		temp.emplace_back(std::make_pair(dataPackage->getTime(),std::make_pair(iterator,static_cast<int>(getGivenPercentage(iterator)))));
     		//std::cout << "getAlertDetails(): " << dataPackage->getTime() << std::endl;
     }
     iterator = 0;
@@ -608,9 +610,9 @@ bool Controller::isAnyAlert() {
     //#]
 }
 
-void Controller::obsluzTrybOszczedzaniaEnergii() {
-    NOTIFY_OPERATION(obsluzTrybOszczedzaniaEnergii, obsluzTrybOszczedzaniaEnergii(), 0, Default_Controller_obsluzTrybOszczedzaniaEnergii_SERIALIZE);
-    //#[ operation obsluzTrybOszczedzaniaEnergii()
+void Controller::handleEnergySavingSystem() {
+    NOTIFY_OPERATION(handleEnergySavingSystem, handleEnergySavingSystem(), 0, Default_Controller_handleEnergySavingSystem_SERIALIZE);
+    //#[ operation handleEnergySavingSystem()
     if(stationStatus != standBy)
     	stationStatus = standBy;
     if(stationStatus = standBy)
@@ -693,9 +695,9 @@ void Controller::setWhenDue(int which, double limit) {
     //#]
 }
 
-void Controller::sprawdzPoziomy() {
-    NOTIFY_OPERATION(sprawdzPoziomy, sprawdzPoziomy(), 0, Default_Controller_sprawdzPoziomy_SERIALIZE);
-    //#[ operation sprawdzPoziomy()
+void Controller::checkLevels() {
+    NOTIFY_OPERATION(checkLevels, checkLevels(), 0, Default_Controller_checkLevels_SERIALIZE);
+    //#[ operation checkLevels()
     setWhenDue(1,240); //  o3
     setWhenDue(2,60);  //  co
     setWhenDue(3,500);  //  so2
@@ -826,6 +828,32 @@ void Controller::aktywujStacje() {
     //#]
 }
 
+double Controller::getGivenPercentage(int position) const {
+    NOTIFY_OPERATION(getGivenPercentage, getGivenPercentage(int) const, 1, Default_Controller_getGivenPercentage_SERIALIZE);
+    //#[ operation getGivenPercentage(int) const
+    switch(position) {
+    case 1:
+    	return dataPackage->get(1)/240*100;
+    case 2:
+    	return dataPackage->get(2)/60*100;
+    case 3:
+    	return dataPackage->get(3)/500*100;
+    case 4:
+    	return dataPackage->get(4)/400*100;
+    case 5:
+    	return dataPackage->get(5)/5*100;
+    case 6:
+    	return dataPackage->get(6)/25*100;
+    case 7:
+    	return dataPackage->get(7)/50*100;
+    break;
+    default:
+    	std::cout << "reached default in getGivenDataFromPackage()\n";
+    	return 9999;
+    }
+    //#]
+}
+
 unsigned long long Controller::giveGenTime() {
     NOTIFY_OPERATION(giveGenTime, giveGenTime(), 0, Default_Controller_giveGenTime_SERIALIZE);
     //#[ operation giveGenTime()
@@ -870,7 +898,7 @@ void Controller::rootState_entDef() {
         rootState_subState = StationStandBy;
         rootState_active = StationStandBy;
         //#[ state StationStandBy.(Entry) 
-        obsluzTrybOszczedzaniaEnergii();
+        handleEnergySavingSystem();
         //#]
         NOTIFY_TRANSITION_TERMINATED("10");
     }
@@ -888,26 +916,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
         // State sendaction_10
         case sendaction_10:
         {
-            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
-                {
-                    OMSETPARAMS(wyslijDane);
-                    NOTIFY_TRANSITION_STARTED("1");
-                    cancel(rootState_timeout);
-                    NOTIFY_STATE_EXITED("ROOT.sendaction_10");
-                    //#[ transition 1 
-                    appendToPackage(co, params->valueBeingSent);
-                    //#]
-                    NOTIFY_STATE_ENTERED("ROOT.sendaction_12");
-                    rootState_subState = sendaction_12;
-                    rootState_active = sendaction_12;
-                    //#[ state sendaction_12.(Entry) 
-                    itsNO2_Sensor.GEN(czytajCzujniki);
-                    //#]
-                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_12");
-                    NOTIFY_TRANSITION_TERMINATED("1");
-                    res = eventConsumed;
-                }
-            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+            if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
                 {
                     if(getCurrentEvent() == rootState_timeout)
                         {
@@ -918,12 +927,31 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                             rootState_subState = sendaction_12;
                             rootState_active = sendaction_12;
                             //#[ state sendaction_12.(Entry) 
-                            itsNO2_Sensor.GEN(czytajCzujniki);
+                            itsNO2_Sensor.GEN(readSensor);
                             //#]
                             rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_12");
                             NOTIFY_TRANSITION_TERMINATED("5");
                             res = eventConsumed;
                         }
+                }
+            else if(IS_EVENT_TYPE_OF(sendReadFromSensor_Default_id))
+                {
+                    OMSETPARAMS(sendReadFromSensor);
+                    NOTIFY_TRANSITION_STARTED("1");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_10");
+                    //#[ transition 1 
+                    appendToPackage(co, params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_12");
+                    rootState_subState = sendaction_12;
+                    rootState_active = sendaction_12;
+                    //#[ state sendaction_12.(Entry) 
+                    itsNO2_Sensor.GEN(readSensor);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_12");
+                    NOTIFY_TRANSITION_TERMINATED("1");
+                    res = eventConsumed;
                 }
             
         }
@@ -931,26 +959,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
         // State sendaction_12
         case sendaction_12:
         {
-            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
-                {
-                    OMSETPARAMS(wyslijDane);
-                    NOTIFY_TRANSITION_STARTED("2");
-                    cancel(rootState_timeout);
-                    NOTIFY_STATE_EXITED("ROOT.sendaction_12");
-                    //#[ transition 2 
-                    appendToPackage(no2, params->valueBeingSent);
-                    //#]
-                    NOTIFY_STATE_ENTERED("ROOT.sendaction_13");
-                    rootState_subState = sendaction_13;
-                    rootState_active = sendaction_13;
-                    //#[ state sendaction_13.(Entry) 
-                    itsSO2_Sensor.GEN(czytajCzujniki);
-                    //#]
-                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_13");
-                    NOTIFY_TRANSITION_TERMINATED("2");
-                    res = eventConsumed;
-                }
-            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+            if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
                 {
                     if(getCurrentEvent() == rootState_timeout)
                         {
@@ -961,12 +970,31 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                             rootState_subState = sendaction_13;
                             rootState_active = sendaction_13;
                             //#[ state sendaction_13.(Entry) 
-                            itsSO2_Sensor.GEN(czytajCzujniki);
+                            itsSO2_Sensor.GEN(readSensor);
                             //#]
                             rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_13");
                             NOTIFY_TRANSITION_TERMINATED("6");
                             res = eventConsumed;
                         }
+                }
+            else if(IS_EVENT_TYPE_OF(sendReadFromSensor_Default_id))
+                {
+                    OMSETPARAMS(sendReadFromSensor);
+                    NOTIFY_TRANSITION_STARTED("2");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_12");
+                    //#[ transition 2 
+                    appendToPackage(no2, params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_13");
+                    rootState_subState = sendaction_13;
+                    rootState_active = sendaction_13;
+                    //#[ state sendaction_13.(Entry) 
+                    itsSO2_Sensor.GEN(readSensor);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_13");
+                    NOTIFY_TRANSITION_TERMINATED("2");
+                    res = eventConsumed;
                 }
             
         }
@@ -974,26 +1002,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
         // State sendaction_13
         case sendaction_13:
         {
-            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
-                {
-                    OMSETPARAMS(wyslijDane);
-                    NOTIFY_TRANSITION_STARTED("3");
-                    cancel(rootState_timeout);
-                    NOTIFY_STATE_EXITED("ROOT.sendaction_13");
-                    //#[ transition 3 
-                    appendToPackage(so2, params->valueBeingSent);
-                    //#]
-                    NOTIFY_STATE_ENTERED("ROOT.sendaction_14");
-                    rootState_subState = sendaction_14;
-                    rootState_active = sendaction_14;
-                    //#[ state sendaction_14.(Entry) 
-                    itsO3_Sensor.GEN(czytajCzujniki);
-                    //#]
-                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_14");
-                    NOTIFY_TRANSITION_TERMINATED("3");
-                    res = eventConsumed;
-                }
-            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+            if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
                 {
                     if(getCurrentEvent() == rootState_timeout)
                         {
@@ -1004,12 +1013,31 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                             rootState_subState = sendaction_14;
                             rootState_active = sendaction_14;
                             //#[ state sendaction_14.(Entry) 
-                            itsO3_Sensor.GEN(czytajCzujniki);
+                            itsO3_Sensor.GEN(readSensor);
                             //#]
                             rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_14");
                             NOTIFY_TRANSITION_TERMINATED("7");
                             res = eventConsumed;
                         }
+                }
+            else if(IS_EVENT_TYPE_OF(sendReadFromSensor_Default_id))
+                {
+                    OMSETPARAMS(sendReadFromSensor);
+                    NOTIFY_TRANSITION_STARTED("3");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_13");
+                    //#[ transition 3 
+                    appendToPackage(so2, params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_14");
+                    rootState_subState = sendaction_14;
+                    rootState_active = sendaction_14;
+                    //#[ state sendaction_14.(Entry) 
+                    itsO3_Sensor.GEN(readSensor);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_14");
+                    NOTIFY_TRANSITION_TERMINATED("3");
+                    res = eventConsumed;
                 }
             
         }
@@ -1017,26 +1045,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
         // State sendaction_14
         case sendaction_14:
         {
-            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
-                {
-                    OMSETPARAMS(wyslijDane);
-                    NOTIFY_TRANSITION_STARTED("4");
-                    cancel(rootState_timeout);
-                    NOTIFY_STATE_EXITED("ROOT.sendaction_14");
-                    //#[ transition 4 
-                    appendToPackage(o3, params->valueBeingSent);
-                    //#]
-                    NOTIFY_STATE_ENTERED("ROOT.sendaction_37");
-                    rootState_subState = sendaction_37;
-                    rootState_active = sendaction_37;
-                    //#[ state sendaction_37.(Entry) 
-                    itsPM1_Sensor.GEN(czytajCzujniki);
-                    //#]
-                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_37");
-                    NOTIFY_TRANSITION_TERMINATED("4");
-                    res = eventConsumed;
-                }
-            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+            if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
                 {
                     if(getCurrentEvent() == rootState_timeout)
                         {
@@ -1047,12 +1056,31 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                             rootState_subState = sendaction_37;
                             rootState_active = sendaction_37;
                             //#[ state sendaction_37.(Entry) 
-                            itsPM1_Sensor.GEN(czytajCzujniki);
+                            itsPM1_Sensor.GEN(readSensor);
                             //#]
                             rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_37");
                             NOTIFY_TRANSITION_TERMINATED("8");
                             res = eventConsumed;
                         }
+                }
+            else if(IS_EVENT_TYPE_OF(sendReadFromSensor_Default_id))
+                {
+                    OMSETPARAMS(sendReadFromSensor);
+                    NOTIFY_TRANSITION_STARTED("4");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_14");
+                    //#[ transition 4 
+                    appendToPackage(o3, params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_37");
+                    rootState_subState = sendaction_37;
+                    rootState_active = sendaction_37;
+                    //#[ state sendaction_37.(Entry) 
+                    itsPM1_Sensor.GEN(readSensor);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_37");
+                    NOTIFY_TRANSITION_TERMINATED("4");
+                    res = eventConsumed;
                 }
             
         }
@@ -1131,7 +1159,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                     rootState_subState = StationStandBy;
                     rootState_active = StationStandBy;
                     //#[ state StationStandBy.(Entry) 
-                    obsluzTrybOszczedzaniaEnergii();
+                    handleEnergySavingSystem();
                     //#]
                     NOTIFY_TRANSITION_TERMINATED("13");
                     res = eventConsumed;
@@ -1201,7 +1229,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                             rootState_subState = checkLimits;
                             rootState_active = checkLimits;
                             //#[ state checkLimits.(Entry) 
-                            sprawdzPoziomy();
+                            checkLevels();
                             whetherTimerRead = false;
                             //#]
                             NOTIFY_TRANSITION_TERMINATED("19");
@@ -1255,7 +1283,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                     rootState_subState = StationStandBy;
                     rootState_active = StationStandBy;
                     //#[ state StationStandBy.(Entry) 
-                    obsluzTrybOszczedzaniaEnergii();
+                    handleEnergySavingSystem();
                     //#]
                     NOTIFY_TRANSITION_TERMINATED("23");
                     res = eventConsumed;
@@ -1266,26 +1294,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
         // State sendaction_37
         case sendaction_37:
         {
-            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
-                {
-                    OMSETPARAMS(wyslijDane);
-                    NOTIFY_TRANSITION_STARTED("30");
-                    cancel(rootState_timeout);
-                    NOTIFY_STATE_EXITED("ROOT.sendaction_37");
-                    //#[ transition 30 
-                    appendToPackage(pm1,params->valueBeingSent);
-                    //#]
-                    NOTIFY_STATE_ENTERED("ROOT.sendaction_38");
-                    rootState_subState = sendaction_38;
-                    rootState_active = sendaction_38;
-                    //#[ state sendaction_38.(Entry) 
-                    itsPM2_5Sensor.GEN(czytajCzujniki);
-                    //#]
-                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_38");
-                    NOTIFY_TRANSITION_TERMINATED("30");
-                    res = eventConsumed;
-                }
-            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+            if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
                 {
                     if(getCurrentEvent() == rootState_timeout)
                         {
@@ -1296,12 +1305,31 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                             rootState_subState = sendaction_38;
                             rootState_active = sendaction_38;
                             //#[ state sendaction_38.(Entry) 
-                            itsPM2_5Sensor.GEN(czytajCzujniki);
+                            itsPM2_5Sensor.GEN(readSensor);
                             //#]
                             rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_38");
                             NOTIFY_TRANSITION_TERMINATED("24");
                             res = eventConsumed;
                         }
+                }
+            else if(IS_EVENT_TYPE_OF(sendReadFromSensor_Default_id))
+                {
+                    OMSETPARAMS(sendReadFromSensor);
+                    NOTIFY_TRANSITION_STARTED("30");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_37");
+                    //#[ transition 30 
+                    appendToPackage(pm1,params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_38");
+                    rootState_subState = sendaction_38;
+                    rootState_active = sendaction_38;
+                    //#[ state sendaction_38.(Entry) 
+                    itsPM2_5Sensor.GEN(readSensor);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_38");
+                    NOTIFY_TRANSITION_TERMINATED("30");
+                    res = eventConsumed;
                 }
             
         }
@@ -1309,26 +1337,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
         // State sendaction_38
         case sendaction_38:
         {
-            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
-                {
-                    OMSETPARAMS(wyslijDane);
-                    NOTIFY_TRANSITION_STARTED("31");
-                    cancel(rootState_timeout);
-                    NOTIFY_STATE_EXITED("ROOT.sendaction_38");
-                    //#[ transition 31 
-                    appendToPackage(pm2_5,params->valueBeingSent);
-                    //#]
-                    NOTIFY_STATE_ENTERED("ROOT.sendaction_39");
-                    rootState_subState = sendaction_39;
-                    rootState_active = sendaction_39;
-                    //#[ state sendaction_39.(Entry) 
-                    itsPM10_Sensor.GEN(czytajCzujniki);
-                    //#]
-                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_39");
-                    NOTIFY_TRANSITION_TERMINATED("31");
-                    res = eventConsumed;
-                }
-            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+            if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
                 {
                     if(getCurrentEvent() == rootState_timeout)
                         {
@@ -1339,12 +1348,31 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                             rootState_subState = sendaction_39;
                             rootState_active = sendaction_39;
                             //#[ state sendaction_39.(Entry) 
-                            itsPM10_Sensor.GEN(czytajCzujniki);
+                            itsPM10_Sensor.GEN(readSensor);
                             //#]
                             rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_39");
                             NOTIFY_TRANSITION_TERMINATED("25");
                             res = eventConsumed;
                         }
+                }
+            else if(IS_EVENT_TYPE_OF(sendReadFromSensor_Default_id))
+                {
+                    OMSETPARAMS(sendReadFromSensor);
+                    NOTIFY_TRANSITION_STARTED("31");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_38");
+                    //#[ transition 31 
+                    appendToPackage(pm2_5,params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_39");
+                    rootState_subState = sendaction_39;
+                    rootState_active = sendaction_39;
+                    //#[ state sendaction_39.(Entry) 
+                    itsPM10_Sensor.GEN(readSensor);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_39");
+                    NOTIFY_TRANSITION_TERMINATED("31");
+                    res = eventConsumed;
                 }
             
         }
@@ -1352,26 +1380,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
         // State sendaction_39
         case sendaction_39:
         {
-            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
-                {
-                    OMSETPARAMS(wyslijDane);
-                    NOTIFY_TRANSITION_STARTED("32");
-                    cancel(rootState_timeout);
-                    NOTIFY_STATE_EXITED("ROOT.sendaction_39");
-                    //#[ transition 32 
-                    appendToPackage(pm10,params->valueBeingSent);
-                    //#]
-                    NOTIFY_STATE_ENTERED("ROOT.sendaction_40");
-                    rootState_subState = sendaction_40;
-                    rootState_active = sendaction_40;
-                    //#[ state sendaction_40.(Entry) 
-                    itsThermometer.GEN(czytajCzujniki);
-                    //#]
-                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_40");
-                    NOTIFY_TRANSITION_TERMINATED("32");
-                    res = eventConsumed;
-                }
-            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+            if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
                 {
                     if(getCurrentEvent() == rootState_timeout)
                         {
@@ -1382,12 +1391,31 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                             rootState_subState = sendaction_40;
                             rootState_active = sendaction_40;
                             //#[ state sendaction_40.(Entry) 
-                            itsThermometer.GEN(czytajCzujniki);
+                            itsThermometer.GEN(readSensor);
                             //#]
                             rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_40");
                             NOTIFY_TRANSITION_TERMINATED("26");
                             res = eventConsumed;
                         }
+                }
+            else if(IS_EVENT_TYPE_OF(sendReadFromSensor_Default_id))
+                {
+                    OMSETPARAMS(sendReadFromSensor);
+                    NOTIFY_TRANSITION_STARTED("32");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_39");
+                    //#[ transition 32 
+                    appendToPackage(pm10,params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_40");
+                    rootState_subState = sendaction_40;
+                    rootState_active = sendaction_40;
+                    //#[ state sendaction_40.(Entry) 
+                    itsThermometer.GEN(readSensor);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_40");
+                    NOTIFY_TRANSITION_TERMINATED("32");
+                    res = eventConsumed;
                 }
             
         }
@@ -1395,26 +1423,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
         // State sendaction_40
         case sendaction_40:
         {
-            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
-                {
-                    OMSETPARAMS(wyslijDane);
-                    NOTIFY_TRANSITION_STARTED("33");
-                    cancel(rootState_timeout);
-                    NOTIFY_STATE_EXITED("ROOT.sendaction_40");
-                    //#[ transition 33 
-                    appendToPackage(thermo,params->valueBeingSent);
-                    //#]
-                    NOTIFY_STATE_ENTERED("ROOT.sendaction_41");
-                    rootState_subState = sendaction_41;
-                    rootState_active = sendaction_41;
-                    //#[ state sendaction_41.(Entry) 
-                    itsHygrometer.GEN(czytajCzujniki);
-                    //#]
-                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_41");
-                    NOTIFY_TRANSITION_TERMINATED("33");
-                    res = eventConsumed;
-                }
-            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+            if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
                 {
                     if(getCurrentEvent() == rootState_timeout)
                         {
@@ -1425,12 +1434,31 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                             rootState_subState = sendaction_41;
                             rootState_active = sendaction_41;
                             //#[ state sendaction_41.(Entry) 
-                            itsHygrometer.GEN(czytajCzujniki);
+                            itsHygrometer.GEN(readSensor);
                             //#]
                             rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_41");
                             NOTIFY_TRANSITION_TERMINATED("27");
                             res = eventConsumed;
                         }
+                }
+            else if(IS_EVENT_TYPE_OF(sendReadFromSensor_Default_id))
+                {
+                    OMSETPARAMS(sendReadFromSensor);
+                    NOTIFY_TRANSITION_STARTED("33");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_40");
+                    //#[ transition 33 
+                    appendToPackage(thermo,params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_41");
+                    rootState_subState = sendaction_41;
+                    rootState_active = sendaction_41;
+                    //#[ state sendaction_41.(Entry) 
+                    itsHygrometer.GEN(readSensor);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_41");
+                    NOTIFY_TRANSITION_TERMINATED("33");
+                    res = eventConsumed;
                 }
             
         }
@@ -1438,26 +1466,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
         // State sendaction_41
         case sendaction_41:
         {
-            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
-                {
-                    OMSETPARAMS(wyslijDane);
-                    NOTIFY_TRANSITION_STARTED("34");
-                    cancel(rootState_timeout);
-                    NOTIFY_STATE_EXITED("ROOT.sendaction_41");
-                    //#[ transition 34 
-                    appendToPackage(hygro,params->valueBeingSent);
-                    //#]
-                    NOTIFY_STATE_ENTERED("ROOT.sendaction_42");
-                    rootState_subState = sendaction_42;
-                    rootState_active = sendaction_42;
-                    //#[ state sendaction_42.(Entry) 
-                    itsBarometer.GEN(czytajCzujniki);
-                    //#]
-                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_42");
-                    NOTIFY_TRANSITION_TERMINATED("34");
-                    res = eventConsumed;
-                }
-            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+            if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
                 {
                     if(getCurrentEvent() == rootState_timeout)
                         {
@@ -1468,12 +1477,31 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                             rootState_subState = sendaction_42;
                             rootState_active = sendaction_42;
                             //#[ state sendaction_42.(Entry) 
-                            itsBarometer.GEN(czytajCzujniki);
+                            itsBarometer.GEN(readSensor);
                             //#]
                             rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_42");
                             NOTIFY_TRANSITION_TERMINATED("28");
                             res = eventConsumed;
                         }
+                }
+            else if(IS_EVENT_TYPE_OF(sendReadFromSensor_Default_id))
+                {
+                    OMSETPARAMS(sendReadFromSensor);
+                    NOTIFY_TRANSITION_STARTED("34");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_41");
+                    //#[ transition 34 
+                    appendToPackage(hygro,params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.sendaction_42");
+                    rootState_subState = sendaction_42;
+                    rootState_active = sendaction_42;
+                    //#[ state sendaction_42.(Entry) 
+                    itsBarometer.GEN(readSensor);
+                    //#]
+                    rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_42");
+                    NOTIFY_TRANSITION_TERMINATED("34");
+                    res = eventConsumed;
                 }
             
         }
@@ -1481,23 +1509,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
         // State sendaction_42
         case sendaction_42:
         {
-            if(IS_EVENT_TYPE_OF(wyslijDane_Default_id))
-                {
-                    OMSETPARAMS(wyslijDane);
-                    NOTIFY_TRANSITION_STARTED("35");
-                    cancel(rootState_timeout);
-                    NOTIFY_STATE_EXITED("ROOT.sendaction_42");
-                    //#[ transition 35 
-                    appendToPackage(baro,params->valueBeingSent);
-                    //#]
-                    NOTIFY_STATE_ENTERED("ROOT.signalJoin_Timer_Server_Request");
-                    pushNullTransition();
-                    rootState_subState = signalJoin_Timer_Server_Request;
-                    rootState_active = signalJoin_Timer_Server_Request;
-                    NOTIFY_TRANSITION_TERMINATED("35");
-                    res = eventConsumed;
-                }
-            else if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
+            if(IS_EVENT_TYPE_OF(OMTimeoutEventId))
                 {
                     if(getCurrentEvent() == rootState_timeout)
                         {
@@ -1511,6 +1523,22 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                             NOTIFY_TRANSITION_TERMINATED("29");
                             res = eventConsumed;
                         }
+                }
+            else if(IS_EVENT_TYPE_OF(sendReadFromSensor_Default_id))
+                {
+                    OMSETPARAMS(sendReadFromSensor);
+                    NOTIFY_TRANSITION_STARTED("35");
+                    cancel(rootState_timeout);
+                    NOTIFY_STATE_EXITED("ROOT.sendaction_42");
+                    //#[ transition 35 
+                    appendToPackage(baro,params->valueBeingSent);
+                    //#]
+                    NOTIFY_STATE_ENTERED("ROOT.signalJoin_Timer_Server_Request");
+                    pushNullTransition();
+                    rootState_subState = signalJoin_Timer_Server_Request;
+                    rootState_active = signalJoin_Timer_Server_Request;
+                    NOTIFY_TRANSITION_TERMINATED("35");
+                    res = eventConsumed;
                 }
             
         }
@@ -1530,7 +1558,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                     rootState_subState = sendaction_10;
                     rootState_active = sendaction_10;
                     //#[ state sendaction_10.(Entry) 
-                    itsCO_Sensor.GEN(czytajCzujniki);
+                    itsCO_Sensor.GEN(readSensor);
                     //#]
                     rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_10");
                     NOTIFY_TRANSITION_TERMINATED("36");
@@ -1551,7 +1579,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                     rootState_subState = StationStandBy;
                     rootState_active = StationStandBy;
                     //#[ state StationStandBy.(Entry) 
-                    obsluzTrybOszczedzaniaEnergii();
+                    handleEnergySavingSystem();
                     //#]
                     NOTIFY_TRANSITION_TERMINATED("40");
                     res = eventConsumed;
@@ -1571,7 +1599,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                     rootState_subState = StationStandBy;
                     rootState_active = StationStandBy;
                     //#[ state StationStandBy.(Entry) 
-                    obsluzTrybOszczedzaniaEnergii();
+                    handleEnergySavingSystem();
                     //#]
                     NOTIFY_TRANSITION_TERMINATED("43");
                     res = eventConsumed;
@@ -1591,7 +1619,7 @@ IOxfReactive::TakeEventStatus Controller::rootState_processEvent() {
                     rootState_subState = StationStandBy;
                     rootState_active = StationStandBy;
                     //#[ state StationStandBy.(Entry) 
-                    obsluzTrybOszczedzaniaEnergii();
+                    handleEnergySavingSystem();
                     //#]
                     NOTIFY_TRANSITION_TERMINATED("45");
                     res = eventConsumed;
@@ -1629,7 +1657,7 @@ IOxfReactive::TakeEventStatus Controller::StationStandBy_handleEvent() {
                     NOTIFY_TRANSITION_STARTED("21");
                     NOTIFY_STATE_EXITED("ROOT.StationStandBy");
                     //#[ transition 21 
-                    obsluzTrybOszczedzaniaEnergii();
+                    handleEnergySavingSystem();
                     //#]
                     NOTIFY_STATE_ENTERED("ROOT.callibration");
                     rootState_subState = callibration;
@@ -1651,7 +1679,7 @@ IOxfReactive::TakeEventStatus Controller::StationStandBy_handleEvent() {
                     NOTIFY_TRANSITION_STARTED("0");
                     NOTIFY_STATE_EXITED("ROOT.StationStandBy");
                     //#[ transition 0 
-                    obsluzTrybOszczedzaniaEnergii();
+                    handleEnergySavingSystem();
                     //#]
                     NOTIFY_STATE_ENTERED("ROOT.sendaction_44");
                     rootState_subState = sendaction_44;
@@ -1686,13 +1714,13 @@ IOxfReactive::TakeEventStatus Controller::StationStandBy_handleEvent() {
                     NOTIFY_TRANSITION_STARTED("11");
                     NOTIFY_STATE_EXITED("ROOT.StationStandBy");
                     //#[ transition 11 
-                    obsluzTrybOszczedzaniaEnergii();whetherTimerRead=true;createPackage(params->time);
+                    handleEnergySavingSystem();whetherTimerRead=true;createPackage(params->time);
                     //#]
                     NOTIFY_STATE_ENTERED("ROOT.sendaction_10");
                     rootState_subState = sendaction_10;
                     rootState_active = sendaction_10;
                     //#[ state sendaction_10.(Entry) 
-                    itsCO_Sensor.GEN(czytajCzujniki);
+                    itsCO_Sensor.GEN(readSensor);
                     //#]
                     rootState_timeout = scheduleTimeout(150, "ROOT.sendaction_10");
                     NOTIFY_TRANSITION_TERMINATED("11");
@@ -1753,7 +1781,7 @@ IOxfReactive::TakeEventStatus Controller::StationStandBy_handleEvent() {
                     NOTIFY_TRANSITION_STARTED("22");
                     NOTIFY_STATE_EXITED("ROOT.StationStandBy");
                     //#[ transition 22 
-                    obsluzTrybOszczedzaniaEnergii();
+                    handleEnergySavingSystem();
                     //#]
                     NOTIFY_STATE_ENTERED("ROOT.callibration");
                     rootState_subState = callibration;
